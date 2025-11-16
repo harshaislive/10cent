@@ -30,18 +30,25 @@ export default function TypeformButton({
   onReady,
   onClose
 }: TypeformButtonProps) {
-  // Only render Typeform in production environment
+  // Validate form ID
+  if (!formId || formId === '01KA5X0AM1KH7WRX1ZB994N2TG') {
+    console.warn('Using default form ID. Make sure the form is published and accessible:', formId);
+  }
+  // Debug: Check if Typeform is enabled
   if (!TYPEFORM_CONFIG.ENABLED) {
+    console.log('Typeform is disabled', { ENABLED: TYPEFORM_CONFIG.ENABLED, formId });
     return (
       <button
         className={className}
         disabled
-        title="Typeform is only available in production"
+        title="Typeform is disabled"
       >
         {children || buttonText}
       </button>
     )
   }
+
+  console.log('Typeform popup button rendering', { formId, config: TYPEFORM_CONFIG });
 
   return (
     <PopupButton
@@ -52,9 +59,19 @@ export default function TypeformButton({
       hideHeaders={hideHeaders}
       hideFooter={hideFooter}
       medium={TYPEFORM_CONFIG.POPUP_OPTIONS.medium}
-      onSubmit={onSubmit}
-      onReady={onReady}
-      onClose={onClose}
+      transitiveSearchParams={TYPEFORM_CONFIG.POPUP_OPTIONS.transitiveSearchParams}
+      onSubmit={() => {
+        console.log('Typeform submitted');
+        onSubmit?.();
+      }}
+      onReady={() => {
+        console.log('Typeform ready');
+        onReady?.();
+      }}
+      onClose={() => {
+        console.log('Typeform closed');
+        onClose?.();
+      }}
     >
       {children || buttonText}
     </PopupButton>

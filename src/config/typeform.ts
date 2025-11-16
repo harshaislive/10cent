@@ -5,7 +5,7 @@ export const TYPEFORM_CONFIG = {
   FORM_ID: '01KA5X0AM1KH7WRX1ZB994N2TG',
 
   // Environment detection - enable Typeform in all environments
-  ENABLED: process.env.NODE_ENV !== 'development' || true,
+  ENABLED: true,
 
   // Typeform popup options
   POPUP_OPTIONS: {
