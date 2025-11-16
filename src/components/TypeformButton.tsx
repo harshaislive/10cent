@@ -23,12 +23,12 @@ export default function TypeformButton({
   onClose
 }: TypeformButtonProps) {
   // Only render if form ID is provided and enabled
-  if (!TYPEFORM_CONFIG.ENABLED || !formId || formId === 'YOUR_ACTUAL_TYPEFORM_ID') {
+  if (!TYPEFORM_CONFIG.ENABLED || !formId) {
     return (
       <button
         className={`${className} opacity-50 cursor-not-allowed`}
         disabled
-        title="Please add your Typeform form ID in src/config/typeform.ts"
+        title="Typeform is disabled"
       >
         {children || buttonText}
       </button>
