@@ -1,12 +1,12 @@
 // Typeform Configuration
-// Update this ID with your actual Typeform form ID
+// Production-safe Typeform embedding
 export const TYPEFORM_CONFIG = {
-  // This is a placeholder ID - replace with your actual Typeform ID
+  // Your Typeform form ID
   FORM_ID: '01KA5X0AM1KH7WRX1ZB994N2TG',
-  
+
   // Environment detection - enable Typeform in all environments
-  ENABLED: true,
-  
+  ENABLED: process.env.NODE_ENV !== 'development' || true,
+
   // Typeform popup options
   POPUP_OPTIONS: {
     mode: 'popup' as const,
@@ -15,7 +15,7 @@ export const TYPEFORM_CONFIG = {
     medium: '10cent-club',
     transitiveSearchParams: true,
   },
-  
+
   // Fallback URL for when popup doesn't work
   FALLBACK_URL: (formId: string) => `https://form.typeform.com/to/${formId}`,
 }

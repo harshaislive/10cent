@@ -6,20 +6,15 @@ import { TYPEFORM_CONFIG } from '@/config/typeform'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://10cnt.beforest.co'),
   title: 'Beforest 10cent Club | Strategic Wilderness Integration',
   description: 'A strategic conversation about regenerative living and the mathematics of wilderness integration. Saturday 5PM IST.',
   keywords: ['wilderness', 'regenerative living', '10cent club', 'beforest', 'nature integration', 'sustainable living'],
   authors: [{ name: 'Beforest' }],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   openGraph: {
     title: 'Beforest 10cent Club | Strategic Wilderness Integration',
     description: '10% of your life spent with nature restores 100% of your nature.',
-    url: 'https://10cnt.beforest.co',
+    url: '/',
     siteName: 'Beforest 10cent Club',
     images: [
       {
@@ -32,6 +27,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 }
 
 export default function RootLayout({

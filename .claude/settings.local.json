@@ -12,7 +12,14 @@
       "Bash(netstat:*)",
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(cmd:*)",
+      "Bash(powershell:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
