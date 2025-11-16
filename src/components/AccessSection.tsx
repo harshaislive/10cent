@@ -1,7 +1,6 @@
 'use client'
 
 import TypeformButton from './TypeformButton'
-import TypeformWidget from './TypeformWidget'
 
 export default function AccessSection() {
 
@@ -55,24 +54,12 @@ export default function AccessSection() {
                 <span className="text-white/70">Only 150 souls will hear the wilderness call this season.</span>
               </p>
 
-              {/* Embedded Typeform Widget */}
-              <div className="rounded-xl overflow-hidden border border-white/20">
-                <TypeformWidget
-                  formId="01KA5X0AM1KH7WRX1ZB994N2TG"
-                  height={400}
-                  className="w-full"
-                />
-              </div>
-
-              {/* Alternative Button */}
-              <div className="text-center">
-                <TypeformButton
-                  formId="01KA5X0AM1KH7WRX1ZB994N2TG"
-                  className="bg-white text-brand-dark px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-sustainable-green hover:shadow-2xl hover:-translate-y-1"
-                >
-                  Open in Popup
-                </TypeformButton>
-              </div>
+              <TypeformButton
+                formId="01KA5X0AM1KH7WRX1ZB994N2TG"
+                className="w-full bg-white text-brand-dark px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-sustainable-green hover:shadow-2xl hover:-translate-y-1"
+              >
+                Answer The Wilderness Call
+              </TypeformButton>
 
               <p className="text-xs text-center opacity-80 font-arizona">
                 Your journey begins here. Your information is sacred and will never be shared.
