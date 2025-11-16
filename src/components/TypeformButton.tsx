@@ -8,10 +8,6 @@ interface TypeformButtonProps {
   buttonText?: string
   className?: string
   children?: React.ReactNode
-  size?: number
-  opacity?: number
-  hideHeaders?: boolean
-  hideFooter?: boolean
   onSubmit?: () => void
   onReady?: () => void
   onClose?: () => void
@@ -22,56 +18,30 @@ export default function TypeformButton({
   buttonText,
   className = '',
   children,
-  size = 100,
-  opacity = 100,
-  hideHeaders = true,
-  hideFooter = true,
   onSubmit,
   onReady,
   onClose
 }: TypeformButtonProps) {
-  // Validate form ID
-  if (!formId || formId === '01KA5X0AM1KH7WRX1ZB994N2TG') {
-    console.warn('Using default form ID. Make sure the form is published and accessible:', formId);
-  }
-  // Debug: Check if Typeform is enabled
-  if (!TYPEFORM_CONFIG.ENABLED) {
-    console.log('Typeform is disabled', { ENABLED: TYPEFORM_CONFIG.ENABLED, formId });
+  // Only render if form ID is provided and enabled
+  if (!TYPEFORM_CONFIG.ENABLED || !formId || formId === 'YOUR_ACTUAL_TYPEFORM_ID') {
     return (
       <button
-        className={className}
+        className={`${className} opacity-50 cursor-not-allowed`}
         disabled
-        title="Typeform is disabled"
+        title="Please add your Typeform form ID in src/config/typeform.ts"
       >
         {children || buttonText}
       </button>
     )
   }
 
-  console.log('Typeform popup button rendering', { formId, config: TYPEFORM_CONFIG });
-
   return (
     <PopupButton
       id={formId}
       className={className}
-      size={size}
-      opacity={opacity}
-      hideHeaders={hideHeaders}
-      hideFooter={hideFooter}
-      medium={TYPEFORM_CONFIG.POPUP_OPTIONS.medium}
-      transitiveSearchParams={TYPEFORM_CONFIG.POPUP_OPTIONS.transitiveSearchParams}
-      onSubmit={() => {
-        console.log('Typeform submitted');
-        onSubmit?.();
-      }}
-      onReady={() => {
-        console.log('Typeform ready');
-        onReady?.();
-      }}
-      onClose={() => {
-        console.log('Typeform closed');
-        onClose?.();
-      }}
+      onReady={onReady}
+      onSubmit={onSubmit}
+      onClose={onClose}
     >
       {children || buttonText}
     </PopupButton>
