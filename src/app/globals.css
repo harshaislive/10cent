@@ -1,0 +1,358 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Arizona Flare Font System */
+@font-face {
+  font-family: 'ABC Arizona Flare';
+  src: url('../fonts/ABCArizonaFlare-Light.woff2') format('woff2'),
+       url('../fonts/ABCArizonaFlare-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABC Arizona Flare';
+  src: url('../fonts/ABCArizonaFlare-Regular.woff2') format('woff2'),
+       url('../fonts/ABCArizonaFlare-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABC Arizona Flare';
+  src: url('../fonts/ABCArizonaFlare-Medium.woff2') format('woff2'),
+       url('../fonts/ABCArizonaFlare-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Custom Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-arizona text-text-primary bg-warm-white;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-arizona font-light;
+    font-feature-settings: "kern" 1, "liga" 1, "dlig" 1;
+  }
+}
+
+/* Custom Components */
+@layer components {
+  .btn-primary {
+    @apply bg-brand-red text-white px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-brand-red text-brand-red px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-brand-red hover:text-white;
+  }
+
+  .section-padding {
+    @apply py-16 px-4 sm:py-20 sm:px-6 lg:py-24 lg:px-6;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-red to-sustainable-green bg-clip-text text-transparent;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .scroll-indicator {
+    @apply fixed left-0 top-0 w-full h-1 bg-gradient-to-r from-brand-red to-sustainable-green z-50 transition-all duration-300;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+
+  .animate-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-right {
+    animation: slideInFromRight 0.8s ease-out forwards;
+  }
+
+  .animate-slide-left {
+    animation: slideInFromLeft 0.8s ease-out forwards;
+  }
+
+  .animate-reveal {
+    animation: slideReveal 0.7s ease-out forwards;
+  }
+
+  .animate-text-reveal {
+    animation: textReveal 0.5s ease-out forwards;
+  }
+
+  .animate-parallax {
+    animation: parallaxShift 1s ease-out forwards;
+  }
+}
+
+/* Editorial Animations */
+@keyframes slideInFromRight {
+  0% { opacity: 0; transform: translateX(100px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInFromLeft {
+  0% { opacity: 0; transform: translateX(-100px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideReveal {
+  0% { opacity: 0; transform: translateY(50px) rotateX(-10deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+
+@keyframes parallaxShift {
+  0% { transform: translateX(-20px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes textReveal {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes editorialSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(60px) translateY(20px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Icon Animations - Unique for Each Icon */
+
+/* Creativity Star */
+@keyframes star-sparkle {
+  0%, 100% { opacity: 1; transform: rotate(0deg) scale(1); }
+  25% { opacity: 0.9; transform: rotate(90deg) scale(1.05); }
+  50% { opacity: 1; transform: rotate(180deg) scale(1); }
+  75% { opacity: 0.9; transform: rotate(270deg) scale(1.05); }
+}
+
+@keyframes star-draw {
+  from { stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0; }
+  to { stroke-dasharray: 100; stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes star-fill {
+  from { fill-opacity: 0; transform: scale(0.8); }
+  to { fill-opacity: 0.1; transform: scale(1); }
+}
+
+/* Decision-Making Target */
+@keyframes target-focus {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes target-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.9; }
+}
+
+@keyframes target-center {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+@keyframes crosshair-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Cognitive Clarity */
+@keyframes clarity-flow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes line-wave {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  25% { transform: scaleX(0.98); opacity: 0.95; }
+  50% { transform: scaleX(1); opacity: 1; }
+  75% { transform: scaleX(0.99); opacity: 0.97; }
+}
+
+@keyframes clarity-dot-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-2px) scale(1.1); opacity: 1; }
+}
+
+/* Natural Immunity Heart */
+@keyframes heartbeat {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  10% { opacity: 1; transform: scale(1.05); }
+  20% { opacity: 1; transform: scale(1); }
+  30% { opacity: 1; transform: scale(1.05); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heart-glow {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+@keyframes heart-center-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Apply Animations */
+.animate-star-sparkle {
+  animation: star-sparkle 8s ease-in-out infinite;
+}
+
+.animate-target-focus {
+  animation: target-focus 6s ease-in-out infinite;
+}
+
+.animate-target-pulse {
+  animation: target-pulse 3s ease-in-out infinite;
+}
+
+.animate-target-center {
+  animation: target-center 2.5s ease-in-out infinite;
+}
+
+.animate-crosshair-rotate {
+  animation: crosshair-rotate 4s linear infinite;
+}
+
+.animate-clarity-flow {
+  animation: clarity-flow 7s ease-in-out infinite;
+}
+
+.animate-line-wave {
+  animation: line-wave 4s ease-in-out infinite;
+}
+
+.animate-clarity-dot-float {
+  animation: clarity-dot-float 2s ease-in-out infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 3s ease-in-out infinite;
+}
+
+.animate-heart-glow {
+  animation: heart-glow 2s ease-in-out infinite;
+}
+
+.animate-heart-center-pulse {
+  animation: heart-center-pulse 1.5s ease-in-out infinite;
+}
+
+/* Floating animation for experience points */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Micro-Interaction Styles */
+@layer components {
+  .nature-insight-chip {
+    @apply relative inline-block transition-all duration-300;
+  }
+
+  .micro-whisper {
+    @apply relative inline-block transition-all duration-300;
+  }
+
+  .nature-insight {
+    @apply bg-brand-red/5 hover:bg-brand-red/10 border border-brand-red/20 rounded-lg p-3 transition-all duration-500;
+  }
+
+  .wilderness-calculator {
+    @apply bg-sustainable-green/5 border-l-2 border-sustainable-green/30 rounded-lg p-4;
+  }
+
+  .timeline-explorer {
+    @apply relative flex items-center justify-between py-6;
+  }
+
+  .nature-journal {
+    @apply bg-warm-white/60 backdrop-blur-xs rounded-lg border border-sustainable-green/20 p-4;
+  }
+}
+
+/* Enhanced animations for micro-interactions */
+@keyframes micro-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+    filter: blur(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-micro-reveal {
+  animation: micro-reveal 0.4s ease-out;
+}
+
+/* Subtle interaction animations */
+@keyframes chip-underline {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+.animate-underline-expand {
+  animation: chip-underline 0.3s ease-out forwards;
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
