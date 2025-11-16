@@ -2,6 +2,7 @@
 
 import TypeformButton from './TypeformButton'
 import TypeformTestButton from './TypeformTestButton'
+import TypeformNativeButton from './TypeformNativeButton'
 
 export default function AccessSection() {
 
@@ -56,6 +57,13 @@ export default function AccessSection() {
               </p>
 
               <TypeformTestButton />
+
+              <TypeformNativeButton
+                formId="01KA5X0AM1KH7WRX1ZB994N2TG"
+                className="w-full bg-yellow-500 text-brand-dark px-6 py-3 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-yellow-400 hover:shadow-2xl hover:-translate-y-1 mb-4"
+              >
+                Test Native JS Popup (Your Form)
+              </TypeformNativeButton>
 
               <TypeformButton
                 className="w-full bg-white text-brand-dark px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-sustainable-green hover:shadow-2xl hover:-translate-y-1"

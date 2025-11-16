@@ -46,10 +46,22 @@ export default function RootLayout({
       <body className="font-arizona">
         {children}
         {TYPEFORM_CONFIG.ENABLED && (
-          <script
-            src="https://embed.typeform.com/next/embed.js"
-            async
-          />
+          <>
+            <script
+              src="https://embed.typeform.com/next/embed.js"
+              async
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                window.tfAsyncInit = function() {
+                  window.tf = window.tf || {};
+                  window.tf.createWidget = window.tf.createWidget || function(){};
+                };
+              `
+              }}
+            />
+          </>
         )}
       </body>
     </html>
