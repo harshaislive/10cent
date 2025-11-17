@@ -27,11 +27,11 @@ export default function AccessSection() {
         <div className="max-w-2xl mx-auto">
           <div className="border border-white/10 rounded-lg p-8 md:p-12">
             <h3 className="text-2xl font-arizona font-light mb-6 text-white text-center">
-              Join Us
+              Join Me
             </h3>
 
             <p className="text-white/90 font-arizona text-lg leading-relaxed text-center mb-8">
-              In a world that never stops, there's a place where time stands still.
+              The world never stops pulling at you. There's a space here where you can finally pause.
             </p>
 
             <div className="max-w-xs mx-auto">
@@ -39,12 +39,12 @@ export default function AccessSection() {
                 formId={TYPEFORM_CONFIG.FORM_ID}
                 className="w-full bg-sustainable-green text-text-primary px-8 py-4 font-arizona text-sm tracking-wide rounded-lg transition-all duration-300 hover:bg-white hover:text-text-primary border border-sustainable-green/20"
               >
-                Reserve Your Place
+                Join the conversation
               </TypeformButton>
             </div>
 
             <p className="text-sm text-center text-white/60 font-arizona mt-6">
-              Your journey begins here. Your information is sacred and will never be shared.
+              This is where your journey begins. Your information stays sacred and will never be shared.
             </p>
 
             <div className="mt-12 pt-12 border-t border-white/10">

@@ -49,19 +49,22 @@ export default function TypewriterHeadline({ className = "" }: TypewriterHeadlin
   const currentHeadline = headlineVariations[currentIndex]
 
   return (
-    <div className={`text-right ${className}`}>
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-arizona font-light leading-tight mb-6 text-white transition-opacity duration-300">
-        <div
-          className={`transition-opacity duration-300 ${
-            showContent ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className="whitespace-nowrap">
-            {currentHeadline.mainText}
-            <br />
-            <span className="text-3xl md:text-4xl lg:text-5xl font-arizona font-light text-brand-red">
-              {currentHeadline.subText}
-            </span>
+    <div className={`${className}`}>
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-arizona font-light leading-tight text-white">
+        <div className="relative" style={{ minHeight: '6rem' }}>
+          <div
+            className={`absolute inset-0 transition-all duration-500 ease-in-out ${
+              showContent ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+            }`}
+          >
+            <div className="flex flex-col">
+              <div className="text-4xl md:text-5xl lg:text-6xl font-arizona font-light leading-tight text-white">
+                {currentHeadline.mainText}
+              </div>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-arizona font-light text-brand-red leading-tight">
+                {currentHeadline.subText}
+              </div>
+            </div>
           </div>
         </div>
       </h1>

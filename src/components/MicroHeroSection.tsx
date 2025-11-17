@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { HeroSubHeading, EditorialHeading, MastheadInfo } from './headings'
 
 export default function MicroHeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -21,39 +22,63 @@ export default function MicroHeroSection() {
       <div className="relative z-10 px-6 md:px-12">
         <div className="max-w-4xl mx-auto text-center">
 
-          {/* Editorial Masthead */}
-          <div className={`mb-16 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`} style={{ transition: 'opacity 1.5s ease-in' }}>
+          {/* Editorial Masthead - Refactored */}
+          <MastheadInfo
+            isLoaded={isLoaded}
+            title="Beforest Club"
+            subtitle="Return to Yourself"
+            className="mb-16"
+          />
 
-            <div className="mb-12">
-              <h2 className="text-xs font-serif tracking-[0.3em] uppercase text-stone-600 mb-2">
-                Beforest Club
-              </h2>
-              <div className="w-24 h-px bg-stone-400 mx-auto mb-2" />
-              <div className="text-xs font-serif tracking-wide uppercase text-stone-600">
-                Return to Yourself
-              </div>
-            </div>
-          </div>
+          {/* Top Subheading */}
+          <HeroSubHeading
+            background="light"
+            size="2xl"
+            weight="light"
+            variant="accent"
+            animation={{ type: 'fade-in', delay: 200 }}
+            className="mb-8 leading-tight"
+          >
+            30 nights a year. Your turn to pause, breathe, and return.
+          </HeroSubHeading>
 
-          {/* Drop Cap Style Headline */}
-          <div className={`text-left font-serif mb-12 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`} style={{ transition: 'opacity 1s ease-in 0.3s' }}>
-            <div className="text-6xl md:text-7xl lg:text-8xl font-light leading-none text-stone-900 mb-6">
-              <span className="text-7xl md:text-8xl lg:text-9xl font-serif text-amber-600">3</span>
-              0 nights at a time.
-            </div>
-            <p className="text-xl md:text-2xl lg:text-3xl text-stone-700 leading-relaxed mb-8">
-              Because the most important meetings are the ones you take with yourself.
-            </p>
-            <p className="text-lg md:text-xl text-stone-600">
-              30 nights a year. For 10%. Across India's wildest landscapes.
-            </p>
-          </div>
+          {/* Drop Cap Style Headline - Refactored */}
+          <EditorialHeading
+            dropCap
+            accent="3"
+            accentColor="amber"
+            isLoaded={isLoaded}
+            animationDelay={300}
+            className="mb-12 text-left font-serif"
+          >
+            0 nights at a time.
+          </EditorialHeading>
 
-          {/* CTA */}
+          {/* Main Subheading - Refactored */}
+          <HeroSubHeading
+            background="light"
+            size="lg"
+            weight="light"
+            variant="primary"
+            animation={{ type: 'fade-in', delay: 500 }}
+            className="mb-8 leading-relaxed"
+          >
+            Because the most important meetings are the ones you take with yourself.
+          </HeroSubHeading>
+
+          {/* Supporting Text - Refactored */}
+          <HeroSubHeading
+            background="light"
+            size="md"
+            weight="normal"
+            variant="secondary"
+            animation={{ type: 'fade-in', delay: 700 }}
+            className="mb-16"
+          >
+            30 nights a year. For 10%. Across India's wildest landscapes.
+          </HeroSubHeading>
+
+          {/* CTA - Enhanced with proper animation */}
           <div className={`text-center mt-16 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`} style={{ transition: 'opacity 1s ease-in 0.6s' }}>

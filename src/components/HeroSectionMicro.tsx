@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { HeroMainHeading, HeroSubHeading, MastheadInfo, PhilosophyCard, MemberQuote } from './headings'
 
 export default function HeroSectionMicro() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -21,91 +22,76 @@ export default function HeroSectionMicro() {
 
       <div className="container-max relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Editorial Header */}
-          <div className={`mb-12 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`} style={{ transition: 'opacity 1.5s ease-in' }}>
+          {/* Editorial Header - Refactored */}
+          <MastheadInfo
+            isLoaded={isLoaded}
+            title="Beforest Club"
+            subtitle="Return to Yourself"
+            className="mb-12"
+          />
 
-            {/* Publication Masthead */}
-            <div className="mb-8">
-              <h2 className="text-xs font-serif tracking-[0.3em] uppercase text-text-secondary mb-2">
-                Beforest Club
-              </h2>
-              <div className="w-24 h-px bg-stone-400 mx-auto mb-2" />
-              <div className="text-xs font-serif tracking-wide uppercase text-text-secondary">
-                Return to Yourself
-              </div>
-            </div>
-          </div>
-
-          {/* Main Headline - Editorial Style */}
-          <h1 className={`text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-tight mb-8 text-text-primary ${
-            isLoaded ? 'animate-in' : 'opacity-0 translate-y-8'
-          }`} style={{ animationDelay: '0.2s' }}>
+          {/* Main Headline - Refactored with new component */}
+          <HeroMainHeading
+            background="light"
+            animation={{ type: 'slide-up', delay: 200 }}
+            className="mb-8 text-center"
+          >
             <span className="text-3xl md:text-4xl lg:text-5xl text-brand-red font-semibold">30 nights at a time.</span>
             <br />
             <span className="text-4xl md:text-5xl lg:text-6xl">
               Because the most important meetings are the ones you take with yourself.
             </span>
-          </h1>
+          </HeroMainHeading>
 
-          {/* Editorial Sub-headline */}
-          <p className={`text-lg md:text-xl text-text-secondary mb-12 max-w-2xl mx-auto leading-relaxed font-serif ${
-            isLoaded ? 'animate-up' : 'opacity-0 translate-y-8'
-          }`} style={{ animationDelay: '0.4s' }}>
+          {/* Editorial Sub-headline - Refactored */}
+          <HeroSubHeading
+            background="light"
+            size="md"
+            weight="light"
+            variant="secondary"
+            animation={{ type: 'slide-up', delay: 400 }}
+            className="mb-12 max-w-2xl mx-auto leading-relaxed"
+          >
             30 nights a year. For 10%. Across India's wildest landscapes.
-          </p>
+          </HeroSubHeading>
 
-          {/* Philosophy in Numbers - Editorial Card */}
-          <div className={`mb-12 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`} style={{ transition: 'all 1s ease-in 0.5s' }}>
-            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-stone-200 max-w-2xl mx-auto">
-              <h3 className="text-lg font-serif font-light text-text-secondary mb-4 text-center">
-                A Philosophy in Numbers
-              </h3>
-              <div className="text-center">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-brand-red mb-6">
-                  10% of your year. 30 nights. ₹15L
-                </div>
-                <p className="text-lg font-serif text-text-primary italic">
-                  No ownership. No baggage. Just access—to what truly matters.
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Philosophy in Numbers - Refactored */}
+          <PhilosophyCard
+            isLoaded={isLoaded}
+            animationDelay={500}
+            className="mb-12"
+          />
 
-          {/* The Member Profile - Editorial Quote Block */}
-          <div className={`mb-12 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`} style={{ transition: 'all 1s ease-in 0.7s' }}>
-            <div className="border-l-4 border-sustainable-green pl-8 max-w-2xl mx-auto">
-              <h3 className="text-lg font-serif font-bold text-text-primary mb-4">
-                The one who brings binoculars for every trip.
-              </h3>
-              <p className="text-lg font-serif text-text-primary mb-3">
-                The one who believes nature is a page turner—not a return ticket.
-              </p>
-              <p className="text-lg font-serif text-text-primary mb-4">
-                The one who wants time alone, not time off.
-              </p>
-              <p className="text-base font-serif text-brand-red italic">
-                If that sounds like you, we built this for you.
-              </p>
-            </div>
-          </div>
+          {/* The Member Profile - Refactored */}
+          <MemberQuote
+            isLoaded={isLoaded}
+            animationDelay={700}
+            className="mb-12"
+          />
 
-          {/* Why Now Section */}
+          {/* Why Now Section - Refactored */}
           <div className={`mb-16 ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`} style={{ transition: 'all 1s ease-in 0.9s' }}>
             <div className="text-center">
-              <p className="text-lg font-serif text-text-secondary mb-4">
+              <HeroSubHeading
+                background="light"
+                size="md"
+                weight="normal"
+                variant="secondary"
+                className="mb-4"
+              >
                 Because we're opening to only <span className="text-brand-red font-bold">150 members</span>.
-              </p>
-              <p className="text-lg font-serif text-text-secondary">
+              </HeroSubHeading>
+              <HeroSubHeading
+                background="light"
+                size="md"
+                weight="light"
+                variant="secondary"
+                className="mb-4"
+              >
                 Because your inner landscape could use a little rewinding.
-              </p>
+              </HeroSubHeading>
             </div>
           </div>
 
