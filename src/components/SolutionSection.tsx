@@ -9,7 +9,6 @@ interface WildernessExperienceSolution {
   subtitle: string
   description: string
   experiences: string[]
-  timeframe: string
   visual: {
     quadrants: number[]
   }
@@ -158,12 +157,7 @@ export default function SolutionSection() {
                               </p>
                             </div>
                           ))}
-                          <div className="mt-4 p-4 bg-brand-red/5 border border-brand-red/20 rounded-xl text-center">
-                            <p className="text-sm font-medium text-brand-red uppercase tracking-wider font-arizona">
-                              {solution.timeframe}
-                            </p>
                           </div>
-                        </div>
                       )}
 
                       {/* Locations */}

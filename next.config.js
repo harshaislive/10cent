@@ -4,6 +4,7 @@ const nextConfig = {
   swcMinify: false,
   output: 'standalone',
   images: {
+    unoptimized: true, // Temporarily disable image optimization
     remotePatterns: [
       {
         protocol: 'https',
