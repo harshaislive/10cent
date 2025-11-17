@@ -60,13 +60,13 @@ export default function HeroSection() {
 // Extracted text content component
 function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
   return (
-    <div className="relative text-right max-w-xl lg:max-w-2xl">
+    <div className="relative text-right max-w-xl lg:max-w-2xl flex flex-col">
       {/* Right edge line anchor */}
       <div className="absolute right-0 top-0 bottom-0 w-px bg-white/20" />
 
       {/* Tagline */}
-      <AnimatedWrapper delay={0} isLoaded={isLoaded}>
-        <div className="mb-6 pr-8">
+      <AnimatedWrapper delay={0} isLoaded={isLoaded} className="order-4 md:order-1">
+        <div className="md:mb-6 pr-8 mt-8 md:mt-0">
           <HeroSubHeading
             background="dark"
             size="sm"
@@ -78,8 +78,8 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
       </AnimatedWrapper>
 
       {/* Main Heading */}
-      <AnimatedWrapper delay={200} isLoaded={isLoaded}>
-        <div className="mb-20 md:mb-28 lg:mb-32 min-h-[3rem] lg:min-h-[4rem] pr-8">
+      <AnimatedWrapper delay={200} isLoaded={isLoaded} className="order-1 md:order-2">
+        <div className="mb-8 md:mb-20 lg:mb-32 min-h-[3rem] lg:min-h-[4rem] pr-8">
           <HeroMainHeading
             background="dark"
             typewriter
@@ -90,7 +90,7 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
       </AnimatedWrapper>
 
       {/* Button */}
-      <AnimatedWrapper delay={400} isLoaded={isLoaded}>
+      <AnimatedWrapper delay={400} isLoaded={isLoaded} className="order-2 md:order-3">
         <div className="mb-8 pr-8">
           <a
             href="#access"
@@ -102,7 +102,7 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
       </AnimatedWrapper>
 
       {/* Date */}
-      <AnimatedWrapper delay={600} isLoaded={isLoaded}>
+      <AnimatedWrapper delay={600} isLoaded={isLoaded} className="order-3 md:order-4">
         <div className="pr-8">
           <p className="text-white/50 text-sm font-light tracking-widest uppercase">
             {getNextSaturdayWithTime()}
@@ -118,17 +118,19 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
 function AnimatedWrapper({
   children,
   delay,
-  isLoaded
+  isLoaded,
+  className,
 }: {
   children: React.ReactNode
   delay: number
   isLoaded: boolean
+  className?: string
 }) {
   return (
     <div
       className={`transition-all duration-1000 ${
         isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-      }`}
+      } ${className || ''}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
