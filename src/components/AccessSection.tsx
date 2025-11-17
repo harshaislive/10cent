@@ -1,8 +1,7 @@
 'use client'
 
 import TypeformButton from './TypeformButton'
-import TypeformTestButton from './TypeformTestButton'
-import TypeformNativeButton from './TypeformNativeButton'
+import { TYPEFORM_CONFIG } from '@/config/typeform'
 
 export default function AccessSection() {
 
@@ -56,19 +55,11 @@ export default function AccessSection() {
                 <span className="text-white/70">Only 150 souls will hear the wilderness call this season.</span>
               </p>
 
-              <TypeformTestButton />
-
-              <TypeformNativeButton
-                formId="01KA5X0AM1KH7WRX1ZB994N2TG"
-                className="w-full bg-yellow-500 text-brand-dark px-6 py-3 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-yellow-400 hover:shadow-2xl hover:-translate-y-1 mb-4"
-              >
-                Test Native JS Popup (Your Form)
-              </TypeformNativeButton>
-
               <TypeformButton
+                formId={TYPEFORM_CONFIG.FORM_ID}
                 className="w-full bg-white text-brand-dark px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase rounded-lg transition-all duration-300 hover:bg-sustainable-green hover:shadow-2xl hover:-translate-y-1"
               >
-                Answer The Wilderness Call
+                Reserve Your Place
               </TypeformButton>
 
               <p className="text-xs text-center opacity-80 font-arizona">

@@ -42,6 +42,9 @@ export default function TypeformButton({
       onReady={onReady}
       onSubmit={onSubmit}
       onClose={onClose}
+      hideHeaders={true}
+      hideFooter={true}
+      transitiveSearchParams={true}
     >
       {children || buttonText}
     </PopupButton>

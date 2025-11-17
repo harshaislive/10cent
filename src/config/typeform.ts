@@ -1,8 +1,8 @@
 // Typeform Configuration
 // Production-safe Typeform embedding
 export const TYPEFORM_CONFIG = {
-  // Your Typeform form ID
-  FORM_ID: '01KA5X0AM1KH7WRX1ZB994N2TG',
+  // Your Typeform form ID from environment variable or fallback to demo
+  FORM_ID: process.env.NEXT_PUBLIC_TYPEFORM_ID || 'moe6bb',
 
   // Environment detection - enable Typeform in all environments
   ENABLED: true,
