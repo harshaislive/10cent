@@ -2,7 +2,7 @@ export default function MicroFooter() {
   return (
     <footer className="bg-stone-100 border-t border-stone-200 py-12 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div>
             <h3 className="font-serif text-xl mb-4 text-stone-900">
               Beforest Club
@@ -25,19 +25,7 @@ export default function MicroFooter() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-serif text-lg mb-4 text-stone-900">Connect</h4>
-            <div className="space-y-2 text-sm text-stone-600">
-              <p>hello@beforest.co</p>
-              <p>+91 80880 12345</p>
-              <div className="flex gap-4 mt-4">
-                <a href="#" className="text-stone-600 hover:text-stone-900 transition-colors">Instagram</a>
-                <a href="#" className="text-stone-600 hover:text-stone-900 transition-colors">LinkedIn</a>
-                <a href="#" className="text-stone-600 hover:text-stone-900 transition-colors">Twitter</a>
-              </div>
-            </div>
           </div>
-        </div>
 
         <div className="border-t border-stone-300 pt-8">
           <div className="text-center">
