@@ -15,13 +15,13 @@ const wildernessPoints: WildernessPoint[] = [
     id: 1,
     title: "Expansive Privacy",
     description: "Large landscapes with secluded rooms (100+ acres with two to three guest houses)",
-    backgroundImage: "/PBR_4601.jpg"
+    backgroundImage: "/privacy.jpg"
   },
   {
     id: 2,
     title: "True Solitude",
     description: "You are likely to bump into wildlife more than bumping into others. Truly you, your thoughts and nothing else.",
-    backgroundImage: "/PBR_8864.jpg"
+    backgroundImage: "/PBR_8924.jpg"
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const wildernessPoints: WildernessPoint[] = [
     id: 4,
     title: "Deep Perspective",
     description: "One thing is for certain - in 3 nights you get a deep insight into the land and its culture. A perspective shift would have started.",
-    backgroundImage: "/PBR_7935.jpg"
+    backgroundImage: "/PBR_2161.jpg"
   },
   {
     id: 5,
@@ -45,7 +45,7 @@ const wildernessPoints: WildernessPoint[] = [
     id: 6,
     title: "Extended Family",
     description: "The team on the ground is an extension of your family.",
-    backgroundImage: "/IMG_7826.jpg"
+    backgroundImage: "/PBR_0872.jpg"
   }
 ]
 

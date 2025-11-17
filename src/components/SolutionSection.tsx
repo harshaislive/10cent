@@ -48,7 +48,6 @@ export default function SolutionSection() {
         "Mental Clarity: Decisions become effortless",
         "Emotional Reset: Joy flows naturally again"
       ],
-      timeframe: "Changes begin immediately",
       visual: {
         quadrants: [85, 92, 78, 95]
       }
@@ -182,11 +181,9 @@ export default function SolutionSection() {
                               </div>
                             ))}
                           </div>
-                          <div className="bg-text-primary text-white rounded-lg p-3 text-center">
-                            <p className="text-sm font-light mb-1 font-arizona">
-                              {solution.guarantee}
-                            </p>
-                          </div>
+                          <p className="text-sm italic text-text-primary font-light font-arizona text-center">
+                            {solution.guarantee}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -197,10 +194,6 @@ export default function SolutionSection() {
                         {/* Visual Elements */}
                         {'quadrants' in solution.visual && (
                           <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
-                            <h5 className="text-xl font-arizona font-light text-center mb-12 text-text-primary">
-                              The Subtle Return
-                            </h5>
-
                             <div className="space-y-8">
                               {/* Experience 1 */}
                               <div className="flex items-center space-x-6">
