@@ -8,22 +8,24 @@ export default function ValidationSection() {
 
   const testimonials = [
     {
-      name: "Rahul M.",
-      role: "Technology Founder, Bangalore",
-      content: "I bought back my time. The AsK paid for itself in 6 months, but the return on my peace of mind is priceless.",
-      metrics: ["Time reclaimed: 15 hours/week", "Stress reduction: 60%", "Revenue growth: 40%"]
+      name: "Geetha",
+      role: "Bangalore",
+      content: "All aspects of the experience - the place, the nature, people - were awesome. Looking forward to come back & explore the other collectives."
     },
     {
-      name: "Priya S.",
-      role: "The AsK Banker, Mumbai",
-      content: "As someone who calculates ROI for everything, the 4 Returns Framework made perfect sense. My best AsK yet.",
-      metrics: ["Portfolio diversification: 25%", "Network quality: 10x", "Decision clarity: 85%"]
+      name: "Rudraite",
+      role: "Kuchumba/Ahmedabad",
+      content: "Nice place & very good food and hospitality."
     },
     {
-      name: "Arjun K.",
-      role: "Creative Director, Delhi",
-      content: "The wilderness doesn't just inspire—it transforms. My work has depth it never had before. My clients notice the difference.",
-      metrics: ["Creative output: 200%", "Client satisfaction: 95%", "Personal satisfaction: ∞"]
+      name: "Balu",
+      role: "Bangalore",
+      content: "What a hidden gem and an amazing place. In the midst of nature, great food, wonderful hospitality, great naturalists. I can go on... A special mention to Ravi Anna, Aranya, Elpin & Sagar & everyone else on the staff again. We will come back. PS: The coffee talk & nature walk were great!"
+    },
+    {
+      name: "Kurinj (Martin & Pushpendra)",
+      role: "Bangalore",
+      content: "It has been a wonderful experience coming to Forest poomale. The walks were wonderful and the nature made us heal. Aranya and the team were great hosts. We wanted to stay more. Will visit for longer next time. Lots of Love ♡"
     }
   ]
 
