@@ -50,6 +50,16 @@ export default function HeroSection() {
 
       
       
+      {/* Mobile Sticky CTA */}
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
+        <a
+          href="#access"
+          className="bg-sustainable-green text-text-primary px-6 py-3 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+        >
+          Join The Conversation
+        </a>
+      </div>
+
       {/* Overlay Elements */}
       <HeroOverlayElements />
     </section>
@@ -78,7 +88,7 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
 
       {/* Main Heading */}
       <AnimatedWrapper delay={200} isLoaded={isLoaded}>
-        <div className="mb-20 md:mb-28 lg:mb-32 min-h-[3rem] lg:min-h-[4rem] pr-8">
+        <div className="mb-12 md:mb-28 lg:mb-32 min-h-[3rem] lg:min-h-[4rem] pr-8">
           <HeroMainHeading
             background="dark"
             typewriter
