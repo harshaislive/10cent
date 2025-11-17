@@ -86,7 +86,7 @@ export default function WebinarSection() {
       <div className="container-max relative z-10">
         <div className="text-center mb-12 pt-12 pb-12">
           <h2 className="text-4xl md:text-6xl font-arizona font-light mb-4 text-text-primary">
-            60-Minute Strategic Briefing
+            An Evening Conversation About Wilderness
           </h2>
           <p className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed mb-6 font-arizona">
             Discover how dedicating just 10% of your time to wilderness immersion can completely transform the remaining 90% of your life—reawakening senses, restoring clarity, and reconnecting you to your truest self.
@@ -131,18 +131,19 @@ export default function WebinarSection() {
         </div>
 
         {/* Two Column Layout: Not For vs For - Moved Closer to Top */}
-          <div className="max-w-4xl mx-auto mb-6">
-            <div className="grid md:grid-cols-2 gap-4">
+          <div className="max-w-5xl mx-auto mb-12">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+
             {/* Who This Is NOT For */}
             <div>
-              <h3 className="text-2xl font-arizona font-medium mb-4 text-text-primary text-center">
-                This Conversation Is <span className="text-brand-red">Not</span> For
-              </h3>
-              <p className="text-text-secondary mb-4 font-arizona text-sm">
-                We're intentionally selective. The 10cent Club only works for those who understand wilderness isn't a product to consume, but a relationship to build.
-              </p>
+              <div className="mb-6">
+                <h3 className="text-3xl md:text-4xl font-arizona font-light mb-2 text-text-primary">
+                  This Conversation Is <span className="text-brand-red">Not</span> For
+                </h3>
+                <div className="w-16 h-0.5 bg-brand-red/20 mt-3"></div>
+              </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
                   {
                     title: "The Quick Fix Seeker",
@@ -158,6 +159,11 @@ export default function WebinarSection() {
                     title: "The Luxury Collector",
                     description: "You're looking for another trophy to add to your collection. Wilderness stays are meant to be Instagram moments.",
                     warning: "You'll be disappointed by our emphasis on substance."
+                  },
+                  {
+                    title: "The Social Climber",
+                    description: "You're here to network with 'important people'. The connections you seek are transactional, not transformational.",
+                    warning: "We value authentic community over strategic alliances."
                   }
                 ].map((notFor, index) => (
                   <div key={index} className="border-l-3 border-brand-red/50 bg-red-50/30 rounded-r-lg p-4">
@@ -180,9 +186,6 @@ export default function WebinarSection() {
               <h3 className="text-2xl font-arizona font-medium mb-4 text-text-primary text-center">
                 However, If You're...
               </h3>
-              <p className="text-text-secondary mb-4 font-arizona text-sm">
-                Ready to question whether your success is serving your life, not the other way around. You understand that true wealth isn't measured in spreadsheets, but in the depth of your connection to the wild.
-              </p>
 
               <div className="space-y-3">
                 {[

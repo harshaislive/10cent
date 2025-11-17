@@ -4,9 +4,13 @@ export default function MicroFooter() {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div>
-            <h3 className="font-serif text-xl mb-4 text-stone-900">
-              Beforest Club
-            </h3>
+            <div className="mb-4">
+              <img
+                src="/23-Beforest-Black-with-Tagline.png"
+                alt="Beforest Club"
+                className="h-8 w-auto"
+              />
+            </div>
             <p className="text-sm text-stone-600 mb-4">
               Return to yourself. 30 nights at a time.
             </p>
@@ -20,7 +24,6 @@ export default function MicroFooter() {
             <ul className="space-y-2 text-sm text-stone-600">
               <li>10% of your year</li>
               <li>30 nights in wilderness</li>
-              <li>150 founding members</li>
               <li>No ownership, just access</li>
             </ul>
           </div>
