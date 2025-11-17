@@ -1,13 +1,20 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { ReactNode } from 'react'
+
+interface TypeformNativeButtonProps {
+  className?: string
+  children: ReactNode
+  formId?: string
+}
 
 export default function TypeformNativeButton({
   className = '',
   children,
   formId = '01KA5X0AM1KH7WRX1ZB994N2TG'
-}) {
-  const buttonRef = useRef(null)
+}: TypeformNativeButtonProps) {
+  const buttonRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Load Typeform script if not already loaded

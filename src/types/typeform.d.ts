@@ -28,8 +28,8 @@ interface TypeformCreatePopupButtonOptions {
 }
 
 interface TypeformGlobal {
-  makePopup(url: string, options?: TypeformMakeOptions): TypeformPopup
-  createPopupButton(element: HTMLElement, options: TypeformCreatePopupButtonOptions): void
+  makePopup?: (url: string, options?: TypeformMakeOptions) => TypeformPopup
+  createPopupButton?: (element: HTMLElement, options: TypeformCreatePopupButtonOptions) => void
   [key: string]: any
 }
 
