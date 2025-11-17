@@ -53,23 +53,36 @@ export default function WildernessExperienceSection() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isTextVisible, setIsTextVisible] = useState(true)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
     setIsLoaded(true)
 
     // Auto-slide every 5 seconds
     const interval = setInterval(() => {
-      setIsTextVisible(false)
-
-      // Change background after fade out
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % wildernessPoints.length)
-        setIsTextVisible(true)
-      }, 300)
+      if (!isTransitioning) {
+        handleSlideChange((prevIndex) => (prevIndex + 1) % wildernessPoints.length)
+      }
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isTransitioning])
+
+  const handleSlideChange = (newIndexOrFunction: number | ((prevIndex: number) => number)) => {
+    if (isTransitioning) return
+    
+    setIsTransitioning(true)
+    setIsTextVisible(false)
+
+    // Change background after fade out
+    setTimeout(() => {
+      setCurrentIndex(newIndexOrFunction)
+      setIsTextVisible(true)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 300) // Wait for text fade in to complete
+    }, 300)
+  }
 
   const currentPoint = wildernessPoints[currentIndex]
 
@@ -120,18 +133,13 @@ export default function WildernessExperienceSection() {
             {wildernessPoints.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  setIsTextVisible(false)
-                  setTimeout(() => {
-                    setCurrentIndex(index)
-                    setIsTextVisible(true)
-                  }, 300)
-                }}
+                onClick={() => handleSlideChange(index)}
+                disabled={isTransitioning}
                 className={`transition-all duration-300 ${
                   index === currentIndex
                     ? 'w-12 h-2 bg-sustainable-green'
                     : 'w-2 h-2 bg-warm-white/40 hover:bg-warm-white/60'
-                }`}
+                } ${isTransitioning ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
@@ -140,16 +148,15 @@ export default function WildernessExperienceSection() {
           {/* Manual Navigation */}
           <div className="flex justify-center items-center gap-8 mt-12">
             <button
-              onClick={() => {
-                setIsTextVisible(false)
-                setTimeout(() => {
-                  setCurrentIndex((prevIndex) =>
-                    prevIndex === 0 ? wildernessPoints.length - 1 : prevIndex - 1
-                  )
-                  setIsTextVisible(true)
-                }, 300)
-              }}
-              className="p-3 rounded-full border border-warm-white/30 text-warm-white/70 hover:text-warm-white hover:border-warm-white/50 transition-all duration-300"
+              onClick={() => handleSlideChange((prevIndex) =>
+                prevIndex === 0 ? wildernessPoints.length - 1 : prevIndex - 1
+              )}
+              disabled={isTransitioning}
+              className={`p-3 rounded-full border transition-all duration-300 ${
+                isTransitioning
+                  ? 'border-warm-white/20 text-warm-white/40 cursor-not-allowed'
+                  : 'border-warm-white/30 text-warm-white/70 hover:text-warm-white hover:border-warm-white/50'
+              }`}
               aria-label="Previous slide"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -162,14 +169,13 @@ export default function WildernessExperienceSection() {
             </div>
 
             <button
-              onClick={() => {
-                setIsTextVisible(false)
-                setTimeout(() => {
-                  setCurrentIndex((prevIndex) => (prevIndex + 1) % wildernessPoints.length)
-                  setIsTextVisible(true)
-                }, 300)
-              }}
-              className="p-3 rounded-full border border-warm-white/30 text-warm-white/70 hover:text-warm-white hover:border-warm-white/50 transition-all duration-300"
+              onClick={() => handleSlideChange((prevIndex) => (prevIndex + 1) % wildernessPoints.length)}
+              disabled={isTransitioning}
+              className={`p-3 rounded-full border transition-all duration-300 ${
+                isTransitioning
+                  ? 'border-warm-white/20 text-warm-white/40 cursor-not-allowed'
+                  : 'border-warm-white/30 text-warm-white/70 hover:text-warm-white hover:border-warm-white/50'
+              }`}
               aria-label="Next slide"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

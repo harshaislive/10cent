@@ -27,8 +27,7 @@ export default function MicroFooter() {
               <li>No ownership, just access</li>
             </ul>
           </div>
-
-          </div>
+        </div>
 
         <div className="border-t border-stone-300 pt-8">
           <div className="text-center">
