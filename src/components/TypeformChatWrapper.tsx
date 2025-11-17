@@ -1,7 +1,6 @@
 'use client'
 
 import { PopupButton } from '@typeform/embed-react'
-import TypeformChat from './TypeformChat'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 
 export default function TypeformChatWrapper() {
@@ -21,13 +20,7 @@ export default function TypeformChatWrapper() {
         </PopupButton>
       </div>
 
-      {/* Desktop: Floating chat bubble */}
-      <div className="hidden md:block">
-        <TypeformChat
-          tooltip="Questions about 10cent Club? Chat with us!"
-          onSubmit={() => console.log('Chat form submitted')}
-        />
-      </div>
+      {/* Desktop: Floating chat bubble has been removed as per your request. */}
     </>
   )
 }

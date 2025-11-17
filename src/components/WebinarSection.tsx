@@ -328,7 +328,7 @@ export default function WebinarSection() {
 
       {/* Floating CTA */}
       {showFloatingCTA && (
-        <div className="fixed bottom-8 right-8 z-50 max-w-xs animate-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-8 right-8 z-50 max-w-xs animate-in slide-in-from-bottom-5 duration-300 hidden md:block">
           <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 backdrop-blur-sm bg-white/95">
             <h4 className="text-lg font-arizona font-medium mb-3 text-text-primary">
               I'd like to explore 10%, sign me up to the webinar

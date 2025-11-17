@@ -28,7 +28,7 @@ export default function HeroSection() {
       </div>
 
       {/* Content Layer */}
-      <div className="relative z-10 flex min-h-screen items-center">
+      <div className="relative z-10 flex min-h-[80vh] md:min-h-screen items-center">
         <div className="container-max px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
 

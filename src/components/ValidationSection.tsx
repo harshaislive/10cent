@@ -36,10 +36,10 @@ export default function ValidationSection() {
       <div className="container-max relative z-10">
         <div className="text-center mb-12 pt-8 pb-8">
           <h2 className="text-4xl md:text-6xl font-arizona font-light mb-4 text-text-primary">
-            Not Results but Experiences
+            Real Transformations, Not Just Results
           </h2>
           <h3 className="text-2xl md:text-3xl font-arizona font-medium mb-6 text-brand-red">
-            Backed By Real Authentic Experiences
+            Hear Their Stories from the Wilderness
           </h3>
         </div>
 
@@ -58,7 +58,7 @@ export default function ValidationSection() {
                 style={{ animationDelay: `${index * 0.3}s` }}
               >
                 {/* Left Quote Mark */}
-                <div className="absolute -top-4 -left-4 text-8xl md:text-9xl font-arizona font-light text-brand-red/20">
+                <div className="absolute -top-4 left-0 text-8xl md:text-9xl font-arizona font-light text-brand-red/20">
                   "
                 </div>
 
