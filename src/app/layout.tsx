@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     siteName: 'Beforest 10cent Club',
     images: [
       {
+        url: '/PBR_0209.jpg',
+        width: 1200,
+        height: 800,
+        alt: 'Beforest 10cent Club Wilderness Integration',
+      },
+      {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
@@ -31,6 +37,14 @@ export const metadata: Metadata = {
     ],
     locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Beforest 10cent Club | Strategic Wilderness Integration',
+    description: '10% of your life spent with nature restores 100% of your nature.',
+    images: ['/PBR_0209.jpg'],
+    creator: '@beforestclub',
+    site: '@beforestclub',
   },
 }
 
