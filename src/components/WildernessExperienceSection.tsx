@@ -101,7 +101,7 @@ export default function WildernessExperienceSection() {
       </div>
 
       {/* Content Container */}
-      <div className="container-max relative z-10 h-screen flex items-center">
+      <div className="container-max px-4 relative z-10 h-screen flex items-center">
         <div className="max-w-4xl mx-auto text-center">
 
           {/* Section Title */}

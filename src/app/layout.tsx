@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
+import TypeformChatWrapper from '@/components/TypeformChatWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="font-arizona">
         {children}
+        <TypeformChatWrapper />
         {TYPEFORM_CONFIG.ENABLED && (
           <>
             <script

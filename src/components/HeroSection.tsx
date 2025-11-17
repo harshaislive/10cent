@@ -29,11 +29,11 @@ export default function HeroSection() {
 
       {/* Content Layer */}
       <div className="relative z-10 flex min-h-screen items-center">
-        <div className="container-max">
+        <div className="container-max px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
 
             {/* Left Panel - Subject Space */}
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-start md:justify-center">
               <div className="w-72 h-72 lg:w-96 lg:h-96 flex items-center justify-center">
                 {/* Placeholder for centered subject/person */}
               </div>
