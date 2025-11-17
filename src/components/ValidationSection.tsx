@@ -27,29 +27,7 @@ export default function ValidationSection() {
     }
   ]
 
-  const metrics = [
-    {
-      value: "1000+",
-      label: "Acres Under Management",
-      description: "Across multiple wilderness locations in India"
-    },
-    {
-      value: "6",
-      label: "Living Collectives",
-      description: "Each with its unique ecosystem and community"
-    },
-    {
-      value: "8",
-      label: "Years Proven System",
-      description: "Of continuous refinement and optimization"
-    },
-    {
-      value: "30",
-      label: "Nights/Year",
-      description: "Across India's Wildest Rewilded Landscapes"
-    }
-  ]
-
+  
   return (
     <section id="validation" className="section-padding relative overflow-hidden">
       
@@ -59,47 +37,11 @@ export default function ValidationSection() {
             Not Results but Experiences
           </h2>
           <h3 className="text-2xl md:text-3xl font-arizona font-medium mb-6 text-brand-red">
-            This Method Is Backed By Real Authentic Experiences
+            Backed By Real Authentic Experiences
           </h3>
-          <p className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed font-arizona">
-            Don't just take our word for it. The numbers—and the people—tell the real story.
-          </p>
         </div>
 
-        <div className="bg-warm-white">
-          {/* Key Metrics - Modern Grid Layout */}
-          <div className="max-w-6xl mx-auto mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {metrics.map((metric, index) => (
-              <div
-                key={index}
-                className={`relative bg-white p-8 rounded-2xl border-2 border-gray-100 hover:shadow-xl transition-all duration-300 animate-slide-reveal`}
-                style={{ animationDelay: `${index * 0.15}s` }}
-              >
-                {/* Decorative corner element */}
-                <div className={`absolute top-0 right-0 w-20 h-20 ${index % 2 === 0 ? 'bg-brand-red' : 'bg-sustainable-green'} opacity-5 rounded-bl-2xl`} />
-                
-                <div className="relative z-10">
-                  {/* Large number */}
-                  <div className={`text-5xl md:text-6xl font-arizona font-light mb-4 ${index % 2 === 0 ? 'text-brand-red' : 'text-sustainable-green'}`}>
-                    {metric.value}
-                  </div>
-                  
-                  {/* Label */}
-                  <div className="text-xl font-arizona font-medium mb-3 text-text-primary">
-                    {metric.label}
-                  </div>
-                  
-                  {/* Description */}
-                  <p className="text-base text-text-secondary font-light leading-relaxed font-arizona">
-                    {metric.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        
         {/* Testimonials - Editorial Format */}
         <div className="max-w-4xl mx-auto mb-12">
           <h3 className="text-3xl md:text-4xl font-arizona font-light mb-8 text-center text-text-primary">
@@ -140,7 +82,6 @@ export default function ValidationSection() {
                 </div>
               </div>
             ))}
-          </div>
           </div>
         </div>
       </div>

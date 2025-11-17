@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import TypewriterHeadline from './TypewriterHeadline'
+import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -65,7 +66,7 @@ export default function HeroSection() {
             <div className={`text-sm text-white/80 tracking-widest uppercase ${
               isLoaded ? 'animate-in' : 'opacity-0'
             }`}>
-              Saturday, 6:00 PM IST, 15 Nov 2025
+              {getNextSaturdayWithTime()}
             </div>
           </div>
         </div>

@@ -43,6 +43,29 @@ export default function MemberProfileSection() {
     }
   ]
 
+  const notForProfiles = [
+    {
+      icon: "📱",
+      title: "The one who checks their phone every 5 minutes.",
+      description: "You're still seeking validation from the digital world. This requires disconnection."
+    },
+    {
+      icon: "⏰",
+      title: "The one who wants quick results.",
+      description: "Wilderness transformation is slow, deliberate, and can't be rushed or scheduled."
+    },
+    {
+      icon: "🏨",
+      title: "The one who needs 5-star accommodations.",
+      description: "Comfort and luxury are priorities. We sleep under stars, not in suites."
+    },
+    {
+      icon: "🎯",
+      title: "The one who needs a detailed itinerary.",
+      description: "You want every minute planned. Wilderness follows its own rhythm, not your calendar."
+    }
+  ]
+
   return (
     <section id="member-profile-section" className="py-20 px-6 md:px-12 bg-white">
       <div className="max-w-6xl mx-auto">
@@ -78,13 +101,43 @@ export default function MemberProfileSection() {
             ))}
           </div>
 
-          <div className="text-center bg-amber-50 rounded-2xl p-8 border border-amber-200">
+          <div className="text-center bg-amber-50 rounded-2xl p-8 border border-amber-200 mb-16">
             <p className="text-2xl font-serif text-stone-900 italic mb-4">
               If that sounds like you, we built this for you.
             </p>
             <div className="text-sm font-serif text-stone-600">
               The wilderness has been waiting for you to return.
             </div>
+          </div>
+
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-stone-900 mb-8">
+              This is not for you.
+            </h2>
+            <div className="w-32 h-px bg-red-600 mx-auto mb-8" />
+            <p className="text-lg font-serif text-stone-600 max-w-2xl mx-auto">
+              If any of these describe you, this might not be the right fit.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {notForProfiles.map((profile, index) => (
+              <div
+                key={index}
+                className={`bg-red-50 rounded-xl p-8 border border-red-200 hover:shadow-lg transition-all duration-300 ${
+                  isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+                style={{ transitionDelay: `${(index + 3) * 200}ms` }}
+              >
+                <div className="text-4xl mb-6">{profile.icon}</div>
+                <h3 className="text-lg font-serif font-medium text-stone-900 mb-4">
+                  {profile.title}
+                </h3>
+                <p className="text-stone-600 leading-relaxed">
+                  {profile.description}
+                </p>
+              </div>
+            ))}
           </div>
 
         </div>

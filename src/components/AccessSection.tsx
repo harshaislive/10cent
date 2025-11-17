@@ -2,6 +2,7 @@
 
 import TypeformButton from './TypeformButton'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
+import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 export default function AccessSection() {
 
@@ -49,10 +50,6 @@ export default function AccessSection() {
             <div className="space-y-6">
               <p className="text-white/90 font-arizona text-lg leading-relaxed">
                 In a world that never stops, there's a place where time stands still.
-                <br />
-                <span className="text-sustainable-green text-xl">Your soul remembers this home.</span>
-                <br />
-                <span className="text-white/70">Only 150 souls will hear the wilderness call this season.</span>
               </p>
 
               <TypeformButton
@@ -87,7 +84,7 @@ export default function AccessSection() {
                   </div>
                   <div>
                     <div className="font-medium font-arizona">Date & Time</div>
-                    <div className="text-sm opacity-80 font-arizona">Saturday, 6:00 PM IST, 15 Nov 2025</div>
+                    <div className="text-sm opacity-80 font-arizona">{getNextSaturdayWithTime()}</div>
                   </div>
                 </div>
 
