@@ -21,7 +21,14 @@ export default function HeroSection() {
           src="/PBR_0209.jpg"
           alt="Wilderness landscape"
           fill
-          className="object-cover"
+          className="hidden md:block object-cover"
+          priority
+        />
+        <Image
+          src="/potrait_hero.png"
+          alt="Hero portrait"
+          fill
+          className="md:hidden object-cover"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />

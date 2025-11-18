@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Default palette (current experience) */
+  --color-brand-red: 158 52 48;
+  --color-brand-dark: 134 49 43;
+  --color-sustainable-green: 184 220 153;
+  --color-sustainable-dark: 122 154 100;
+  --color-warm-white: 245 245 240;
+  --color-warm-light: 250 250 250;
+  --color-text-primary: 47 72 53;
+  --color-text-secondary: 122 106 90;
+}
+
+.theme-v2 {
+  /* Alternate palette inspired by Beforest brand guide */
+  --color-brand-red: 0 33 64; /* Deep Blue */
+  --color-brand-dark: 0 56 94; /* Dark Blue */
+  --color-sustainable-green: 255 192 131; /* Warm Yellow */
+  --color-sustainable-dark: 255 119 74; /* Coral Orange */
+  --color-warm-white: 253 251 247; /* Off White */
+  --color-warm-light: 231 228 223; /* Soft Gray */
+  --color-text-primary: 52 46 41; /* Dark Earth */
+  --color-text-secondary: 65 92 67; /* Olive Green */
+}
+
 /* Arizona Flare Font System */
 @font-face {
   font-family: 'ABC Arizona Flare';

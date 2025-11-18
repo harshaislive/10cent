@@ -1,3 +1,5 @@
+const withOpacityValue = (variable) => `rgb(var(${variable}) / <alpha-value>)`
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -9,20 +11,20 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          red: '#9E3430',
-          dark: '#86312b',
+          red: withOpacityValue('--color-brand-red'),
+          dark: withOpacityValue('--color-brand-dark'),
         },
         sustainable: {
-          green: '#b8dc99',
-          dark: '#7a9a64',
+          green: withOpacityValue('--color-sustainable-green'),
+          dark: withOpacityValue('--color-sustainable-dark'),
         },
         warm: {
-          white: '#f5f5f0',
-          light: '#fafafa',
+          white: withOpacityValue('--color-warm-white'),
+          light: withOpacityValue('--color-warm-light'),
         },
         text: {
-          primary: '#2f4835',
-          secondary: '#7a6a5a',
+          primary: withOpacityValue('--color-text-primary'),
+          secondary: withOpacityValue('--color-text-secondary'),
         }
       },
       fontFamily: {
