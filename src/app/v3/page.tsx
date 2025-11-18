@@ -8,10 +8,14 @@ import ValidationSection from '@/components/ValidationSection'
 import AccessSection from '@/components/AccessSection'
 import MicroFooter from '@/components/MicroFooter'
 
-export default function HomeV2() {
+export default function HomeV3() {
   return (
-    <div className="v2-page theme-v2 min-h-screen bg-warm-white text-text-primary">
-      <main className="relative">
+    <div className="v3-page theme-v3 min-h-screen bg-warm-white text-text-primary">
+      <div className="v3-page__frame" aria-hidden="true" />
+      <div className="v3-page__corner v3-page__corner--tl" aria-hidden="true" />
+      <div className="v3-page__corner v3-page__corner--br" aria-hidden="true" />
+
+      <main className="relative z-10">
         <ScrollProgress />
 
         <HeroSection />

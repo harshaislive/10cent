@@ -26,6 +26,100 @@
   --color-text-secondary: 65 92 67; /* Olive Green */
 }
 
+.theme-v3 {
+  /* Editorial forest palette */
+  --color-brand-red: 134 49 43; /* Rich Red */
+  --color-brand-dark: 52 46 41; /* Dark Earth */
+  --color-sustainable-green: 65 92 67; /* Olive Green */
+  --color-sustainable-dark: 52 71 54; /* Forest Green */
+  --color-warm-white: 231 228 223; /* Soft Gray */
+  --color-warm-light: 253 251 247; /* Off White */
+  --color-text-primary: 0 33 64; /* Deep Blue */
+  --color-text-secondary: 81 81 77; /* Charcoal Gray */
+}
+
+.v2-page {
+  position: relative;
+  overflow: hidden;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 192, 131, 0.15), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(255, 119, 74, 0.18), transparent 50%),
+    linear-gradient(180deg, rgba(0, 33, 64, 0.08), rgba(0, 33, 64, 0));
+}
+
+.v2-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 65% 30%, rgba(0, 56, 94, 0.15), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.v3-page {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 25% 20%, rgba(65, 92, 67, 0.18), transparent 45%),
+              radial-gradient(circle at 70% 10%, rgba(255, 192, 131, 0.18), transparent 55%),
+              linear-gradient(180deg, rgba(0, 33, 64, 0.12), rgba(0, 33, 64, 0));
+}
+
+.v3-page::before,
+.v3-page::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.v3-page::before {
+  inset: 10% 15% auto 15%;
+  height: 40rem;
+  background: radial-gradient(circle, rgba(255, 119, 74, 0.25), transparent 60%);
+  filter: blur(20px);
+}
+
+.v3-page::after {
+  inset: auto 10% 5% 10%;
+  height: 30rem;
+  background: radial-gradient(circle, rgba(0, 33, 64, 0.2), transparent 70%);
+  filter: blur(30px);
+}
+
+.v3-page__frame {
+  position: absolute;
+  inset: 3rem 1.5rem;
+  border: 1px solid rgba(0, 33, 64, 0.18);
+  border-radius: 2rem;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.v3-page__corner {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(255, 192, 131, 0.5);
+  border-radius: 0 3rem 0 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.v3-page__corner--tl {
+  top: 1.5rem;
+  left: 1.5rem;
+  border-bottom: none;
+  border-right: none;
+}
+
+.v3-page__corner--br {
+  bottom: 1.5rem;
+  right: 1.5rem;
+  border-top: none;
+  border-left: none;
+  transform: rotate(180deg);
+}
+
 /* Arizona Flare Font System */
 @font-face {
   font-family: 'ABC Arizona Flare';
@@ -75,6 +169,23 @@
 
 /* Custom Components */
 @layer components {
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0.6) 100%);
+    mix-blend-mode: multiply;
+  }
+
+  .theme-v2 .hero-overlay {
+    background: linear-gradient(120deg, rgba(0, 33, 64, 0.65) 0%, rgba(0, 33, 64, 0.25) 35%, rgba(255, 192, 131, 0.3) 65%, rgba(0, 0, 0, 0.4) 100%);
+    mix-blend-mode: soft-light;
+    backdrop-filter: brightness(1.15) saturate(1.05);
+  }
+
+  .theme-v3 .hero-overlay {
+    background: linear-gradient(135deg, rgba(0, 33, 64, 0.75) 0%, rgba(52, 71, 54, 0.55) 40%, rgba(255, 192, 131, 0.35) 80%);
+    mix-blend-mode: hard-light;
+    backdrop-filter: contrast(1.05) saturate(1.1);
+  }
+
   .btn-primary {
     @apply bg-brand-red text-white px-8 py-4 font-arizona font-medium text-sm tracking-wide uppercase transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5;
   }

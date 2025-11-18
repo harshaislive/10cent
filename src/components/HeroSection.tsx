@@ -31,7 +31,7 @@ export default function HeroSection() {
           className="md:hidden object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+        <div className="hero-overlay absolute inset-0" />
       </div>
 
       {/* Content Layer */}
