@@ -8,7 +8,7 @@ export default function MicroFooter() {
               <img
                 src="/10-Club-01.png"
                 alt="Beforest 10% Club"
-                className="h-8 w-auto"
+                className="h-10 md:h-14 w-auto"
               />
             </div>
             <p className="text-sm text-stone-600 mb-4">
