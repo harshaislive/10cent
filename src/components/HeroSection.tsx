@@ -152,7 +152,7 @@ function HeroOverlayElements() {
       {/* Logo */}
       <div className="absolute top-8 right-8 z-20">
         <img
-          src="/10% Club-01.png"
+          src="/10-Club-01.png"
           alt="Beforest 10% Club"
           className="h-8 md:h-10 w-auto invert"
         />
