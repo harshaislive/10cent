@@ -67,7 +67,7 @@ export default function HeroSection() {
 // Extracted text content component
 function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
   return (
-    <div className="relative text-right max-w-xl lg:max-w-2xl flex flex-col">
+    <div className="relative text-right max-w-xl lg:max-w-2xl flex flex-col -mt-10 md:mt-0">
       {/* Right edge line anchor */}
       <div className="absolute right-0 top-0 bottom-0 w-px bg-white/20" />
 
