@@ -6,7 +6,7 @@ export default function MicroFooter() {
           <div>
             <div className="mb-4">
               <img
-                src="/10% Club-02.png"
+                src="/10-Club-01.png"
                 alt="Beforest 10% Club"
                 className="h-8 w-auto"
               />

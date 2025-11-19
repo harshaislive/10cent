@@ -154,7 +154,7 @@ function HeroOverlayElements() {
         <img
           src="/10-Club-01.png"
           alt="Beforest 10% Club"
-          className="h-8 md:h-10 w-auto invert"
+          className="h-10 md:h-14 w-auto invert drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
         />
       </div>
 
