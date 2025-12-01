@@ -8,7 +8,7 @@ interface WildernessExperienceSolution {
   title: string
   subtitle: string
   description: string
-  experiences: string[]
+  experiences?: string[]
   visual: {
     quadrants: number[]
   }
@@ -142,7 +142,7 @@ export default function SolutionSection() {
                       </p>
 
                       {/* Experiences List */}
-                      {'experiences' in solution && (
+                      {'experiences' in solution && solution.experiences && (
                         <div className="space-y-3 mb-6">
                           {solution.experiences.map((experienceItem, index) => (
                             <div key={index} className="group">
