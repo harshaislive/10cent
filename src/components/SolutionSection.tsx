@@ -183,21 +183,23 @@ export default function SolutionSection() {
                         {'quadrants' in solution.visual && (
                           <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
                             <div className="text-center">
-                              <div className="grid grid-cols-2 gap-8 mb-8">
-                                {solution.visual.quadrants.map((value, index) => (
-                                  <div key={index} className="relative">
-                                    <div className="text-4xl md:text-5xl font-light text-brand-red mb-2">
-                                      {value}%
-                                    </div>
-                                    <div className="text-sm text-text-secondary font-arizona">
-                                      Improved wellness
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                              <p className="text-lg text-text-secondary font-arizona">
-                                Measured improvements in wilderness participants
-                              </p>
+                              <div className="space-y-8">
+                                <p className="text-xl md:text-2xl text-text-secondary font-arizona leading-relaxed">
+                                  The wilderness doesn't change you.<br/>
+                                  It reminds you who you've always been.
+                                </p>
+                                <div className="space-y-3">
+                                  <p className="text-base text-text-primary font-arizona leading-relaxed">
+                                    In the quiet spaces between thoughts,<br/>
+                                  </p>
+                                  <p className="text-base text-text-primary font-arizona leading-relaxed">
+                                    In the ancient rhythm of nature,<br/>
+                                  </p>
+                                  <p className="text-base text-text-primary font-arizona leading-relaxed">
+                                    You find the compass that was never lost.
+                                  </p>
+                                </div>
+                                </div>
                             </div>
                           </div>
                         )}
