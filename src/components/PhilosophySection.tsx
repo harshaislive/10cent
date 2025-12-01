@@ -37,7 +37,7 @@ export default function PhilosophySection() {
           <div className="bg-white rounded-2xl p-12 shadow-lg">
             <div className="text-center mb-8">
               <div className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-amber-600 mb-6">
-                10% of your year. 30 nights. ₹15L
+                10% of your year. 30 nights. ₹17.65L
               </div>
               <div className="w-24 h-px bg-amber-600 mx-auto mb-6" />
               <p className="text-xl md:text-2xl font-serif text-stone-700 leading-relaxed">
@@ -55,7 +55,7 @@ export default function PhilosophySection() {
                 <p className="text-sm font-serif text-stone-600">nights across wilderness landscapes</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-serif font-bold text-stone-900 mb-3">₹15L</div>
+                <div className="text-3xl font-serif font-bold text-stone-900 mb-3">₹17.65L</div>
                 <p className="text-sm font-serif text-stone-600">for access, not ownership</p>
               </div>
             </div>

@@ -55,84 +55,18 @@ export default function ProblemSection() {
         <div className="bg-warm-white">
             
             {/* Main editorial layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-              {/* Left column - Main statement */}
-              <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 gap-8 items-start">
+              {/* Main statement */}
+              <div>
                 <div className="relative">
                   {/* Decorative circle element removed */}
 
                   {/* Main quote */}
                   <blockquote className="relative z-10 mb-8">
                     <p className="text-3xl md:text-4xl lg:text-5xl font-arizona font-light leading-tight text-text-primary mb-4">
-                      You're achieving success but losing connection with yourself in the process.
-                    </p>
-                    <p className="text-xl md:text-2xl font-arizona font-light text-brand-red/80">
-                      The numbers don't lie.
+                      You're building a successful life, and it's time to reconnect with what matters most.
                     </p>
                   </blockquote>
-
-                  {/* Nature connection pointers */}
-                  <div className="space-y-4 relative z-10">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-sustainable-green rounded-full mt-3 flex-shrink-0"></div>
-                      <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                        Nature cuts sensory input by <span className="font-medium text-text-primary">50-90%</span>, giving your brain the rest it craves
-                      </p>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-sustainable-green rounded-full mt-3 flex-shrink-0"></div>
-                      <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                        Fresh air and regulated oxygen flow naturally <span className="font-medium text-text-primary">reduces stress and triggers dopamine</span>
-                      </p>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-sustainable-green rounded-full mt-3 flex-shrink-0"></div>
-                      <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                        Reflection time in nature enables <span className="font-medium text-text-primary">emotional regulation and positive self-affirmation</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right column - Statistics */}
-              <div className="lg:col-span-5 space-y-6">
-                {/* Statistic 1 */}
-                <div className="relative pl-8 border-l-2 border-brand-red/30">
-                  <div className="absolute -left-2 top-0 w-4 h-4 bg-brand-red rounded-full"></div>
-                  <div className="text-6xl md:text-7xl font-arizona font-light text-brand-red mb-2">
-                    72%
-                  </div>
-                  <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                    of wellness initiatives fail within 6 months
-                  </p>
-                </div>
-                
-                {/* Statistic 2 */}
-                <div className="relative pl-8 border-l-2 border-sustainable-green/30">
-                  <div className="absolute -left-2 top-0 w-4 h-4 bg-sustainable-green rounded-full"></div>
-                  <div className="text-6xl md:text-7xl font-arizona font-light text-sustainable-green mb-2">
-                    84%
-                  </div>
-                  <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                    of urban professionals affected by nature deficit
-                  </p>
-                </div>
-                
-                {/* Statistic 3 */}
-                <div className="relative pl-8 border-l-2 border-orange-500/30">
-                  <div className="absolute -left-2 top-0 w-4 h-4 bg-orange-500 rounded-full"></div>
-                  <div className="text-6xl md:text-7xl font-arizona font-light text-orange-500 mb-2">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="inline-block w-12 h-12 md:w-14 md:h-14" style={{ marginTop: '-0.2em' }}>
-                      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M21 3v5h-5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M3 21v-5h5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <p className="text-lg font-arizona font-light text-text-secondary leading-relaxed">
-                    quick fixes create long-term dependency
-                  </p>
                 </div>
               </div>
             </div>

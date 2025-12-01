@@ -44,7 +44,7 @@ export default function ApplySection() {
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 border border-white/20 mb-12">
             <h3 className="text-lg font-serif text-amber-400 mb-6">The Philosophy in Numbers</h3>
             <div className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
-              10% of your year. 30 nights. ₹15L
+              10% of your year. 30 nights. ₹17.65L
             </div>
             <p className="text-stone-300 mb-8">
               No ownership. No baggage. Just access—to what truly matters.

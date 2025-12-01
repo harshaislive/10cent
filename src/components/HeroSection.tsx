@@ -8,6 +8,7 @@ import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [currentBgIndex, setCurrentBgIndex] = useState(0)
 
   useEffect(() => {
     setIsLoaded(true)
@@ -17,20 +18,32 @@ export default function HeroSection() {
     <section id="hero" className="relative min-h-screen overflow-hidden">
       {/* Background Layer */}
       <div className="absolute inset-0">
-        <Image
-          src="/PBR_0209.jpg"
-          alt="Wilderness landscape"
-          fill
-          className="hidden md:block object-cover"
-          priority
-        />
-        <Image
-          src="/potrait_hero.png"
-          alt="Hero portrait"
-          fill
-          className="md:hidden object-cover"
-          priority
-        />
+        {headlineVariations.map((variation, index) => (
+          <div
+            key={variation.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentBgIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            {/* Desktop Image */}
+            <Image
+              src={variation.imageDesktop}
+              alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
+              fill
+              className="hidden md:block object-cover"
+              priority={index === 0}
+            />
+            {/* Mobile Image */}
+            <Image
+              src={variation.imageMobile}
+              alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
+              fill
+              className="md:hidden object-cover"
+              priority={index === 0}
+            />
+          </div>
+        ))}
+        
         <div className="hero-overlay absolute inset-0" />
       </div>
 
@@ -48,7 +61,7 @@ export default function HeroSection() {
 
             {/* Right Panel - Text Content */}
             <div className="text-right space-y-8">
-              <HeroTextContent isLoaded={isLoaded} />
+              <HeroTextContent isLoaded={isLoaded} onHeadingChange={setCurrentBgIndex} />
             </div>
 
           </div>
@@ -65,7 +78,7 @@ export default function HeroSection() {
 }
 
 // Extracted text content component
-function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
+function HeroTextContent({ isLoaded, onHeadingChange }: { isLoaded: boolean; onHeadingChange: (index: number) => void }) {
   return (
     <div className="relative text-right max-w-xl lg:max-w-2xl flex flex-col -mt-10 md:mt-0">
       {/* Right edge line anchor */}
@@ -92,6 +105,7 @@ function HeroTextContent({ isLoaded }: { isLoaded: boolean }) {
             typewriter
             variations={headlineVariations}
             className="leading-tight"
+            onChange={onHeadingChange}
           />
         </div>
       </AnimatedWrapper>

@@ -34,7 +34,7 @@ export const PhilosophyCard: React.FC<PhilosophyCardProps> = ({
         </HeroSubHeading>
         <div className="text-center">
           <div className="text-4xl md:text-5xl font-serif font-bold text-brand-red mb-6">
-            10% of your year. 30 nights. ₹15L
+            10% of your year. 30 nights. ₹17.65L
           </div>
           <p className="text-lg font-serif text-text-primary italic">
             No ownership. No baggage. Just access—to what truly matters.

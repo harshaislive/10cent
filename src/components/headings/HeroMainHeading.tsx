@@ -9,6 +9,7 @@ export interface HeroMainHeadingProps extends Omit<BaseHeadingProps, 'as' | 'siz
   typewriter?: boolean
   variations?: TypewriterVariation[]
   children?: React.ReactNode
+  onChange?: (index: number) => void
 }
 
 export interface TypewriterVariation {
@@ -16,6 +17,7 @@ export interface TypewriterVariation {
   mainText: string | React.ReactNode
   subText?: string | React.ReactNode
   emphasis?: string | React.ReactNode
+  image?: string
 }
 
 export const HeroMainHeading: React.FC<HeroMainHeadingProps> = ({
@@ -24,6 +26,7 @@ export const HeroMainHeading: React.FC<HeroMainHeadingProps> = ({
   typewriter = false,
   variations,
   className = '',
+  onChange,
   ...props
 }) => {
   if (typewriter && variations) {
@@ -32,6 +35,7 @@ export const HeroMainHeading: React.FC<HeroMainHeadingProps> = ({
         variations={variations}
         background={background}
         className={className}
+        onChange={onChange}
       />
     )
   }
@@ -57,7 +61,8 @@ const TypewriterHeading: React.FC<{
   variations: TypewriterVariation[]
   background: 'dark' | 'light' | 'editorial'
   className?: string
-}> = ({ variations, background, className = '' }) => {
+  onChange?: (index: number) => void
+}> = ({ variations, background, className = '', onChange }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const [showContent, setShowContent] = React.useState(true)
 
@@ -66,13 +71,17 @@ const TypewriterHeading: React.FC<{
       setShowContent(false)
       
       setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % variations.length)
+        setCurrentIndex((prev) => {
+          const next = (prev + 1) % variations.length
+          onChange?.(next)
+          return next
+        })
         setShowContent(true)
       }, 300)
-    }, 4000)
+    }, 6000)
 
     return () => clearInterval(interval)
-  }, [variations.length])
+  }, [variations.length, onChange])
 
   const currentVariation = variations[currentIndex]
   const textColor = background === 'dark' ? 'text-white' : 'text-text-primary'

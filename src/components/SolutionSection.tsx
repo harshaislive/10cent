@@ -41,12 +41,6 @@ export default function SolutionSection() {
       title: "The Wilderness Experience",
       subtitle: "What Actually Happens in Nature",
       description: "Nature doesn't just heal—it transforms. The experience rewires your brain, restores your senses, and reconnects you to your true self.",
-      experiences: [
-        "Digital Detox: Your mind finds silence again",
-        "Sensory Awakening: Nature's symphony returns",
-        "Mental Clarity: Decisions become effortless",
-        "Emotional Reset: Joy flows naturally again"
-      ],
       visual: {
         quadrants: [85, 92, 78, 95]
       }
@@ -188,88 +182,22 @@ export default function SolutionSection() {
                         {/* Visual Elements */}
                         {'quadrants' in solution.visual && (
                           <div className="bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
-                            <div className="space-y-8">
-                              {/* Experience 1 */}
-                              <div className="flex items-center space-x-6">
-                                <div className="flex-shrink-0">
-                                  <div className="w-16 h-16 bg-brand-red/5 rounded-full flex items-center justify-center">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-brand-red">
-                                      <path d="M4 20h16M4 16l4-4 3 3 5-5 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
+                            <div className="text-center">
+                              <div className="grid grid-cols-2 gap-8 mb-8">
+                                {solution.visual.quadrants.map((value, index) => (
+                                  <div key={index} className="relative">
+                                    <div className="text-4xl md:text-5xl font-light text-brand-red mb-2">
+                                      {value}%
+                                    </div>
+                                    <div className="text-sm text-text-secondary font-arizona">
+                                      Improved wellness
+                                    </div>
                                   </div>
-                                </div>
-                                <div>
-                                  <h6 className="text-lg font-arizona font-medium text-text-primary mb-1">
-                                    Decisions become effortless
-                                  </h6>
-                                  <p className="text-sm text-text-secondary font-arizona">
-                                    The mental fog lifts, revealing clarity that was there all along.
-                                  </p>
-                                </div>
+                                ))}
                               </div>
-
-                              {/* Experience 2 */}
-                              <div className="flex items-center space-x-6">
-                                <div className="flex-shrink-0">
-                                  <div className="w-16 h-16 bg-sustainable-green/5 rounded-full flex items-center justify-center">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-sustainable-green">
-                                      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2"/>
-                                      <circle cx="12" cy="6" r="1" fill="currentColor" opacity="0.4"/>
-                                      <circle cx="6" cy="12" r="1" fill="currentColor" opacity="0.4"/>
-                                      <circle cx="18" cy="12" r="1" fill="currentColor" opacity="0.4"/>
-                                      <circle cx="12" cy="18" r="1" fill="currentColor" opacity="0.4"/>
-                                    </svg>
-                                  </div>
-                                </div>
-                                <div>
-                                  <h6 className="text-lg font-arizona font-medium text-text-primary mb-1">
-                                    Joy flows naturally again
-                                  </h6>
-                                  <p className="text-sm text-text-secondary font-arizona">
-                                    Spontaneous moments of delight return, unbidden and authentic.
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Experience 3 */}
-                              <div className="flex items-center space-x-6">
-                                <div className="flex-shrink-0">
-                                  <div className="w-16 h-16 bg-orange-500/5 rounded-full flex items-center justify-center">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-orange-500">
-                                      <path d="M12 2v4m0 4v4m0 4v4M2 12h4m4 0h4m4 0h4m4 0h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                                      <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.6"/>
-                                    </svg>
-                                  </div>
-                                </div>
-                                <div>
-                                  <h6 className="text-lg font-arizona font-medium text-text-primary mb-1">
-                                    Body remembers vitality
-                                  </h6>
-                                  <p className="text-sm text-text-secondary font-arizona">
-                                    Energy emerges naturally, not from stimulation but from restoration.
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Experience 4 */}
-                              <div className="flex items-center space-x-6">
-                                <div className="flex-shrink-0">
-                                  <div className="w-16 h-16 bg-brand-red/5 rounded-full flex items-center justify-center">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-brand-red">
-                                      <path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10S18 2 12 2z" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2"/>
-                                      <path d="M8 12s2-2 4-2 4 2 4 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                                    </svg>
-                                  </div>
-                                </div>
-                                <div>
-                                  <h6 className="text-lg font-arizona font-medium text-text-primary mb-1">
-                                    Ideas appear without effort
-                                  </h6>
-                                  <p className="text-sm text-text-secondary font-arizona">
-                                    Creative solutions surface in the quiet spaces between thoughts.
-                                  </p>
-                                </div>
-                              </div>
+                              <p className="text-lg text-text-secondary font-arizona">
+                                Measured improvements in wilderness participants
+                              </p>
                             </div>
                           </div>
                         )}
@@ -308,7 +236,7 @@ export default function SolutionSection() {
 
                     <div className="mb-8">
                       <div className="text-6xl md:text-7xl font-arizona font-light mb-4 text-sustainable-green">
-                        ₹15 <span className="text-4xl font-light">Lakhs</span>
+                        ₹17.65 <span className="text-4xl font-light">Lakhs</span>
                       </div>
                     </div>
 
