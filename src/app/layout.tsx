@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 import TypeformChatWrapper from '@/components/TypeformChatWrapper'
+import AnalyticsWrapper from '@/components/analytics/AnalyticsWrapper'
+import StructuredData, { organizationData, websiteData } from '@/components/seo/StructuredData'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -10,12 +12,17 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://10cnt.beforest.co'),
   title: 'Beforest 10cent Club | Strategic Wilderness Integration',
   description: 'A strategic conversation about regenerative living and the mathematics of wilderness integration. Saturday 5PM IST.',
-  keywords: ['wilderness', 'regenerative living', '10cent club', 'beforest', 'nature integration', 'sustainable living'],
+  keywords: ['wilderness', 'regenerative living', '10cent club', 'beforest', 'nature integration', 'sustainable living', 'wilderness therapy', 'nature conservation', 'eco-living'],
   authors: [{ name: 'Beforest' }],
+  creator: 'Beforest',
+  publisher: 'Beforest',
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
     apple: '/favicon.png',
+  },
+  verification: {
+    google: 'your-google-site-verification',
   },
   openGraph: {
     title: 'Beforest 10cent Club | Strategic Wilderness Integration',
@@ -47,6 +54,17 @@ export const metadata: Metadata = {
     creator: '@beforestclub',
     site: '@beforestclub',
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 }
 
 export const viewport = {
@@ -63,7 +81,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <AnalyticsWrapper
+          gaId={process.env.NEXT_PUBLIC_GA_ID}
+          facebookPixelId={process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}
+        />
+      </head>
       <body className="font-arizona">
+        <StructuredData data={organizationData} />
+        <StructuredData data={websiteData} />
         {children}
         <TypeformChatWrapper />
         {TYPEFORM_CONFIG.ENABLED && (

@@ -3,8 +3,26 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { HeroMainHeading, HeroSubHeading } from './headings'
+import { HeroImage, MobileHeroImage, LogoImage } from '@/components/ui/OptimizedImage'
 import { headlineVariations } from './content/heroContent'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
+
+// Generate blur placeholder for faster perceived loading
+const generateBlurDataURL = (width: number, height: number) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext('2d')!
+
+  // Create a subtle gradient blur placeholder
+  const gradient = ctx.createLinearGradient(0, 0, width, height)
+  gradient.addColorStop(0, '#1a472a')
+  gradient.addColorStop(1, '#0d2818')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, width, height)
+
+  return canvas.toDataURL('image/jpeg', 0.1)
+}
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -25,21 +43,23 @@ export default function HeroSection() {
               index === currentBgIndex ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            {/* Desktop Image */}
-            <Image
+            {/* Desktop Image - Optimized */}
+            <HeroImage
               src={variation.imageDesktop}
               alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
               fill
-              className="hidden md:block object-cover"
+              className="hidden md:block"
               priority={index === 0}
+              sizes="100vw"
             />
-            {/* Mobile Image */}
-            <Image
+            {/* Mobile Image - Optimized */}
+            <MobileHeroImage
               src={variation.imageMobile}
               alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
               fill
-              className="md:hidden object-cover"
+              className="md:hidden"
               priority={index === 0}
+              sizes="100vw"
             />
           </div>
         ))}
@@ -163,12 +183,15 @@ function AnimatedWrapper({
 function HeroOverlayElements() {
   return (
     <>
-      {/* Logo */}
+      {/* Logo - Optimized */}
       <div className="absolute top-8 right-8 z-20">
-        <img
+        <LogoImage
           src="/10-Club-01.png"
           alt="Beforest 10% Club"
+          width={80}
+          height={80}
           className="h-12 md:h-16 lg:h-20 w-auto invert drop-shadow-[0_10px_25px_rgba(0,0,0,0.45)]"
+          sizes="(max-width: 768px) 48px, (max-width: 1200px) 64px, 80px"
         />
       </div>
 

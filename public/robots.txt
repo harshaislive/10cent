@@ -1,0 +1,15 @@
+# Robotstxt.org - https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://10cnt.beforest.co/sitemap.xml
+
+# Disallow certain directories if any
+# Disallow: /admin/
+# Disallow: /private/
+
+# Crawl delay for specific bots if needed
+# User-agent: Googlebot
+# Crawl-delay: 1
