@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { HeroMainHeading, HeroSubHeading } from './headings'
-import { HeroImage, MobileHeroImage, LogoImage } from '@/components/ui/OptimizedImage'
 import { headlineVariations } from './content/heroContent'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
@@ -44,22 +43,28 @@ export default function HeroSection() {
             }`}
           >
             {/* Desktop Image - Optimized */}
-            <HeroImage
+            <Image
               src={variation.imageDesktop}
               alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
               fill
-              className="hidden md:block"
+              className="hidden md:block object-cover"
               priority={index === 0}
+              quality={85}
               sizes="100vw"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
             {/* Mobile Image - Optimized */}
-            <MobileHeroImage
+            <Image
               src={variation.imageMobile}
               alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
               fill
-              className="md:hidden"
+              className="md:hidden object-cover"
               priority={index === 0}
+              quality={75}
               sizes="100vw"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
           </div>
         ))}
@@ -185,13 +190,17 @@ function HeroOverlayElements() {
     <>
       {/* Logo - Optimized */}
       <div className="absolute top-8 right-8 z-20">
-        <LogoImage
+        <Image
           src="/10-Club-01.png"
           alt="Beforest 10% Club"
           width={80}
           height={80}
           className="h-12 md:h-16 lg:h-20 w-auto invert drop-shadow-[0_10px_25px_rgba(0,0,0,0.45)]"
+          priority
+          quality={90}
           sizes="(max-width: 768px) 48px, (max-width: 1200px) 64px, 80px"
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4="
         />
       </div>
 
