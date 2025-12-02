@@ -189,7 +189,7 @@ function HeroOverlayElements() {
   return (
     <>
       {/* Logo - Optimized */}
-      <div className="absolute top-8 right-8 z-20">
+      <div className="absolute top-8 left-8 z-20 md:left-8">
         <Image
           src="/10-Club-01.png"
           alt="Beforest 10% Club"
