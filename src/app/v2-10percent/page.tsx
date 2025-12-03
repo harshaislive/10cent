@@ -277,7 +277,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                       <span className="text-xl md:text-2xl ml-2 opacity-50 block mt-2 text-[#fdfbf7]">All inclusive for 10 years</span>
                     </div>
                     <p className="opacity-70 leading-relaxed font-arizona border-l-2 border-[#86312b] pl-4">
-                       "Like in every good portfolio, 10% of your life should be in a long term investment."
+                       "10% of your life spent with nature restores 100% of your nature."
                     </p>
                     
                     <button 
