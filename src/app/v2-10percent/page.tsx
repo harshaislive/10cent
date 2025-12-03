@@ -220,79 +220,102 @@ const WildernessGallery = () => {
 
   return (
     <div 
-      className="relative h-[80vh] w-full overflow-hidden bg-[#342e29]"
+      className="relative h-[90vh] w-full overflow-hidden bg-[#342e29]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <AnimatePresence mode="popLayout">
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 1.0 }}
+          animate={{ opacity: 1, scale: 1.1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          transition={{ opacity: { duration: 1.5 }, scale: { duration: 8, ease: "linear" } }}
           className="absolute inset-0 z-0"
         >
           <Image
             src={currentPoint.backgroundImage}
             alt={currentPoint.title}
             fill
-            className="object-cover brightness-[0.6]"
+            className="object-cover"
             quality={90}
           />
+          {/* Cinematic Scrim - Darker at bottom/left for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
         </motion.div>
       </AnimatePresence>
 
-      {/* Content Overlay */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center p-6">
-        <div className="max-w-4xl w-full text-center text-[#fdfbf7]">
-          <div className="mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] opacity-60 mb-4">The Experience</p>
-            <div className="h-px w-12 bg-[#fdfbf7]/30 mx-auto" />
-          </div>
-
-          <AnimatePresence mode="wait">
+      {/* Content Overlay - Editorial Magazine Layout */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-end p-8 md:p-20">
+        <div className="max-w-3xl w-full text-[#fdfbf7]">
+          <div className="mb-6 overflow-hidden">
             <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
+              key={`subtitle-${currentIndex}`}
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h3 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 font-arizona leading-tight">
-                {currentPoint.title}
-              </h3>
-              <p className="text-xl md:text-2xl opacity-80 font-light leading-relaxed max-w-2xl mx-auto font-arizona">
-                {currentPoint.description}
+              <p className="text-xs md:text-sm uppercase tracking-[0.3em] opacity-80 mb-4 border-l-2 border-[#ffc083] pl-4">
+                The Experience
               </p>
             </motion.div>
-          </AnimatePresence>
+          </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-center gap-8 mt-16">
-            <button 
-              onClick={() => setCurrentIndex((prev) => (prev - 1 + wildernessPoints.length) % wildernessPoints.length)}
-              className="p-4 border border-[#fdfbf7]/20 rounded-full hover:bg-[#fdfbf7]/10 transition-colors"
+          <div className="overflow-hidden mb-6">
+            <motion.h3 
+              key={`title-${currentIndex}`}
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-5xl md:text-7xl lg:text-8xl font-light font-arizona leading-[0.9]"
             >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            
-            <div className="flex gap-3">
-              {wildernessPoints.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentIndex(i)}
-                  className={`h-1 rounded-full transition-all duration-500 ${i === currentIndex ? 'w-8 bg-[#ffc083]' : 'w-2 bg-[#fdfbf7]/30 hover:bg-[#fdfbf7]/50'}`}
+              {currentPoint.title}
+            </motion.h3>
+          </div>
+
+          <div className="overflow-hidden mb-12">
+            <motion.p 
+              key={`desc-${currentIndex}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 0.9, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-lg md:text-2xl font-light leading-relaxed max-w-xl font-arizona"
+            >
+              {currentPoint.description}
+            </motion.p>
+          </div>
+
+          {/* Editorial Controls - Minimal Line */}
+          <div className="flex items-center gap-8 border-t border-[#fdfbf7]/30 pt-6 w-full md:w-auto">
+            <div className="flex items-center gap-4 text-sm font-arizona tracking-widest">
+              <span className="text-[#ffc083]">0{currentIndex + 1}</span>
+              <div className="w-16 h-px bg-[#fdfbf7]/30 relative overflow-hidden">
+                <motion.div 
+                  key={currentIndex}
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "0%" }}
+                  transition={{ duration: 6, ease: "linear" }}
+                  className="absolute inset-0 bg-[#fdfbf7]"
                 />
-              ))}
+              </div>
+              <span className="opacity-50">0{wildernessPoints.length}</span>
             </div>
 
-            <button 
-              onClick={() => setCurrentIndex((prev) => (prev + 1) % wildernessPoints.length)}
-              className="p-4 border border-[#fdfbf7]/20 rounded-full hover:bg-[#fdfbf7]/10 transition-colors"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setCurrentIndex((prev) => (prev - 1 + wildernessPoints.length) % wildernessPoints.length)}
+                className="group p-2 hover:text-[#ffc083] transition-colors"
+              >
+                <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+              </button>
+              <button 
+                onClick={() => setCurrentIndex((prev) => (prev + 1) % wildernessPoints.length)}
+                className="group p-2 hover:text-[#ffc083] transition-colors"
+              >
+                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
