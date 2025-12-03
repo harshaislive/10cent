@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, 
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import TypeformButton from '@/components/TypeformButton'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
+import { TYPEFORM_CONFIG } from '@/config/typeform'
 
 // --- Data & Assets ---
 const IMAGES = {
@@ -68,8 +69,6 @@ const wildernessPoints = [
     backgroundImage: "/PBR_0872.jpg"
   }
 ]
-
-const TYPEFORM_ID = 'moe6bb'
 
 // --- Utility Components ---
 
@@ -448,7 +447,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                     </p>
                     
                     <TypeformButton 
-                      formId={TYPEFORM_ID}
+                      formId={TYPEFORM_CONFIG.FORM_ID}
                       className="mt-8 w-full bg-[#fdfbf7] text-[#342e29] py-4 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors"
                     >
                       I Accept the Protocol
