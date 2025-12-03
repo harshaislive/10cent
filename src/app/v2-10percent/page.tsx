@@ -671,7 +671,7 @@ export default function EditorialPage() {
           <div className="space-y-24 pt-12">
             <div className="prose prose-xl prose-headings:font-arizona prose-p:font-arizona text-[#342e29]/80">
               <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-4">
-                You are running a race with no finish line.
+                Success was supposed to be the finish line, not just the beginning of a race we never chose.
               </p>
               
               {/* The Urban Trap Grid */}
