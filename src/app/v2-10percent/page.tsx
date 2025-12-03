@@ -2,14 +2,17 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, useMotionTemplate } from 'framer-motion'
-import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent } from 'lucide-react'
+import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue } from 'framer-motion'
+import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map } from 'lucide-react'
 
 // --- Data & Assets ---
 const IMAGES = {
   hero: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", 
   forest: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
   office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", 
+  founder: "/PBR_7935.jpg",
+  founderAlt: "/PBR_4601.jpg",
+  logo: "/23-Beforest-Black-with-Tagline.png"
 }
 
 // --- Utility Components ---
@@ -121,10 +124,10 @@ const SectionHeader = ({ number, title, subtitle, light = false }: { number: str
   </div>
 )
 
-const StatCard = ({ number, label, description }: { number: string, label: string, description: string }) => {
+const StatCard = ({ number, label, description, light = false }: { number: string, label: string, description: string, light?: boolean }) => {
   return (
-    <div className="group relative p-8 border border-[#342e29]/10 hover:border-[#86312b] transition-colors duration-500 bg-[#fdfbf7]">
-      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-[#86312b]">
+    <div className={`group relative p-8 border transition-colors duration-500 ${light ? 'border-[#fdfbf7]/20 hover:border-[#fdfbf7]' : 'border-[#342e29]/10 hover:border-[#86312b] bg-[#fdfbf7]'}`}>
+      <div className={`absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity ${light ? 'text-[#fdfbf7]' : 'text-[#86312b]'}`}>
         <ArrowRight className="w-5 h-5 -rotate-45" />
       </div>
       <div className="overflow-hidden mb-2">
@@ -133,13 +136,13 @@ const StatCard = ({ number, label, description }: { number: string, label: strin
           whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-6xl md:text-7xl font-light text-[#342e29] font-arizona group-hover:text-[#86312b] transition-colors"
+          className={`text-6xl md:text-7xl font-light font-arizona transition-colors ${light ? 'text-[#fdfbf7]' : 'text-[#342e29] group-hover:text-[#86312b]'}`}
         >
           {number}
         </motion.h3>
       </div>
-      <p className="text-xs font-bold uppercase tracking-widest mb-4 text-[#342e29]/60">{label}</p>
-      <p className="text-lg font-arizona leading-relaxed text-[#342e29]/80">{description}</p>
+      <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${light ? 'text-[#fdfbf7]/60' : 'text-[#342e29]/60'}`}>{label}</p>
+      <p className={`text-lg font-arizona leading-relaxed ${light ? 'text-[#fdfbf7]/80' : 'text-[#342e29]/80'}`}>{description}</p>
     </div>
   )
 }
@@ -159,8 +162,8 @@ export default function EditorialPage() {
     restDelta: 0.001
   })
 
-  // Navigation State
-  const [isNavOpen, setIsNavOpen] = useState(false)
+  // Navigation State - Removed unused state
+  // const [isNavOpen, setIsNavOpen] = useState(false)
 
   return (
     <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden cursor-none">
@@ -175,13 +178,22 @@ export default function EditorialPage() {
 
       {/* Navigation Overlay */}
       <nav className="fixed top-0 left-0 w-full p-6 z-[70] flex justify-between items-center mix-blend-difference text-[#fdfbf7]">
-        <div className="text-2xl font-bold tracking-tighter">BEFOREST</div>
-        <button onClick={() => setIsNavOpen(!isNavOpen)} className="group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none">
-          <span className="hidden md:block">Menu</span>
-          <div className="w-8 h-8 flex items-center justify-center border border-current rounded-full group-hover:scale-110 transition-transform">
-            {isNavOpen ? <X size={14} /> : <Menu size={14} />}
-          </div>
-        </button>
+        <div className="w-32 md:w-40 relative h-12 grayscale brightness-200 contrast-200">
+             <Image 
+               src={IMAGES.logo} 
+               alt="Beforest" 
+               fill 
+               className="object-contain invert"
+             />
+        </div>
+        
+        <a 
+          href="#access" 
+          className="group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full hover:bg-[#fdfbf7] hover:text-[#342e29] transition-all duration-300"
+        >
+          <span className="hidden md:block">Join the Club</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </a>
       </nav>
 
       {/* Hero Section - Editorial Cover Style */}
@@ -260,7 +272,7 @@ export default function EditorialPage() {
         </div>
       </section>
 
-      {/* Editorial Intro - "The Problem" */}
+      {/* The Problem: Expanded & Detailed */}
       <section id="manifesto" className="relative py-24 md:py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
           <div className="sticky top-32">
@@ -287,6 +299,26 @@ export default function EditorialPage() {
               <p>
                 We spend our days in boxes. We wake up in a box, travel in a box to work in a box. We stare at glowing boxes for hours, seeking connection, but finding only noise.
               </p>
+              
+              {/* The Urban Trap Grid */}
+              <div className="bg-[#342e29]/5 p-8 rounded-xl my-12 not-prose">
+                <h3 className="text-xl uppercase tracking-widest font-bold mb-6 text-[#86312b]">The Urban Trap</h3>
+                <ul className="space-y-4">
+                   <li className="flex items-center gap-4">
+                     <div className="w-2 h-2 bg-[#342e29] rounded-full" />
+                     <span className="text-lg font-arizona">25 meetings. 47 emails. 3 Zoom calls that should have been emails.</span>
+                   </li>
+                   <li className="flex items-center gap-4">
+                     <div className="w-2 h-2 bg-[#342e29] rounded-full" />
+                     <span className="text-lg font-arizona">Your calendar is full, but your clarity is empty.</span>
+                   </li>
+                   <li className="flex items-center gap-4">
+                     <div className="w-2 h-2 bg-[#342e29] rounded-full" />
+                     <span className="text-lg font-arizona">Optimizing everything except what matters most.</span>
+                   </li>
+                </ul>
+              </div>
+
               <p>
                 The average urban professional spends less than 2% of their time outdoors. We have become tourists in our own home—planet Earth.
               </p>
@@ -297,14 +329,14 @@ export default function EditorialPage() {
 
             <div className="grid gap-8">
                <StatCard 
-                 number="27" 
-                 label="Meetings" 
-                 description="The number of times you sat in a room this quarter discussing work." 
+                 number="78%" 
+                 label="Burnout" 
+                 description="Of professionals report feeling chronic exhaustion." 
                />
                <StatCard 
-                 number="365" 
-                 label="Days" 
-                 description="Days passed this year. How many were truly yours?" 
+                 number="400%" 
+                 label="Screen Time" 
+                 description="Increase in digital consumption over just 5 years." 
                />
                <StatCard 
                  number="0" 
@@ -316,6 +348,108 @@ export default function EditorialPage() {
         </div>
       </section>
 
+      {/* NEW SECTION: The Founder */}
+      <section className="py-32 bg-[#fdfbf7] relative border-t border-[#342e29]/10">
+         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+               
+               {/* Image Side */}
+               <div className="md:col-span-5 relative aspect-[3/4] md:aspect-[4/5] group overflow-hidden">
+                  <Image 
+                    src={IMAGES.founder}
+                    alt="Sunith Reddy"
+                    fill
+                    className="object-cover transition-opacity duration-700 group-hover:opacity-0"
+                  />
+                  <Image 
+                    src={IMAGES.founderAlt}
+                    alt="Sunith Reddy in Wilderness"
+                    fill
+                    className="object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 scale-105"
+                  />
+                  <div className="absolute bottom-6 left-6 bg-[#fdfbf7]/90 backdrop-blur-sm px-4 py-2 text-xs uppercase tracking-widest text-[#342e29]">
+                     Sunith Reddy, Founder
+                  </div>
+               </div>
+
+               {/* Text Side */}
+               <div className="md:col-span-7 space-y-12">
+                  <h2 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight text-[#342e29]">
+                    "When you stop running, you start seeing."
+                  </h2>
+                  
+                  <div className="space-y-8 text-lg md:text-xl font-arizona font-light leading-relaxed text-[#342e29]/80 max-w-2xl">
+                    <p>
+                      It took stepping into the wilderness for me to realise that slowing down isn't the absence of ambition — it's the foundation for clarity.
+                    </p>
+                    <p>
+                      The patterns of nature have a rhythm that reorders your own. Beforest was born out of this realisation — that the greatest luxury today isn't space or possessions, but time.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-[#342e29]/10 pt-8">
+                     <div>
+                        <h4 className="text-3xl font-light text-[#86312b]">8+ Years</h4>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Building Communities</p>
+                     </div>
+                     <div>
+                        <h4 className="text-3xl font-light text-[#86312b]">1000+ Acres</h4>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Under Regeneration</p>
+                     </div>
+                     <div>
+                        <h4 className="text-3xl font-light text-[#86312b]">6 Collectives</h4>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Established</p>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </section>
+
+      {/* NEW SECTION: Who is this for? (The Tribe) */}
+      <section className="py-32 bg-[#342e29] text-[#fdfbf7]">
+         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+            <SectionHeader 
+               number="02"
+               title="The Tribe."
+               subtitle="This is not for everyone."
+               light
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+               {[
+                  {
+                     title: "The Naturalist",
+                     desc: "You don't just visit wilderness—you belong to it. Your binoculars are worn from use, your field journal filled.",
+                     icon: Map
+                  },
+                  {
+                     title: "The Seeker",
+                     desc: "You've moved beyond wellness trends. You seek profound solitude, not just packaged serenity or spa dates.",
+                     icon: Battery
+                  },
+                  {
+                     title: "The Authenticist",
+                     desc: "You reject performative travel. You want to taste the soil, understand the seasons, and belong to the wild.",
+                     icon: Mountain
+                  },
+                  {
+                     title: "The Pioneer",
+                     desc: "You're done with weekend escapes. You're ready to answer the call that says this isn't just a vacation, it's your address.",
+                     icon: Clock
+                  }
+               ].map((item, i) => (
+                  <div key={i} className="bg-[#fdfbf7]/5 p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/10 transition-all duration-300 group">
+                     <item.icon className="w-10 h-10 text-[#ffc083] mb-6 group-hover:scale-110 transition-transform" strokeWidth={1} />
+                     <h4 className="text-xl font-arizona mb-4">{item.title}</h4>
+                     <p className="text-[#fdfbf7]/60 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
+      </section>
+
       {/* The Solution - Full Width Parallax */}
       <section className="relative py-32 bg-[#344736] text-[#fdfbf7] overflow-hidden">
         <div className="absolute inset-0 opacity-20 mix-blend-soft-light">
@@ -323,36 +457,8 @@ export default function EditorialPage() {
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
-           <SectionHeader 
-             number="02" 
-             title="The 10% Solution" 
-             subtitle="A mathematical approach to happiness." 
-             light
-           />
-
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20">
-              {[
-                { icon: Wind, title: "Cognitive Clarity", desc: "Nature restores attention and reduces mental fatigue." },
-                { icon: Mountain, title: "Emotional Resilience", desc: "Wilderness builds grit and perspective." },
-                { icon: Tent, title: "True Belonging", desc: "Reconnect with the ecosystem you are part of." }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ y: 50, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.2 }}
-                  viewport={{ once: true }}
-                  className="border-t border-[#fdfbf7]/20 pt-8 hover:border-[#ffc083] transition-colors duration-500 group"
-                >
-                  <item.icon className="w-12 h-12 mb-6 text-[#ffc083] group-hover:scale-110 transition-transform duration-300" strokeWidth={1} />
-                  <h3 className="text-3xl font-light mb-4">{item.title}</h3>
-                  <p className="text-[#fdfbf7]/60 leading-relaxed">{item.desc}</p>
-                </motion.div>
-              ))}
-           </div>
-
-           <div className="mt-32 flex flex-col items-center text-center">
-              <p className="text-sm font-bold tracking-[0.3em] uppercase mb-8 text-[#fdfbf7]/50">The Commitment</p>
+           <div className="mt-12 flex flex-col items-center text-center">
+              <p className="text-sm font-bold tracking-[0.3em] uppercase mb-8 text-[#fdfbf7]/50">The Solution</p>
               <div className="relative">
                 <motion.div 
                   initial={{ scaleX: 0 }}
