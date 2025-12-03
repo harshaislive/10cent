@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2 } from 'lucide-react'
+import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus } from 'lucide-react'
 import { Widget } from '@typeform/embed-react'
 
 // --- Data & Assets ---
@@ -14,6 +14,7 @@ const IMAGES = {
   founder: "/PBR_7935.jpg",
   founderAlt: "/PBR_4601.jpg",
   logo: "/23-Beforest-Black-with-Tagline.png",
+  logoWhite: "/24-Beforest-White-with-Tagline.png", // Assuming this exists based on brand guide, else we invert the black one
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
     hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
@@ -36,7 +37,7 @@ const NoiseOverlay = () => (
   </div>
 )
 
-const CustomCursor = () => {
+const CustomCursor = ({ isLight }: { isLight: boolean }) => {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
@@ -51,7 +52,7 @@ const CustomCursor = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-8 h-8 border border-[#86312b] rounded-full pointer-events-none z-[70] mix-blend-difference hidden md:block"
+      className={`fixed top-0 left-0 w-8 h-8 border rounded-full pointer-events-none z-[100] hidden md:block transition-colors duration-300 ${isLight ? 'border-[#fdfbf7] bg-[#fdfbf7]/10' : 'border-[#86312b] mix-blend-difference'}`}
       style={{ x: mouseX, y: mouseY }}
       transition={{ type: "spring", stiffness: 500, damping: 28 }}
     />
@@ -195,7 +196,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] bg-[#342e29] text-[#fdfbf7] flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[100] bg-[#342e29] text-[#fdfbf7] flex items-center justify-center overflow-hidden cursor-auto"
         >
           {/* Background Texture */}
           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
@@ -324,11 +325,20 @@ export default function EditorialPage() {
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > window.innerHeight * 0.9)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden cursor-none">
       <NoiseOverlay />
-      <CustomCursor />
+      <CustomCursor isLight={isModalOpen} />
       
       <ManifestoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
@@ -338,28 +348,41 @@ export default function EditorialPage() {
         style={{ scaleX }} 
       />
 
-      {/* Navigation Overlay */}
-      <nav className="fixed top-0 left-0 w-full p-6 z-[70] flex justify-between items-center mix-blend-difference text-[#fdfbf7]">
-        <div className="w-32 md:w-40 relative h-12 grayscale brightness-200 contrast-200">
+      {/* Navigation Overlay - Sticky & Adaptive */}
+      <nav 
+        className={`fixed top-0 left-0 w-full p-6 z-[70] flex justify-between items-center transition-all duration-500 ${
+          isScrolled 
+            ? 'bg-[#fdfbf7]/90 backdrop-blur-md text-[#342e29] py-4 shadow-sm' 
+            : 'text-[#fdfbf7] py-6'
+        }`}
+      >
+        <div className={`w-32 md:w-40 relative h-12 transition-all duration-500 ${isScrolled ? 'filter-none' : 'grayscale brightness-200 contrast-200'}`}>
              <Image 
                src={IMAGES.logo} 
                alt="Beforest" 
                fill 
-               className="object-contain invert"
+               className={`object-contain transition-all duration-500 ${isScrolled ? '' : 'invert'}`}
              />
         </div>
         
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full hover:bg-[#fdfbf7] hover:text-[#342e29] transition-all duration-300"
+          className={`group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full transition-all duration-300 ${
+            isScrolled 
+              ? 'bg-[#342e29] text-[#fdfbf7] hover:bg-[#86312b] border-transparent' 
+              : 'hover:bg-[#fdfbf7] hover:text-[#342e29]'
+          }`}
         >
           <span className="hidden md:block">Join the Club</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - Editorial Cover Style */}
       <section className="relative min-h-[100svh] flex flex-col justify-end pb-12 px-4 md:px-12 overflow-hidden">
+        {/* Dark Scrim for Header Visibility */}
+        <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-black/70 to-transparent z-10 pointer-events-none" />
+
         <div className="absolute inset-0 z-0">
           <motion.div 
             initial={{ scale: 1.1 }}
@@ -434,7 +457,7 @@ export default function EditorialPage() {
         </div>
       </section>
 
-      {/* The Problem */}
+      {/* The Problem: Expanded & Detailed */}
       <section id="manifesto" className="relative py-24 md:py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
           <div className="sticky top-32">
@@ -458,7 +481,11 @@ export default function EditorialPage() {
               <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-8">
                 You are running a race with no finish line.
               </p>
+              <p>
+                We spend our days in boxes. We wake up in a box, travel in a box to work in a box. We stare at glowing boxes for hours, seeking connection, but finding only noise.
+              </p>
               
+              {/* The Urban Trap Grid */}
               <div className="bg-[#342e29]/5 p-8 rounded-xl my-12 not-prose">
                 <h3 className="text-xl uppercase tracking-widest font-bold mb-6 text-[#86312b]">The Urban Trap</h3>
                 <ul className="space-y-4">
@@ -477,6 +504,9 @@ export default function EditorialPage() {
                 </ul>
               </div>
 
+              <p>
+                The average urban professional spends less than 2% of their time outdoors. We have become tourists in our own home—planet Earth.
+              </p>
               <p className="text-[#86312b] italic text-2xl pl-6 border-l-2 border-[#86312b]">
                 "We are not meant to live this way. The anxiety you feel is not a disorder; it is a signal."
               </p>
@@ -587,21 +617,23 @@ export default function EditorialPage() {
              subtitle="Across India's wildest landscapes."
            />
            
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
              {[
                { name: "Poomaale", desc: "Coffee, Cardamom & Mist. A rainforest collective in Coorg.", img: IMAGES.locations.poomaale },
                { name: "Hammiyala", desc: "High altitude grasslands. Where the wind speaks louder than words.", img: IMAGES.locations.hammiyala },
-               { name: "Hyderabad", desc: "The Deccan Plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad }
+               { name: "Hyderabad", desc: "The Deccan Plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
+               { name: "And Growing...", desc: "Munnar, Vagamon, and more rewilded landscapes coming soon.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
                <div key={i} className="group cursor-none">
-                 <div className="aspect-[4/3] relative overflow-hidden mb-6">
+                 <div className="aspect-[4/3] relative overflow-hidden mb-6 bg-gray-100">
                    <Image 
                      src={loc.img} 
                      alt={loc.name} 
                      fill 
-                     className="object-cover transition-transform duration-700 group-hover:scale-110"
+                     className={`object-cover transition-transform duration-700 group-hover:scale-110 ${loc.blur ? 'blur-sm scale-110' : ''}`}
                    />
                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                   {loc.blur && <div className="absolute inset-0 flex items-center justify-center bg-black/20"><Plus className="w-12 h-12 text-white opacity-50" /></div>}
                  </div>
                  <h3 className="text-3xl font-light mb-2 group-hover:text-[#86312b] transition-colors">{loc.name}</h3>
                  <p className="text-[#342e29]/60 font-arizona">{loc.desc}</p>
@@ -609,6 +641,49 @@ export default function EditorialPage() {
              ))}
            </div>
         </div>
+      </section>
+
+      {/* NEW SECTION: Who is this for? (The Tribe) */}
+      <section className="py-32 bg-[#342e29] text-[#fdfbf7]">
+         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+            <SectionHeader 
+               number="04"
+               title="The Tribe."
+               subtitle="This is not for everyone."
+               light
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+               {[
+                  {
+                     title: "The Naturalist",
+                     desc: "You don't just visit wilderness—you belong to it. Your binoculars are worn from use, your field journal filled.",
+                     icon: Map
+                  },
+                  {
+                     title: "The Seeker",
+                     desc: "You've moved beyond wellness trends. You seek profound solitude, not just packaged serenity or spa dates.",
+                     icon: Battery
+                  },
+                  {
+                     title: "The Authenticist",
+                     desc: "You reject performative travel. You want to taste the soil, understand the seasons, and belong to the wild.",
+                     icon: Mountain
+                  },
+                  {
+                     title: "The Pioneer",
+                     desc: "You're done with weekend escapes. You're ready to answer the call that says this isn't just a vacation, it's your address.",
+                     icon: Clock
+                  }
+               ].map((item, i) => (
+                  <div key={i} className="bg-[#fdfbf7]/5 p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/10 transition-all duration-300 group">
+                     <item.icon className="w-10 h-10 text-[#ffc083] mb-6 group-hover:scale-110 transition-transform" strokeWidth={1} />
+                     <h4 className="text-xl font-arizona mb-4">{item.title}</h4>
+                     <p className="text-[#fdfbf7]/60 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
       </section>
 
       {/* CTA Section */}
