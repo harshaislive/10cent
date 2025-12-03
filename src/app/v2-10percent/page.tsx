@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
-import TypeformWidget from '@/components/TypeformWidget'
+import TypeformButton from '@/components/TypeformButton'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 // --- Data & Assets ---
@@ -448,31 +448,15 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                        "10% of your life spent with nature restores 100% of your nature."
                     </p>
                     
-                    <button 
-                      onClick={() => setStep('form')}
+                    <TypeformButton 
+                      formId={TYPEFORM_ID}
                       className="mt-8 w-full bg-[#fdfbf7] text-[#342e29] py-4 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors"
                     >
                       I Accept the Protocol
-                    </button>
+                    </TypeformButton>
                  </div>
               </div>
             </motion.div>
-          )}
-
-          {/* STEP 3: THE FORM */}
-          {step === 'form' && (
-             <motion.div 
-               initial={{ y: 50, opacity: 0 }}
-               animate={{ y: 0, opacity: 1 }}
-               className="w-full h-[80vh] bg-white rounded-xl overflow-hidden shadow-2xl relative"
-             >
-                <TypeformWidget 
-                  formId={TYPEFORM_ID} 
-                  width="100%" 
-                  height="100%" 
-                  className="w-full h-full"
-                />
-             </motion.div>
           )}
 
         </motion.div>
@@ -687,11 +671,12 @@ export default function EditorialPage() {
 
           <div className="space-y-24 pt-12">
             <div className="prose prose-xl prose-headings:font-arizona prose-p:font-arizona text-[#342e29]/80">
-              <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-8">
+              <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-4">
                 You are running a race with no finish line.
               </p>
               
-              <div className="bg-[#342e29]/5 p-8 rounded-xl my-12 not-prose">
+              {/* The Urban Trap Grid */}
+              <div className="bg-[#342e29]/5 p-8 rounded-xl mt-12 mb-6 not-prose">
                 <h3 className="text-xl uppercase tracking-widest font-bold mb-6 text-[#86312b]">The Urban Trap</h3>
                 <ul className="space-y-4">
                    <li className="flex items-center gap-4">
@@ -712,7 +697,7 @@ export default function EditorialPage() {
               <p>
                 The average urban professional spends less than 2% of their time outdoors. We have become tourists in our own home—planet Earth.
               </p>
-              <p className="text-[#86312b] italic text-2xl pl-6 border-l-2 border-[#86312b]">
+              <p className="text-[#86312b] italic text-2xl pl-6 border-l-2 border-[#86312b] mt-2 mb-0">
                 "We are not meant to live this way. The anxiety you feel is not a disorder; it is a signal."
               </p>
             </div>
