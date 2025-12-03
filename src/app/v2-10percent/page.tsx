@@ -8,7 +8,13 @@ import TypeformWidget from '@/components/TypeformWidget'
 
 // --- Data & Assets ---
 const IMAGES = {
-  hero: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", 
+  heroSlides: [
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg" }
+  ],
   forest: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
   office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", 
   founder: "/PBR_7935.jpg",
@@ -330,13 +336,23 @@ export default function EditorialPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [heroImageIndex, setHeroImageIndex] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > window.innerHeight * 0.9)
     }
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    
+    // Hero Slideshow Interval
+    const interval = setInterval(() => {
+      setHeroImageIndex(prev => (prev + 1) % IMAGES.heroSlides.length)
+    }, 5000)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearInterval(interval)
+    }
   }, [])
 
   return (
@@ -387,23 +403,38 @@ export default function EditorialPage() {
         {/* Dark Scrim for Header Visibility */}
         <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-black/70 to-transparent z-10 pointer-events-none" />
 
+        {/* Background Slideshow */}
         <div className="absolute inset-0 z-0">
-          <motion.div 
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-full h-full"
-          >
-            <Image 
-              src={IMAGES.hero} 
-              alt="Hero Background" 
-              fill 
-              className="object-cover brightness-[0.85]"
-              priority
-              quality={90}
-            />
-          </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#342e29]/30 via-transparent to-[#342e29]/90 mix-blend-multiply" />
+          <AnimatePresence mode="crossflow">
+            <motion.div 
+              key={heroImageIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="absolute inset-0 w-full h-full"
+            >
+              {/* Desktop Image */}
+              <Image 
+                src={IMAGES.heroSlides[heroImageIndex].desktop} 
+                alt="Hero Background" 
+                fill 
+                className="hidden md:block object-cover brightness-[0.85]"
+                priority
+                quality={90}
+              />
+              {/* Mobile Image */}
+              <Image 
+                src={IMAGES.heroSlides[heroImageIndex].mobile} 
+                alt="Hero Background" 
+                fill 
+                className="md:hidden object-cover brightness-[0.85]"
+                priority
+                quality={90}
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#342e29]/30 via-transparent to-[#342e29]/90 mix-blend-multiply z-[1]" />
         </div>
 
         <div className="relative z-10 w-full max-w-[1800px] mx-auto">
@@ -619,9 +650,9 @@ export default function EditorialPage() {
            
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
              {[
-               { name: "Poomaale", desc: "Coffee, Cardamom & Mist. A rainforest collective in Coorg.", img: IMAGES.locations.poomaale },
-               { name: "Hammiyala", desc: "High altitude grasslands. Where the wind speaks louder than words.", img: IMAGES.locations.hammiyala },
-               { name: "Hyderabad", desc: "The Deccan Plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
+               { name: "Poomaale", desc: "Ancient forest canopy. Coffee, Cardamom & Mist in Coorg.", img: IMAGES.locations.poomaale },
+               { name: "Hammiyala", desc: "Coffee agroforestry. High altitude grasslands where wind speaks.", img: IMAGES.locations.hammiyala },
+               { name: "Hyderabad", desc: "Deccan plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
                { name: "And Growing...", desc: "Across India's wildest landscapes.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
                <div key={i} className="group cursor-none">
