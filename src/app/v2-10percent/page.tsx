@@ -180,25 +180,24 @@ const SectionHeader = ({ number, title, subtitle, light = false }: { number: str
   </div>
 )
 
-const StatCard = ({ number, label, description, light = false }: { number: string, label: string, description: string, light?: boolean }) => {
+const InsightCard = ({ label, quote, light = false }: { label: string, quote: string, light?: boolean }) => {
   return (
-    <div className={`group relative p-8 border transition-colors duration-500 ${light ? 'border-[#fdfbf7]/20 hover:border-[#fdfbf7]' : 'border-[#342e29]/10 hover:border-[#86312b] bg-[#fdfbf7]'}`}>
+    <div className={`group relative p-8 border transition-colors duration-500 h-full flex flex-col justify-between ${light ? 'border-[#fdfbf7]/20 hover:border-[#fdfbf7]' : 'border-[#342e29]/10 hover:border-[#86312b] bg-[#fdfbf7]'}`}>
       <div className={`absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity ${light ? 'text-[#fdfbf7]' : 'text-[#86312b]'}`}>
         <ArrowRight className="w-5 h-5 -rotate-45" />
       </div>
-      <div className="overflow-hidden mb-2">
-        <motion.h3 
-          initial={{ y: "100%" }}
-          whileInView={{ y: 0 }}
+      <div>
+        <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${light ? 'text-[#fdfbf7]/60' : 'text-[#342e29]/60'}`}>{label}</p>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className={`text-6xl md:text-7xl font-light font-arizona transition-colors ${light ? 'text-[#fdfbf7]' : 'text-[#342e29] group-hover:text-[#86312b]'}`}
+          className={`text-xl md:text-2xl font-light font-arizona leading-relaxed transition-colors ${light ? 'text-[#fdfbf7]' : 'text-[#342e29] group-hover:text-[#86312b]'}`}
         >
-          {number}
-        </motion.h3>
+          "{quote}"
+        </motion.p>
       </div>
-      <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${light ? 'text-[#fdfbf7]/60' : 'text-[#342e29]/60'}`}>{label}</p>
-      <p className={`text-lg font-arizona leading-relaxed ${light ? 'text-[#fdfbf7]/80' : 'text-[#342e29]/80'}`}>{description}</p>
     </div>
   )
 }
@@ -703,15 +702,13 @@ export default function EditorialPage() {
             </div>
 
             <div className="grid gap-8">
-               <StatCard 
-                 number="78%" 
-                 label="Burnout" 
-                 description="Of professionals report feeling chronic exhaustion." 
+               <InsightCard 
+                 label="The Quiet Panic" 
+                 quote="You've won every game you were told to play, but somehow you're still waiting for the real prize." 
                />
-               <StatCard 
-                 number="400%" 
-                 label="Screen Time" 
-                 description="Increase in digital consumption over just 5 years." 
+               <InsightCard 
+                 label="The Reality" 
+                 quote="Nature doesn't just take you away from your problems. It takes away the version of yourself who has to solve them all." 
                />
             </div>
           </div>
