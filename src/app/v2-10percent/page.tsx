@@ -2,8 +2,9 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue } from 'framer-motion'
-import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map } from 'lucide-react'
+import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
+import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2 } from 'lucide-react'
+import { Widget } from '@typeform/embed-react'
 
 // --- Data & Assets ---
 const IMAGES = {
@@ -12,8 +13,15 @@ const IMAGES = {
   office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", 
   founder: "/PBR_7935.jpg",
   founderAlt: "/PBR_4601.jpg",
-  logo: "/23-Beforest-Black-with-Tagline.png"
+  logo: "/23-Beforest-Black-with-Tagline.png",
+  locations: {
+    poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
+    hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
+    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg"
+  }
 }
+
+const TYPEFORM_ID = 'moe6bb'
 
 // --- Utility Components ---
 
@@ -50,8 +58,8 @@ const CustomCursor = () => {
   );
 }
 
-const MagneticButton = ({ children, className = "", href = "#" }: { children: React.ReactNode, className?: string, href?: string }) => {
-  const ref = useRef<HTMLAnchorElement>(null);
+const MagneticButton = ({ children, className = "", onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
+  const ref = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouse = (e: React.MouseEvent) => {
@@ -67,9 +75,9 @@ const MagneticButton = ({ children, className = "", href = "#" }: { children: Re
   const { x, y } = position;
 
   return (
-    <motion.a
+    <motion.button
       ref={ref}
-      href={href}
+      onClick={onClick}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x, y }}
@@ -77,7 +85,7 @@ const MagneticButton = ({ children, className = "", href = "#" }: { children: Re
       className={`inline-flex items-center justify-center px-8 py-4 uppercase tracking-widest text-sm font-medium border border-current transition-colors duration-300 ${className}`}
     >
       {children}
-    </motion.a>
+    </motion.button>
   )
 }
 
@@ -147,6 +155,159 @@ const StatCard = ({ number, label, description, light = false }: { number: strin
   )
 }
 
+// --- Manifesto Modal Component ---
+
+const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [step, setStep] = useState<'filter' | 'reveal' | 'form'>('filter')
+  const [holdProgress, setHoldProgress] = useState(0)
+  const holdInterval = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setStep('filter')
+      setHoldProgress(0)
+    }
+  }, [isOpen])
+
+  const startHold = () => {
+    if (holdInterval.current) clearInterval(holdInterval.current)
+    holdInterval.current = setInterval(() => {
+      setHoldProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(holdInterval.current!)
+          setStep('reveal')
+          return 100
+        }
+        return prev + 2
+      })
+    }, 20)
+  }
+
+  const endHold = () => {
+    if (holdInterval.current) clearInterval(holdInterval.current)
+    if (holdProgress < 100) setHoldProgress(0)
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-[#342e29] text-[#fdfbf7] flex items-center justify-center overflow-hidden"
+        >
+          {/* Background Texture */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+          
+          {/* Close Button */}
+          <button onClick={onClose} className="absolute top-8 right-8 p-2 hover:rotate-90 transition-transform duration-300 z-50">
+            <XCircle className="w-8 h-8 opacity-50 hover:opacity-100" />
+          </button>
+
+          {/* STEP 1: THE FILTER */}
+          {step === 'filter' && (
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              className="max-w-2xl px-6 text-center relative z-10"
+            >
+              <h2 className="text-4xl md:text-6xl font-light mb-8 font-arizona leading-tight">
+                This is not a vacation package. <br/>
+                <span className="text-[#86312b] italic">It is a vocation.</span>
+              </h2>
+              <p className="text-xl opacity-70 mb-16 leading-relaxed font-arizona">
+                You are about to enter a commitment to yourself. <br/>
+                Wilderness requires patience, silence, and presence. <br/>
+                Are you ready to disconnect to reconnect?
+              </p>
+              
+              <div className="relative inline-block">
+                <button 
+                  onMouseDown={startHold}
+                  onMouseUp={endHold}
+                  onMouseLeave={endHold}
+                  onTouchStart={startHold}
+                  onTouchEnd={endHold}
+                  className="relative overflow-hidden border border-[#fdfbf7] px-10 py-4 text-sm uppercase tracking-widest font-medium transition-all active:scale-95"
+                >
+                  <span className="relative z-10 mix-blend-difference">Hold to Acknowledge</span>
+                  <div 
+                    className="absolute inset-0 bg-[#fdfbf7] z-0 origin-left" 
+                    style={{ width: `${holdProgress}%` }} 
+                  />
+                </button>
+                <p className="text-xs opacity-40 mt-4 tracking-widest uppercase">Hold for 1 second</p>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 2: THE REVEAL (PRICING) */}
+          {step === 'reveal' && (
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.1, opacity: 0 }}
+              className="max-w-4xl w-full px-6 relative z-10"
+            >
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                 <div className="space-y-12 border-r border-[#fdfbf7]/10 pr-12">
+                    <div className="space-y-2">
+                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Protocol</p>
+                       <h3 className="text-5xl font-light">30 Nights</h3>
+                       <p className="opacity-60 font-arizona">Every year. For introspection.</p>
+                    </div>
+                    <div className="space-y-2">
+                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Duration</p>
+                       <h3 className="text-5xl font-light">10 Years</h3>
+                       <p className="opacity-60 font-arizona">A decade of wilderness access.</p>
+                    </div>
+                    <div className="space-y-2">
+                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Landscapes</p>
+                       <h3 className="text-5xl font-light">All Collectives</h3>
+                       <p className="opacity-60 font-arizona">Poomaale, Hammiyala, Hyderabad & more.</p>
+                    </div>
+                 </div>
+
+                 <div className="space-y-8 pl-4">
+                    <h2 className="text-3xl font-light font-arizona">The Investment</h2>
+                    <div className="text-6xl md:text-7xl font-light text-[#ffc083]">
+                      ₹17.6 L
+                      <span className="text-xl md:text-2xl ml-2 opacity-50 block mt-2 text-[#fdfbf7]">All inclusive for 10 years</span>
+                    </div>
+                    <p className="opacity-70 leading-relaxed font-arizona border-l-2 border-[#86312b] pl-4">
+                       "Not a second home. A second chance—to slow down, and reconnect."
+                    </p>
+                    
+                    <button 
+                      onClick={() => setStep('form')}
+                      className="mt-8 w-full bg-[#fdfbf7] text-[#342e29] py-4 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors"
+                    >
+                      I Accept the Protocol
+                    </button>
+                 </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 3: THE FORM */}
+          {step === 'form' && (
+             <motion.div 
+               initial={{ y: 50, opacity: 0 }}
+               animate={{ y: 0, opacity: 1 }}
+               className="w-full h-full max-w-5xl max-h-[90vh] bg-white rounded-xl overflow-hidden shadow-2xl relative"
+             >
+                <Widget id={TYPEFORM_ID} className="w-full h-full" />
+             </motion.div>
+          )}
+
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // --- Main Page ---
 
 export default function EditorialPage() {
@@ -162,13 +323,14 @@ export default function EditorialPage() {
     restDelta: 0.001
   })
 
-  // Navigation State - Removed unused state
-  // const [isNavOpen, setIsNavOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden cursor-none">
       <NoiseOverlay />
       <CustomCursor />
+      
+      <ManifestoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* Progress Bar */}
       <motion.div 
@@ -187,16 +349,16 @@ export default function EditorialPage() {
              />
         </div>
         
-        <a 
-          href="#access" 
+        <button 
+          onClick={() => setIsModalOpen(true)}
           className="group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full hover:bg-[#fdfbf7] hover:text-[#342e29] transition-all duration-300"
         >
           <span className="hidden md:block">Join the Club</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </a>
+        </button>
       </nav>
 
-      {/* Hero Section - Editorial Cover Style */}
+      {/* Hero Section */}
       <section className="relative min-h-[100svh] flex flex-col justify-end pb-12 px-4 md:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <motion.div 
@@ -260,19 +422,19 @@ export default function EditorialPage() {
                  animate={{ scale: 1 }}
                  transition={{ delay: 1, type: "spring" }}
               >
-                <a 
-                  href="#manifesto"
+                <button 
+                  onClick={() => setIsModalOpen(true)}
                   className="w-24 h-24 rounded-full bg-[#86312b] text-[#fdfbf7] flex items-center justify-center group cursor-none hover:scale-110 transition-transform duration-300"
                 >
                   <ArrowDown className="w-8 h-8 group-hover:animate-bounce" />
-                </a>
+                </button>
               </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* The Problem: Expanded & Detailed */}
+      {/* The Problem */}
       <section id="manifesto" className="relative py-24 md:py-40 px-6 md:px-12 max-w-[1800px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
           <div className="sticky top-32">
@@ -296,11 +458,7 @@ export default function EditorialPage() {
               <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-8">
                 You are running a race with no finish line.
               </p>
-              <p>
-                We spend our days in boxes. We wake up in a box, travel in a box to work in a box. We stare at glowing boxes for hours, seeking connection, but finding only noise.
-              </p>
               
-              {/* The Urban Trap Grid */}
               <div className="bg-[#342e29]/5 p-8 rounded-xl my-12 not-prose">
                 <h3 className="text-xl uppercase tracking-widest font-bold mb-6 text-[#86312b]">The Urban Trap</h3>
                 <ul className="space-y-4">
@@ -319,9 +477,6 @@ export default function EditorialPage() {
                 </ul>
               </div>
 
-              <p>
-                The average urban professional spends less than 2% of their time outdoors. We have become tourists in our own home—planet Earth.
-              </p>
               <p className="text-[#86312b] italic text-2xl pl-6 border-l-2 border-[#86312b]">
                 "We are not meant to live this way. The anxiety you feel is not a disorder; it is a signal."
               </p>
@@ -338,22 +493,15 @@ export default function EditorialPage() {
                  label="Screen Time" 
                  description="Increase in digital consumption over just 5 years." 
                />
-               <StatCard 
-                 number="0" 
-                 label="Silence" 
-                 description="Moments of absolute silence in the last month." 
-               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* NEW SECTION: The Founder */}
+      {/* The Founder */}
       <section className="py-32 bg-[#fdfbf7] relative border-t border-[#342e29]/10">
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
-               
-               {/* Image Side */}
                <div className="md:col-span-5 relative aspect-[3/4] md:aspect-[4/5] group overflow-hidden">
                   <Image 
                     src={IMAGES.founder}
@@ -372,21 +520,15 @@ export default function EditorialPage() {
                   </div>
                </div>
 
-               {/* Text Side */}
                <div className="md:col-span-7 space-y-12">
                   <h2 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight text-[#342e29]">
                     "When you stop running, you start seeing."
                   </h2>
-                  
                   <div className="space-y-8 text-lg md:text-xl font-arizona font-light leading-relaxed text-[#342e29]/80 max-w-2xl">
                     <p>
                       It took stepping into the wilderness for me to realise that slowing down isn't the absence of ambition — it's the foundation for clarity.
                     </p>
-                    <p>
-                      The patterns of nature have a rhythm that reorders your own. Beforest was born out of this realisation — that the greatest luxury today isn't space or possessions, but time.
-                    </p>
                   </div>
-
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-[#342e29]/10 pt-8">
                      <div>
                         <h4 className="text-3xl font-light text-[#86312b]">8+ Years</h4>
@@ -402,104 +544,70 @@ export default function EditorialPage() {
                      </div>
                   </div>
                </div>
-
             </div>
          </div>
       </section>
 
-      {/* NEW SECTION: Who is this for? (The Tribe) */}
+      {/* NEW SECTION: The Solution (Philosophy in Numbers) */}
       <section className="py-32 bg-[#342e29] text-[#fdfbf7]">
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
-            <SectionHeader 
+             <SectionHeader 
                number="02"
-               title="The Tribe."
-               subtitle="This is not for everyone."
+               title="The 10% Solution."
+               subtitle="A mathematical approach to happiness."
                light
             />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-               {[
-                  {
-                     title: "The Naturalist",
-                     desc: "You don't just visit wilderness—you belong to it. Your binoculars are worn from use, your field journal filled.",
-                     icon: Map
-                  },
-                  {
-                     title: "The Seeker",
-                     desc: "You've moved beyond wellness trends. You seek profound solitude, not just packaged serenity or spa dates.",
-                     icon: Battery
-                  },
-                  {
-                     title: "The Authenticist",
-                     desc: "You reject performative travel. You want to taste the soil, understand the seasons, and belong to the wild.",
-                     icon: Mountain
-                  },
-                  {
-                     title: "The Pioneer",
-                     desc: "You're done with weekend escapes. You're ready to answer the call that says this isn't just a vacation, it's your address.",
-                     icon: Clock
-                  }
-               ].map((item, i) => (
-                  <div key={i} className="bg-[#fdfbf7]/5 p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/10 transition-all duration-300 group">
-                     <item.icon className="w-10 h-10 text-[#ffc083] mb-6 group-hover:scale-110 transition-transform" strokeWidth={1} />
-                     <h4 className="text-xl font-arizona mb-4">{item.title}</h4>
-                     <p className="text-[#fdfbf7]/60 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-               ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 text-center md:text-left">
+               <div className="p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/5 transition-colors">
+                  <div className="text-[120px] font-light leading-none text-[#ffc083]">30</div>
+                  <p className="text-xl uppercase tracking-widest mb-2">Nights a Year</p>
+                  <p className="opacity-60">Enough time to reset your circadian rhythm.</p>
+               </div>
+               <div className="p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/5 transition-colors">
+                  <div className="text-[120px] font-light leading-none text-[#ffc083]">10</div>
+                  <p className="text-xl uppercase tracking-widest mb-2">Years</p>
+                  <p className="opacity-60">A decade of guaranteed wilderness access.</p>
+               </div>
+               <div className="p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/5 transition-colors">
+                  <div className="text-[120px] font-light leading-none text-[#ffc083]">0</div>
+                  <p className="text-xl uppercase tracking-widest mb-2">Hassle</p>
+                  <p className="opacity-60">No ownership headaches. Just pure belonging.</p>
+               </div>
             </div>
          </div>
       </section>
 
-      {/* The Solution - Full Width Parallax */}
-      <section className="relative py-32 bg-[#344736] text-[#fdfbf7] overflow-hidden">
-        <div className="absolute inset-0 opacity-20 mix-blend-soft-light">
-          <Image src={IMAGES.forest} alt="Forest Texture" fill className="object-cover" />
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-           <div className="mt-12 flex flex-col items-center text-center">
-              <p className="text-sm font-bold tracking-[0.3em] uppercase mb-8 text-[#fdfbf7]/50">The Solution</p>
-              <div className="relative">
-                <motion.div 
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="absolute -inset-x-4 bottom-2 h-6 bg-[#ffc083]/20 -skew-x-12 origin-left"
-                />
-                <div className="text-[15vw] md:text-[12vw] leading-none font-light text-[#ffc083] mix-blend-screen relative z-10">
-                  30 Days
-                </div>
-              </div>
-              <p className="text-2xl md:text-4xl font-light max-w-2xl mt-8">
-                In the wild. Every year. <br/>
-                <span className="italic text-[#fdfbf7]/60">Not a vacation. A vocation.</span>
-              </p>
+      {/* NEW SECTION: Where You'll Stay (Locations) */}
+      <section className="py-32 bg-[#fdfbf7]">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+           <SectionHeader 
+             number="03" 
+             title="The Sanctuaries."
+             subtitle="Across India's wildest landscapes."
+           />
+           
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+             {[
+               { name: "Poomaale", desc: "Coffee, Cardamom & Mist. A rainforest collective in Coorg.", img: IMAGES.locations.poomaale },
+               { name: "Hammiyala", desc: "High altitude grasslands. Where the wind speaks louder than words.", img: IMAGES.locations.hammiyala },
+               { name: "Hyderabad", desc: "The Deccan Plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad }
+             ].map((loc, i) => (
+               <div key={i} className="group cursor-none">
+                 <div className="aspect-[4/3] relative overflow-hidden mb-6">
+                   <Image 
+                     src={loc.img} 
+                     alt={loc.name} 
+                     fill 
+                     className="object-cover transition-transform duration-700 group-hover:scale-110"
+                   />
+                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                 </div>
+                 <h3 className="text-3xl font-light mb-2 group-hover:text-[#86312b] transition-colors">{loc.name}</h3>
+                 <p className="text-[#342e29]/60 font-arizona">{loc.desc}</p>
+               </div>
+             ))}
            </div>
-        </div>
-      </section>
-
-      {/* Image Gallery / Mood */}
-      <section className="py-24 bg-[#fdfbf7] overflow-hidden">
-        <div className="flex gap-4 md:gap-8 overflow-x-auto px-6 pb-12 snap-x scrollbar-hide">
-           {[IMAGES.hero, IMAGES.forest, IMAGES.office].map((src, i) => (
-             <motion.div 
-               key={i} 
-               initial={{ opacity: 0, x: 50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               transition={{ delay: i * 0.1 }}
-               viewport={{ once: true }}
-               className="shrink-0 w-[85vw] md:w-[40vw] aspect-[3/4] relative snap-center group overflow-hidden cursor-none"
-             >
-                <Image 
-                  src={src} 
-                  alt={`Gallery ${i}`} 
-                  fill 
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110" 
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-             </motion.div>
-           ))}
         </div>
       </section>
 
@@ -512,15 +620,12 @@ export default function EditorialPage() {
              Return to the wild.
            </h2>
            <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto">
-             We are curating a tribe of individuals ready to reclaim their 10%. Applications are open for the next cohort.
+             Applications are open for the next cohort.
            </p>
            
            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-             <MagneticButton className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
+             <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
                Apply for Membership
-             </MagneticButton>
-             <MagneticButton className="text-[#fdfbf7] hover:bg-[#fdfbf7] hover:text-[#342e29] w-full md:w-auto cursor-none">
-               Read the Manifesto
              </MagneticButton>
            </div>
 
