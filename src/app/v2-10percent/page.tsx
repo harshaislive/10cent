@@ -913,7 +913,7 @@ export default function EditorialPage() {
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <SectionHeader 
                number="05"
-               title="The Anti-Persona."
+               title="Not For Everyone."
                subtitle="This is a commitment, not a consumption."
                light
             />
