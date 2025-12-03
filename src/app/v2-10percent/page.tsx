@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus } from 'lucide-react'
+import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import TypeformWidget from '@/components/TypeformWidget'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
@@ -29,6 +29,45 @@ const IMAGES = {
     mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"
   }
 }
+
+const wildernessPoints = [
+  {
+    id: 1,
+    title: "Expansive Privacy",
+    description: "Large landscapes with secluded rooms (100+ acres with two to three guest houses)",
+    backgroundImage: "/privacy.jpg"
+  },
+  {
+    id: 2,
+    title: "True Solitude",
+    description: "You are likely to bump into wildlife more than bumping into others. Truly you, your thoughts and nothing else.",
+    backgroundImage: "/PBR_8924.jpg"
+  },
+  {
+    id: 3,
+    title: "Unfiltered Wilderness",
+    description: "An unfiltered experience of wilderness, working estates, the land and its culture",
+    backgroundImage: "/PBR_4299.jpg"
+  },
+  {
+    id: 4,
+    title: "Deep Perspective",
+    description: "One thing is for certain - in 3 nights you get a deep insight into the land and its culture. A perspective shift would have started.",
+    backgroundImage: "/PBR_2161.jpg"
+  },
+  {
+    id: 5,
+    title: "Personal Commitment",
+    description: "This is not a club. This is a commitment to yourself.",
+    backgroundImage: "/PBR_9587 (1).jpg"
+  },
+  {
+    id: 6,
+    title: "Extended Family",
+    description: "The team on the ground is an extension of your family.",
+    backgroundImage: "/PBR_0872.jpg"
+  }
+]
 
 const TYPEFORM_ID = 'moe6bb'
 
@@ -160,6 +199,103 @@ const StatCard = ({ number, label, description, light = false }: { number: strin
       </div>
       <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${light ? 'text-[#fdfbf7]/60' : 'text-[#342e29]/60'}`}>{label}</p>
       <p className={`text-lg font-arizona leading-relaxed ${light ? 'text-[#fdfbf7]/80' : 'text-[#342e29]/80'}`}>{description}</p>
+    </div>
+  )
+}
+
+// --- Wilderness Gallery Component ---
+const WildernessGallery = () => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    if (isPaused) return
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % wildernessPoints.length)
+    }, 6000)
+    return () => clearInterval(interval)
+  }, [isPaused])
+
+  const currentPoint = wildernessPoints[currentIndex]
+
+  return (
+    <div 
+      className="relative h-[80vh] w-full overflow-hidden bg-[#342e29]"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="absolute inset-0 z-0"
+        >
+          <Image
+            src={currentPoint.backgroundImage}
+            alt={currentPoint.title}
+            fill
+            className="object-cover brightness-[0.6]"
+            quality={90}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Content Overlay */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-6">
+        <div className="max-w-4xl w-full text-center text-[#fdfbf7]">
+          <div className="mb-8">
+            <p className="text-xs uppercase tracking-[0.3em] opacity-60 mb-4">The Experience</p>
+            <div className="h-px w-12 bg-[#fdfbf7]/30 mx-auto" />
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-light mb-8 font-arizona leading-tight">
+                {currentPoint.title}
+              </h3>
+              <p className="text-xl md:text-2xl opacity-80 font-light leading-relaxed max-w-2xl mx-auto font-arizona">
+                {currentPoint.description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-8 mt-16">
+            <button 
+              onClick={() => setCurrentIndex((prev) => (prev - 1 + wildernessPoints.length) % wildernessPoints.length)}
+              className="p-4 border border-[#fdfbf7]/20 rounded-full hover:bg-[#fdfbf7]/10 transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            
+            <div className="flex gap-3">
+              {wildernessPoints.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`h-1 rounded-full transition-all duration-500 ${i === currentIndex ? 'w-8 bg-[#ffc083]' : 'w-2 bg-[#fdfbf7]/30 hover:bg-[#fdfbf7]/50'}`}
+                />
+              ))}
+            </div>
+
+            <button 
+              onClick={() => setCurrentIndex((prev) => (prev + 1) % wildernessPoints.length)}
+              className="p-4 border border-[#fdfbf7]/20 rounded-full hover:bg-[#fdfbf7]/10 transition-colors"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -723,14 +859,16 @@ export default function EditorialPage() {
         </div>
       </section>
 
+      {/* NEW SECTION: Wilderness Experience Gallery (Replaces previous gallery) */}
+      <WildernessGallery />
+
       {/* NEW SECTION: Who is this for? (The Tribe) */}
-      <section className="py-32 bg-[#342e29] text-[#fdfbf7]">
+      <section className="py-32 bg-[#fdfbf7] text-[#342e29]">
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <SectionHeader 
                number="04"
                title="The Tribe."
                subtitle="This is not for everyone."
-               light
             />
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
@@ -756,10 +894,10 @@ export default function EditorialPage() {
                      icon: Clock
                   }
                ].map((item, i) => (
-                  <div key={i} className="bg-[#fdfbf7]/5 p-8 border border-[#fdfbf7]/10 hover:bg-[#fdfbf7]/10 transition-all duration-300 group">
-                     <item.icon className="w-10 h-10 text-[#ffc083] mb-6 group-hover:scale-110 transition-transform" strokeWidth={1} />
+                  <div key={i} className="bg-[#342e29]/5 p-8 border border-[#342e29]/10 hover:bg-[#342e29]/10 transition-all duration-300 group">
+                     <item.icon className="w-10 h-10 text-[#86312b] mb-6 group-hover:scale-110 transition-transform" strokeWidth={1} />
                      <h4 className="text-xl font-arizona mb-4">{item.title}</h4>
-                     <p className="text-[#fdfbf7]/60 text-sm leading-relaxed">{item.desc}</p>
+                     <p className="text-[#342e29]/60 text-sm leading-relaxed">{item.desc}</p>
                   </div>
                ))}
             </div>
