@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus } from 'lucide-react'
 import TypeformWidget from '@/components/TypeformWidget'
+import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 // --- Data & Assets ---
 const IMAGES = {
@@ -23,7 +24,9 @@ const IMAGES = {
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
     hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg"
+    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg",
+    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
+    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"
   }
 }
 
@@ -364,12 +367,13 @@ export default function EditorialPage() {
       <ManifestoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* Mobile Sticky CTA - Overrides global button */}
-      <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden p-4 bg-gradient-to-t from-[#fdfbf7] to-transparent pb-6">
+      <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden p-4 bg-[#fdfbf7] border-t border-[#342e29]/10 pb-6">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform"
+          className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
         >
-          Join the Club
+          <span>Begin The Art of Return</span>
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
 
@@ -691,11 +695,13 @@ export default function EditorialPage() {
              subtitle="Across India's wildest landscapes."
            />
            
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
              {[
                { name: "Poomaale", desc: "Ancient forest canopy. Coffee, Cardamom & Mist in Coorg.", img: IMAGES.locations.poomaale },
                { name: "Hammiyala", desc: "Coffee agroforestry. High altitude grasslands where wind speaks.", img: IMAGES.locations.hammiyala },
                { name: "Hyderabad", desc: "Deccan plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
+               { name: "Bhopal", desc: "Central India wilderness. Where the tiger still walks.", img: IMAGES.locations.bhopal },
+               { name: "Mumbai", desc: "Urban-nature integration. Finding silence in the city's backyard.", img: IMAGES.locations.mumbai },
                { name: "And Growing...", desc: "Across India's wildest landscapes.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
                <div key={i} className="group cursor-none">
@@ -769,7 +775,8 @@ export default function EditorialPage() {
              Return to the wild.
            </h2>
            <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto">
-             Applications are open for the next cohort.
+             Applications are open for the next cohort. <br/>
+             <span className="text-sm uppercase tracking-widest mt-4 block text-[#ffc083]">Next Conversation: {getNextSaturdayWithTime()}</span>
            </p>
            
            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
