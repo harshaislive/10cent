@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10% Club: Strategy & Integration</title>
+    <style type="text/css">
+        /* Brand Font Import */
+        @font-face {
+            font-family: 'ABCArizonaFlare';
+            src: url('https://cdn.shopify.com/s/files/1/0367/0831/9276/files/ABCArizonaFlare-Regular.woff2?v=1762499519') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --color-dark-earth: #342e29;
+            --color-rich-red: #86312b;
+            --color-off-white: #fdfbf7;
+            --color-text-muted: #51514d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-off-white);
+            color: var(--color-dark-earth);
+            font-family: 'ABCArizonaFlare', Georgia, serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 48px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 300;
+            margin-top: 60px;
+            margin-bottom: 24px;
+            color: var(--color-rich-red);
+            border-bottom: 1px solid rgba(52, 46, 41, 0.1);
+            padding-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 24px;
+            color: var(--color-text-muted);
+            font-weight: 300;
+        }
+
+        a {
+            color: var(--color-rich-red);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        a:hover {
+            border-bottom-color: var(--color-rich-red);
+        }
+
+        /* Components */
+        .card {
+            background: white;
+            border: 1px solid rgba(52, 46, 41, 0.1);
+            padding: 32px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            border: 1px solid var(--color-dark-earth);
+            margin-bottom: 16px;
+        }
+
+        /* Kanban Styles */
+        .kanban-board {
+            display: flex;
+            gap: 12px;
+            padding: 24px 0;
+            margin-bottom: 48px;
+            border-bottom: 1px dashed rgba(52, 46, 41, 0.2);
+        }
+        .kanban-column {
+            background: #f4f4f4;
+            border-radius: 4px;
+            padding: 12px;
+            border-top: 4px solid var(--color-dark-earth);
+            flex: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .kanban-board {
+                overflow-x: auto;
+                gap: 16px;
+            }
+            .kanban-column {
+                min-width: 180px;
+            }
+        }
+        .kanban-column:nth-child(2) { border-top-color: var(--color-rich-red); } 
+        .kanban-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--color-dark-earth);
+        }
+        .kanban-card {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 12px;
+            margin-bottom: 8px;
+            color: var(--color-text-muted);
+        }
+
+        .pipeline-step {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: white;
+            border-left: 4px solid var(--color-dark-earth);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .pipeline-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .pipeline-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--color-rich-red);
+            line-height: 1;
+        }
+
+        .pipeline-title {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .communication-flow {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px dashed rgba(52, 46, 41, 0.2);
+        }
+
+        .comm-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-muted);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Accordion for Emails */
+        details {
+            margin-top: 16px;
+            border: 1px solid rgba(52, 46, 41, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 12px 16px;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--color-dark-earth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        summary:hover {
+            background: #f0f0f0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            background: white;
+        }
+
+        blockquote {
+            font-size: 24px;
+            font-style: italic;
+            border-left: 2px solid var(--color-rich-red);
+            margin: 40px 0;
+            padding-left: 32px;
+            color: var(--color-dark-earth);
+        }
+        
+        .test-link {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <span class="tag">Internal Brief</span>
+    <h1>The 10% Club: Integration Strategy</h1>
+    <p>An overview of our automated funnel, A/B testing approach, and the philosophy driving our member selection process.</p>
+
+    <blockquote>
+        "We are optimizing to eliminate tire kickers, not just accumulate leads. This is a commitment, not a consumption."
+    </blockquote>
+
+    <h2>01. The A/B Test Strategy</h2>
+    <p>We are running a split test to determine the most effective narrative for our audience. Both versions lead to the same funnel but offer different initial experiences.</p>
+    
+    <div class="card">
+        <h3>Version A: The Control (Root)</h3>
+        <p>The standard editorial approach. Clean, direct, and established.</p>
+        <p><a href="https://10percent.beforest.co" target="_blank">View Live Page →</a></p>
+    </div>
+
+    <div class="card">
+        <h3>Version B: The Challenger (v2)</h3>
+        <p>A more aggressive, narrative-driven approach. <em>(Personal preference for its stronger emotional hooks and darker aesthetic).</em></p>
+        <p><a href="https://10percent.beforest.co/v2-10percent" target="_blank">View Live Page →</a></p>
+    </div>
+
+    <h2>02. The Automated Pipeline Logic</h2>
+    <p>Our Pipedrive stages are designed to act as filters. At every stage, automated communications push the user to make a binary choice: <strong>Commit or Exit.</strong></p>
+
+    <h3>Visual Pipeline</h3>
+    <div class="kanban-board">
+        <div class="kanban-column">
+            <div class="kanban-title">Webinar Registered</div>
+            <div class="kanban-card">New Leads</div>
+        </div>
+        <div class="kanban-column">
+            <div class="kanban-title">Webinar Attended</div>
+            <div class="kanban-card">Timelines AI</div>
+            <div class="kanban-card" style="background: #fff3cd;">⚠️ Decision Pending</div>
+        </div>
+        <div class="kanban-column">
+            <div class="kanban-title">Trial User (50k)</div>
+            <div class="kanban-card">Trial Booked</div>
+        </div>
+        <div class="kanban-column">
+            <div class="kanban-title">Active Prospect</div>
+            <div class="kanban-card">Post-Trial Nurture</div>
+        </div>
+        <div class="kanban-column">
+            <div class="kanban-title">Member Onboarding</div>
+            <div class="kanban-card">Closed Won</div>
+        </div>
+    </div>
+
+    <h3>The Flow</h3>
+
+    <!-- Stage 1 -->
+    <div class="pipeline-step">
+        <div class="pipeline-header">
+            <span class="pipeline-number">01</span>
+            <span class="pipeline-title">Webinar Registered</span>
+        </div>
+        <p><strong>Entry Point:</strong> Users sign up via Typeform.</p>
+        
+        <div class="communication-flow">
+            <span class="comm-label">Communication Agenda</span>
+            <p><strong>Goal:</strong> Reduce Absenteeism & Build Anticipation.</p>
+            <p><strong>Cadence:</strong> Alternate days leading up to event + 1 hour before.</p>
+            <p><strong>Content Focus:</strong> Teasers of the 10% concept, success stories (micro-case studies), and logistical reminders to ensure high attendance.</p>
+            
+            <p><a href="/emails/welcome_email.html" target="_blank">View Welcome Email →</a></p>
+        </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="pipeline-step">
+        <div class="pipeline-header">
+            <span class="pipeline-number">02</span>
+            <span class="pipeline-title">Webinar Attended</span>
+        </div>
+        <p><strong>The Decision Point.</strong> The critical filter that splits the funnel three ways.</p>
+        
+        <div class="communication-flow">
+            <span class="comm-label">Communication Agenda</span>
+            <p><strong>Goal:</strong> The Decision Point (Force a Choice).</p>
+            <p><strong>Cadence:</strong> Immediate Post-Webinar.</p>
+            <p><strong>Content Focus:</strong> Urgency (50 seats limit) and clear 3-path options (Commit, Trial, or Opt-out). We eliminate tire kickers here.</p>
+            
+            <p><a href="/emails/post_webinar_email.html" target="_blank">View "The Quiet After" Email →</a></p>
+        </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="pipeline-step">
+        <div class="pipeline-header">
+            <span class="pipeline-number">03</span>
+            <span class="pipeline-title">Trial User (50k)</span>
+        </div>
+        <p>Users who booked a trial. Ready to experience.</p>
+        
+        <div class="communication-flow">
+            <span class="comm-label">Communication Agenda</span>
+            <p><strong>Status:</strong> To Be Developed.</p>
+            <p><strong>Goal:</strong> Logistics & Expectation Setting.</p>
+            <p><strong>Cadence:</strong> Alternate Days until Visit.</p>
+            <p><strong>Content Focus:</strong> Practical guides (packing lists, 'What to leave behind'), introductions to the on-ground team, and weather updates for the specific collective to ensure a seamless 'wow' experience.</p>
+        </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="pipeline-step">
+        <div class="pipeline-header">
+            <span class="pipeline-number">04</span>
+            <span class="pipeline-title">Active Prospect</span>
+        </div>
+        <p>Post-Trial Users evaluating full commitment.</p>
+        
+        <div class="communication-flow">
+            <span class="comm-label">Communication Agenda</span>
+            <p><strong>Status:</strong> To Be Developed.</p>
+            <p><strong>Goal:</strong> Reflection & Conversion.</p>
+            <p><strong>Cadence:</strong> Day 1, Day 3, Day 7 Post-Visit.</p>
+            <p><strong>Content Focus:</strong> "How does the city feel now?" (Contrast), detailed breakdown of membership math, and invitations to a final closing call with the founder.</p>
+        </div>
+    </div>
+
+    <!-- Stage 5 -->
+    <div class="pipeline-step">
+        <div class="pipeline-header">
+            <span class="pipeline-number">05</span>
+            <span class="pipeline-title">Member Onboarding</span>
+        </div>
+        <p>Committed members.</p>
+        
+        <div class="communication-flow">
+            <span class="comm-label">Communication Agenda</span>
+            <p><strong>Status:</strong> To Be Developed.</p>
+            <p><strong>Goal:</strong> Welcome & Orientation.</p>
+            <p><strong>Cadence:</strong> Weekly for First Month.</p>
+            <p><strong>Content Focus:</strong> Access to community portal, introductions to other founding members, scheduling the first official stay, and payment finalization.</p>
+        </div>
+    </div>
+
+    <h2>03. The Three Actions</h2>
+    <p>Every communication piece drives the user toward one of three specific actions, managed automatically via n8n webhooks:</p>
+
+    <div class="card">
+        <h3>1. The Pause (Opt-Out)</h3>
+        <p><strong>Action:</strong> User clicks "Opt-out for now".</p>
+        <p><strong>Result:</strong> Deal marked as <strong>LOST</strong> in Pipedrive.</p>
+        <p><a href="https://10percent.beforest.co/confirmation?action=optout&email=strategy_test@beforest.co" target="_blank" class="test-link">→ Test Opt-Out Flow</a></p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Trial (Book Stay)</h3>
+        <p><strong>Action:</strong> User clicks "Book Trial Stay".</p>
+        <p><strong>Result:</strong> Deal moved to <strong>Trial User</strong> stage.</p>
+        <p><a href="https://10percent.beforest.co/confirmation?action=trial&email=strategy_test@beforest.co" target="_blank" class="test-link">→ Test Trial Flow</a></p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Unlock (Full Sub)</h3>
+        <p><strong>Action:</strong> User clicks "Subscribe Now".</p>
+        <p><strong>Result:</strong> Deal moved to <strong>Member Onboarding</strong> stage.</p>
+        <p><a href="https://10percent.beforest.co/confirmation?action=subscribe&email=strategy_test@beforest.co" target="_blank" class="test-link">→ Test Subscription Flow</a></p>
+    </div>
+
+</div>
+
+</body>
+</html>
