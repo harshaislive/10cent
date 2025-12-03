@@ -337,6 +337,7 @@ export default function EditorialPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [heroImageIndex, setHeroImageIndex] = useState(0)
+  const [isStoryOpen, setIsStoryOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -361,6 +362,16 @@ export default function EditorialPage() {
       <CustomCursor isLight={isModalOpen} />
       
       <ManifestoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Mobile Sticky CTA - Overrides global button */}
+      <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden p-4 bg-gradient-to-t from-[#fdfbf7] to-transparent pb-6">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform"
+        >
+          Join the Club
+        </button>
+      </div>
 
       {/* Progress Bar */}
       <motion.div 
@@ -405,7 +416,7 @@ export default function EditorialPage() {
 
         {/* Background Slideshow */}
         <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="crossflow">
+          <AnimatePresence mode="popLayout">
             <motion.div 
               key={heroImageIndex}
               initial={{ opacity: 0, scale: 1.1 }}
@@ -563,6 +574,8 @@ export default function EditorialPage() {
       <section className="py-32 bg-[#fdfbf7] relative border-t border-[#342e29]/10">
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-center">
+               
+               {/* Image Side */}
                <div className="md:col-span-5 relative aspect-[3/4] md:aspect-[4/5] group overflow-hidden">
                   <Image 
                     src={IMAGES.founder}
@@ -581,15 +594,44 @@ export default function EditorialPage() {
                   </div>
                </div>
 
+               {/* Text Side */}
                <div className="md:col-span-7 space-y-12">
                   <h2 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight text-[#342e29]">
                     "When you stop running, you start seeing."
                   </h2>
+                  
                   <div className="space-y-8 text-lg md:text-xl font-arizona font-light leading-relaxed text-[#342e29]/80 max-w-2xl">
                     <p>
                       It took stepping into the wilderness for me to realise that slowing down isn't the absence of ambition — it's the foundation for clarity.
                     </p>
+                    
+                    <AnimatePresence>
+                      {isStoryOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden space-y-8"
+                        >
+                          <p>
+                            The patterns of nature have a rhythm that reorders your own. Beforest was born out of this realisation — that the greatest luxury today isn't space or possessions, but time.
+                          </p>
+                          <p>
+                            The 10% Club is an invitation to build that pause into your life. I'd love to share more about this idea with you in person. Join me for a conversation about what it means to live with intention.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <button 
+                      onClick={() => setIsStoryOpen(!isStoryOpen)}
+                      className="text-[#86312b] uppercase tracking-widest text-xs font-bold hover:opacity-70 transition-opacity flex items-center gap-2"
+                    >
+                      {isStoryOpen ? "Read Less" : "Read Full Story"}
+                      <span className={`transition-transform duration-300 ${isStoryOpen ? "rotate-180" : ""}`}>↓</span>
+                    </button>
                   </div>
+
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-[#342e29]/10 pt-8">
                      <div>
                         <h4 className="text-3xl font-light text-[#86312b]">8+ Years</h4>
@@ -605,6 +647,7 @@ export default function EditorialPage() {
                      </div>
                   </div>
                </div>
+
             </div>
          </div>
       </section>
