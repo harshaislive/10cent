@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus } from 'lucide-react'
-import { Widget } from '@typeform/embed-react'
+import TypeformWidget from '@/components/TypeformWidget'
 
 // --- Data & Assets ---
 const IMAGES = {
@@ -13,8 +13,7 @@ const IMAGES = {
   office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", 
   founder: "/PBR_7935.jpg",
   founderAlt: "/PBR_4601.jpg",
-  logo: "/23-Beforest-Black-with-Tagline.png",
-  logoWhite: "/24-Beforest-White-with-Tagline.png", // Assuming this exists based on brand guide, else we invert the black one
+  logo: "/10-Club-01.png",
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
     hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
@@ -113,8 +112,8 @@ const SectionHeader = ({ number, title, subtitle, light = false }: { number: str
       viewport={{ once: true }}
       className="flex items-center gap-4"
     >
-      <span className={`text-xs font-bold tracking-[0.2em] uppercase py-1 px-2 border ${light ? 'border-[#fdfbf7]/30' : 'border-[#342e29]/30'}`}>
-        Chapter {number}
+      <span className={`text-sm font-bold tracking-[0.2em] uppercase py-1 px-2 border ${light ? 'border-[#fdfbf7]/30' : 'border-[#342e29]/30'}`}>
+        {number}
       </span>
       <div className={`h-px flex-1 ${light ? 'bg-[#fdfbf7]/20' : 'bg-[#342e29]/20'}`} />
     </motion.div>
@@ -278,7 +277,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                       <span className="text-xl md:text-2xl ml-2 opacity-50 block mt-2 text-[#fdfbf7]">All inclusive for 10 years</span>
                     </div>
                     <p className="opacity-70 leading-relaxed font-arizona border-l-2 border-[#86312b] pl-4">
-                       "Not a second home. A second chance—to slow down, and reconnect."
+                       "Like in every good portfolio, 10% of your life should be in a long term investment."
                     </p>
                     
                     <button 
@@ -297,9 +296,14 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
              <motion.div 
                initial={{ y: 50, opacity: 0 }}
                animate={{ y: 0, opacity: 1 }}
-               className="w-full h-full max-w-5xl max-h-[90vh] bg-white rounded-xl overflow-hidden shadow-2xl relative"
+               className="w-full h-[80vh] bg-white rounded-xl overflow-hidden shadow-2xl relative"
              >
-                <Widget id={TYPEFORM_ID} className="w-full h-full" />
+                <TypeformWidget 
+                  formId={TYPEFORM_ID} 
+                  width="100%" 
+                  height="100%" 
+                  className="w-full h-full"
+                />
              </motion.div>
           )}
 
@@ -481,11 +485,7 @@ export default function EditorialPage() {
               <p className="text-3xl md:text-4xl leading-tight text-[#342e29] mb-8">
                 You are running a race with no finish line.
               </p>
-              <p>
-                We spend our days in boxes. We wake up in a box, travel in a box to work in a box. We stare at glowing boxes for hours, seeking connection, but finding only noise.
-              </p>
               
-              {/* The Urban Trap Grid */}
               <div className="bg-[#342e29]/5 p-8 rounded-xl my-12 not-prose">
                 <h3 className="text-xl uppercase tracking-widest font-bold mb-6 text-[#86312b]">The Urban Trap</h3>
                 <ul className="space-y-4">
@@ -622,7 +622,7 @@ export default function EditorialPage() {
                { name: "Poomaale", desc: "Coffee, Cardamom & Mist. A rainforest collective in Coorg.", img: IMAGES.locations.poomaale },
                { name: "Hammiyala", desc: "High altitude grasslands. Where the wind speaks louder than words.", img: IMAGES.locations.hammiyala },
                { name: "Hyderabad", desc: "The Deccan Plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
-               { name: "And Growing...", desc: "Munnar, Vagamon, and more rewilded landscapes coming soon.", img: IMAGES.forest, blur: true }
+               { name: "And Growing...", desc: "Across India's wildest landscapes.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
                <div key={i} className="group cursor-none">
                  <div className="aspect-[4/3] relative overflow-hidden mb-6 bg-gray-100">
