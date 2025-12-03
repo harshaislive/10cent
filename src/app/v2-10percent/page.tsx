@@ -927,22 +927,60 @@ export default function EditorialPage() {
          </div>
       </section>
 
+      {/* NEW SECTION: Who This Is Not For (The Anti-Persona) */}
+      <section className="py-32 bg-[#342e29] text-[#fdfbf7] border-t border-[#fdfbf7]/10">
+         <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+            <SectionHeader 
+               number="05"
+               title="The Anti-Persona."
+               subtitle="This is a commitment, not a consumption."
+               light
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-20">
+               {[
+                  {
+                     title: "The Quick Fix Seeker",
+                     desc: "You want 3 days of zen to 'fix' your burnout, then return to the same unsustainable pace. Wilderness doesn't solve problems—it reveals them."
+                  },
+                  {
+                     title: "The Weekend Reveler",
+                     desc: "You're looking for a place to party. Wilderness is just a backdrop for stories. Silence and introspection trump celebration here."
+                  },
+                  {
+                     title: "The Luxury Collector",
+                     desc: "You're looking for another trophy. You'll be disappointed by our emphasis on substance over service. We sleep under stars, not in suites."
+                  },
+                  {
+                     title: "The Social Climber",
+                     desc: "You're here to network with 'important people'. The connections you seek are transactional. We value authentic community over strategic alliances."
+                  }
+               ].map((item, i) => (
+                  <div key={i} className="pl-8 border-l-2 border-[#86312b] py-2 hover:border-[#ffc083] transition-colors duration-500 group">
+                     <h4 className="text-2xl font-arizona mb-4 text-[#fdfbf7] group-hover:text-[#ffc083] transition-colors">{item.title}</h4>
+                     <p className="text-[#fdfbf7]/60 text-lg font-light leading-relaxed">{item.desc}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-[#342e29] text-[#fdfbf7] py-32 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-1/2 h-full bg-[#86312b]/10 skew-x-12 transform origin-top-right" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
-           <h2 className="text-5xl md:text-7xl lg:text-8xl font-light mb-12">
-             Return to the wild.
+           <h2 className="text-5xl md:text-7xl lg:text-8xl font-light mb-12 leading-tight">
+             We have held a seat under the trees for you.
            </h2>
-           <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto">
-             Applications are open for the next cohort. <br/>
-             <span className="text-sm uppercase tracking-widest mt-4 block text-[#ffc083]">Next Conversation: {getNextSaturdayWithTime()}</span>
+           <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto leading-relaxed">
+             The world never stops pulling at you. There is a space here where you can finally pause.
+             <span className="text-sm uppercase tracking-widest mt-8 block text-[#ffc083] opacity-100">Next Conversation: {getNextSaturdayWithTime()}</span>
            </p>
            
            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
              <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
-               Apply for Membership
+               Begin The Art of Return
              </MagneticButton>
            </div>
 
