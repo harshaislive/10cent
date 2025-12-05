@@ -1,6 +1,6 @@
 # Interactive Questions from Website
 
-These are the reflection questions that were previously embedded throughout the website as interactive elements. Each question includes multiple answer options and corresponding insights.
+These are the reflection questions that were previously embedded throughout the website as interactive elements. Each question includes multiple answer options and corresponding insights written in the style of David Ogilvy—direct, respectful, and focused on the "Big Idea."
 
 ## Question 1: Digital Disconnection
 **Question**: When did you last disconnect for 24 hours?
@@ -13,9 +13,9 @@ These are the reflection questions that were previously embedded throughout the 
 - "Most weekends"
 
 **Insights**:
-- For "I can't remember": "That's exactly why 30 nights a year could change everything."
-- For recent answers: "You remember what clarity feels like. What if you could have that 10% of your year?"
-- For regular answers: "You're ahead of most. Imagine making that 10% of every year—fully immersive."
+- For "I can't remember": "The machine never stops unless you stop it. 30 nights isn't a vacation; it's a retrieval of your own mind."
+- For recent answers: "You know the feeling of the off-switch. The trick is keeping it off long enough to hear yourself think. Try 10%."
+- For regular answers: "You are already fighting the good fight. Now, give your resolve a headquarters."
 
 ---
 
@@ -30,9 +30,9 @@ These are the reflection questions that were previously embedded throughout the 
 - "It's part of who I am"
 
 **Insights**:
-- For childhood/distant memories: "That's exactly why 30 nights a year could change everything."
-- For occasional answers: "You remember what clarity feels like. What if you could have that 10% of your year?"
-- For regular/practiced answers: "You're ahead of most. Imagine making that 10% of every year—fully immersive."
+- For childhood/distant memories: "We often leave our best selves in the woods of our childhood. Go back and get them."
+- For occasional answers: "A tourist visits the wild. A member belongs to it. Stop visiting your own peace of mind."
+- For regular/practiced answers: "Then this isn't a pitch. It's a homecoming. The 10% Club was built for you."
 
 ---
 
@@ -47,9 +47,9 @@ These are the reflection questions that were previously embedded throughout the 
 - "I try to hear them daily"
 
 **Insights**:
-- For can't remember/city answers: "That's exactly why 30 nights a year could change everything."
-- For sometimes/travel answers: "You remember what clarity feels like. What if you could have that 10% of your year?"
-- For actively seeking/daily answers: "You're ahead of most. Imagine making that 10% of every year—fully immersive."
+- For can't remember/city answers: "Your ears are tired. They evolved for wind in trees, not sirens on asphalt. Give them a month of what they were made for."
+- For sometimes/travel answers: "Why must silence be a destination? Make it a habit. 10% puts the soundtrack of nature on repeat."
+- For actively seeking/daily answers: "You understand that silence is an asset. We have 100 acres of it waiting for you."
 
 ---
 
@@ -64,9 +64,9 @@ These are the reflection questions that were previously embedded throughout the 
 - "I live by the seasons"
 
 **Insights**:
-- For lost track/office answers: "That's exactly why 30 nights a year could change everything."
-- For notice but don't experience answers: "You remember what clarity feels like. What if you could have that 10% of your year?"
-- For weekend/living by seasons answers: "You're ahead of most. Imagine making that 10% of every year—fully immersive."
+- For lost track/office answers: "We have paved over the calendar. Reconnect with the rhythm of the earth, not the fiscal quarter."
+- For notice but don't experience answers: "Looking at rain through glass isn't the same as feeling it. Break the glass. Step out for 10% of your year."
+- For weekend/living by seasons answers: "You are rare. Most people live in air-conditioning. You live in the world. You belong here."
 
 ---
 
@@ -81,9 +81,9 @@ These are the reflection questions that were previously embedded throughout the 
 - "I often look for them"
 
 **Insights**:
-- For city/childhood memory answers: "That's exactly why 30 nights a year could change everything."
-- For occasional/travel answers: "You remember what clarity feels like. What if you could have that 10% of your year?"
-- For regular/often answers: "You're ahead of most. Imagine making that 10% of every year—fully immersive."
+- For city/childhood memory answers: "The stars didn't go away. You did. 30 nights a year brings the universe back into view."
+- For occasional/travel answers: "A glimpse is nice. A gaze changes your perspective. Don't settle for glimpses."
+- For regular/often answers: "Then you know how small our problems look from down here. Keep looking up."
 
 ---
 

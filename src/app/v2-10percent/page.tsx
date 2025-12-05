@@ -24,6 +24,7 @@ const IMAGES = {
   logo: "/10-Club-01.png",
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
+    poomaale2: "/PBR_8924.jpg",
     hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
     hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg",
     bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
@@ -437,7 +438,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                  </div>
 
                  <div className="space-y-8 pl-4">
-                    <h2 className="text-3xl font-light font-arizona">The Investment</h2>
+                    <h2 className="text-3xl font-light font-arizona">The Commitment</h2>
                     <div className="text-6xl md:text-7xl font-light text-[#ffc083]">
                       ₹17.6 L
                       <span className="text-xl md:text-2xl ml-2 opacity-50 block mt-2 text-[#fdfbf7]">All inclusive for 10 years</span>
@@ -452,6 +453,13 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                     >
                       I Accept the Protocol
                     </TypeformButton>
+                    <p className="text-sm text-center text-[#fdfbf7]/70 mt-4 font-arizona">
+                       "The Protocol begins with a conversation."
+                       <br />
+                       <span className="opacity-80 text-xs uppercase tracking-widest mt-2 block">
+                         An Open Dialogue: {getNextSaturdayWithTime()}
+                       </span>
+                    </p>
                  </div>
               </div>
             </motion.div>
@@ -683,7 +691,7 @@ export default function EditorialPage() {
                    </li>
                    <li className="flex items-center gap-4">
                      <div className="w-2 h-2 bg-[#342e29] rounded-full" />
-                     <span className="text-lg font-arizona">Your calendar is full, but your clarity is empty.</span>
+                     <span className="text-lg font-arizona">The calendar is full, but clarity is empty.</span>
                    </li>
                    <li className="flex items-center gap-4">
                      <div className="w-2 h-2 bg-[#342e29] rounded-full" />
@@ -837,11 +845,12 @@ export default function EditorialPage() {
            
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
              {[
-               { name: "Poomaale", desc: "Ancient forest canopy. Coffee, Cardamom & Mist in Coorg.", img: IMAGES.locations.poomaale },
-               { name: "Hammiyala", desc: "Coffee agroforestry. High altitude grasslands where wind speaks.", img: IMAGES.locations.hammiyala },
+               { name: "Poomaale 1.0, Coorg", desc: "Ancient forest canopy. Coffee, Cardamom & Mist in Coorg.", img: IMAGES.locations.poomaale },
+               { name: "Poomaale 2.0, Coorg", desc: "Adjacent wilderness. New coffee plantations and misty trails in Coorg.", img: IMAGES.locations.poomaale2 },
+               { name: "Hammiyala, Coorg", desc: "Coffee agroforestry. High altitude grasslands where wind speaks.", img: IMAGES.locations.hammiyala },
                { name: "Hyderabad", desc: "Deccan plateau. Ancient rocks and scrub forests close to home.", img: IMAGES.locations.hyderabad },
-               { name: "Bhopal", desc: "Central India wilderness. Where the tiger still walks.", img: IMAGES.locations.bhopal },
-               { name: "Mumbai", desc: "Urban-nature integration. Finding silence in the city's backyard.", img: IMAGES.locations.mumbai },
+               { name: "Bhopal", desc: "India's Central Highlands. Where the tiger still walks.", img: IMAGES.locations.bhopal },
+               { name: "Mumbai", desc: "Maximum City. The silence closest to the chaos.", img: IMAGES.locations.mumbai },
                { name: "And Growing...", desc: "Across India's wildest landscapes.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
                <div key={i} className="group cursor-none">
@@ -913,7 +922,7 @@ export default function EditorialPage() {
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <SectionHeader 
                number="05"
-               title="Not For Everyone."
+               title="This is not for"
                subtitle="This is a commitment, not a consumption."
                light
             />
@@ -933,7 +942,7 @@ export default function EditorialPage() {
                      desc: "You're looking for another trophy. You'll be disappointed by our emphasis on substance over service. We sleep under stars, not in suites."
                   },
                   {
-                     title: "The Social Climber",
+                     title: "The Networker",
                      desc: "You're here to network with 'important people'. The connections you seek are transactional. We value authentic community over strategic alliances."
                   }
                ].map((item, i) => (

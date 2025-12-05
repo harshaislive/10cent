@@ -106,3 +106,25 @@ You can sign up here: 10percent.beforest.co"
 
 ### Submit Button:
 "Reserve My Virtual Seat"
+
+---
+
+## Meaningful Framework Questions (Contextual Memory Builders)
+
+These questions are designed to bypass the "transactional" brain and tap into the "emotional/identity" brain. They categorize the user not by demographics, but by values.
+
+### Question 1: The Recharge Archetype
+**Question:** "If you had a completely free Saturday, what does 'recharging' actually look like for you?"
+**Options:**
+A. "High volume. Loud music, friends, and energy." (The Socialite)
+B. "Comfort zone. Family time, good food, and home." (The Nester)
+C. "Zero signal. Deep silence, nature, and solitude." (The 10% Persona)
+**Why it works:** It forces them to visualize their ideal state. Option C subtly aligns them with the product before they even buy it.
+
+### Question 2: The Asset Definition
+**Question:** "Most assets sit in a bank account. Where do you want your legacy to live?"
+**Options:**
+A. "In the market." (Stocks, bonds, numbers.)
+B. "In the moment." (Travel, experiences, fleeting memories.)
+C. "In the earth." (A forest, a sanctuary, something that grows.)
+**Why it works:** It reframes the "cost" of the membership as an investment in "legacy" rather than just "property".
