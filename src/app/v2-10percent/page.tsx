@@ -704,7 +704,7 @@ export default function EditorialPage() {
                 The average urban professional spends less than 2% of their time outdoors. We have become tourists in our own home—planet Earth.
               </p>
               <p className="text-[#86312b] italic text-2xl pl-6 border-l-2 border-[#86312b] mt-2 mb-0">
-                "We are not meant to live this way. The anxiety you feel is not a disorder; it is a signal."
+                "We are not meant to live this way. The anxiety we feel is not a coincidence; it is a signal."
               </p>
             </div>
 
