@@ -24,11 +24,11 @@ const IMAGES = {
   logo: "/10-Club-01.png",
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
-    poomaale2: "/PBR_8924.jpg",
+    poomaale2: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
     hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg",
-    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
-    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"
+    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/hyderabad.jpg",
+    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png",
+    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg"
   }
 }
 
@@ -237,7 +237,8 @@ const WildernessGallery = () => {
             alt={currentPoint.title}
             fill
             className="object-cover"
-            quality={90}
+            quality={75}
+            sizes="100vw"
           />
           {/* Cinematic Scrim - Darker at bottom/left for text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -585,7 +586,8 @@ export default function EditorialPage() {
                 fill 
                 className="hidden md:block object-cover brightness-[0.85]"
                 priority
-                quality={90}
+                quality={75}
+                sizes="100vw"
               />
               {/* Mobile Image */}
               <Image 
@@ -594,7 +596,8 @@ export default function EditorialPage() {
                 fill 
                 className="md:hidden object-cover brightness-[0.85]"
                 priority
-                quality={90}
+                quality={75}
+                sizes="100vw"
               />
             </motion.div>
           </AnimatePresence>
@@ -670,6 +673,7 @@ export default function EditorialPage() {
                   src={IMAGES.office} 
                   alt="Urban Disconnect" 
                   fill 
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out scale-105 group-hover:scale-100"
                 />
              </div>
@@ -733,6 +737,7 @@ export default function EditorialPage() {
                     src={IMAGES.founder}
                     alt="Sunith Reddy"
                     fill
+                    sizes="(max-width: 768px) 100vw, 40vw"
                     className="object-cover transition-opacity duration-700 group-hover:opacity-0"
                   />
                   <Image 
@@ -859,10 +864,34 @@ export default function EditorialPage() {
                      src={loc.img} 
                      alt={loc.name} 
                      fill 
-                     className={`object-cover transition-transform duration-700 group-hover:scale-110 ${loc.blur ? 'blur-sm scale-110' : ''}`}
+                     quality={60}
+                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                     className={`object-cover transition-transform duration-700 group-hover:scale-110 ${loc.blur ? 'blur-sm scale-110 grayscale' : ''}`}
                    />
                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                   {loc.blur && <div className="absolute inset-0 flex items-center justify-center bg-black/20"><Plus className="w-12 h-12 text-white opacity-50" /></div>}
+                   
+                   {/* Editorial "Growing" Animation */}
+                   {loc.blur && (
+                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                       <div className="relative w-24 h-24 flex items-center justify-center">
+                          <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 border border-[#fdfbf7]/30 rounded-full border-dashed"
+                          />
+                          <motion.div 
+                            animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-12 h-12 border border-[#fdfbf7] rounded-full flex items-center justify-center"
+                          >
+                            <div className="w-1.5 h-1.5 bg-[#fdfbf7] rounded-full" />
+                          </motion.div>
+                          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 text-center">
+                            <span className="text-[#fdfbf7] text-[10px] uppercase tracking-[0.3em] font-light">Unfolding</span>
+                          </div>
+                       </div>
+                     </div>
+                   )}
                  </div>
                  <h3 className="text-3xl font-light mb-2 group-hover:text-[#86312b] transition-colors">{loc.name}</h3>
                  <p className="text-[#342e29]/60 font-arizona">{loc.desc}</p>
