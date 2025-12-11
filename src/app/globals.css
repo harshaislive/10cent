@@ -485,6 +485,15 @@
   animation: chip-underline 0.3s ease-out forwards;
 }
 
+/* Hide Scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Print Styles */
 @media print {
   .no-print {

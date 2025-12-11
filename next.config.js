@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Force restart
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true, // Enable SWC minification for better performance

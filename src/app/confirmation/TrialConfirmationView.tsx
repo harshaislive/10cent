@@ -1,0 +1,477 @@
+'use client'
+
+import React, { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { ArrowLeft, ArrowRight, Calendar, Compass, MapPin, CreditCard, Phone, Stars, Coffee, Tent } from 'lucide-react'
+import { motion } from 'framer-motion'
+import TrialLocationCard from '@/components/TrialLocationCard'
+import TrialBookingModal from '@/components/TrialBookingModal'
+
+// Trial Locations Data
+const TRIAL_LOCATIONS = [
+  {
+    name: "Hammiyala, Coorg",
+    tagline: "Coffee agroforestry. High altitude grasslands where wind speaks.",
+    description: "Expansive coffee estates meet mountain wilderness. Experience the rhythm of plantation life while immersed in Coorg's misty highlands.",
+    features: [
+      "100+ acre coffee estate",
+      "Mountain views & grasslands",
+      "Traditional Coorgi culture",
+      "Wilderness trails"
+    ],
+    images: [
+      {
+        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
+        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg"
+      },
+      {
+        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
+        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"
+      },
+      {
+        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
+        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG"
+      }
+    ]
+  },
+  {
+    name: "Glamping, Hyderabad",
+    tagline: "Deccan plateau. Ancient rocks and scrub forests close to home.",
+    description: "Luxury meets wilderness on the Deccan plateau. Ancient rock formations and star-filled skies, just hours from the city.",
+    features: [
+      "Luxury glamping tents",
+      "Ancient rock formations",
+      "Stargazing experiences",
+      "Accessible from city"
+    ],
+    images: [
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1139.JPG",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1139.JPG"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1152.JPG",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1152.JPG"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1166.JPG",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1166.JPG"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1167.JPG",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1167.JPG"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1173.JPG",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1173.JPG"
+      }
+    ]
+  },
+  {
+    name: "Blyton, Coorg",
+    tagline: "Misty forests. Colonial charm meets wilderness immersion.",
+    description: "A heritage property wrapped in dense forest. Where colonial elegance dissolves into the wild, and silence becomes your companion.",
+    features: [
+      "Heritage property",
+      "Dense forest cover",
+      "Bird watching paradise",
+      "Tranquil atmosphere"
+    ],
+    images: [
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
+      },
+      {
+        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
+        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
+      }
+    ]
+  }
+]
+
+// --- Utility Components ---
+const NoiseOverlay = () => (
+  <div className="fixed inset-0 pointer-events-none z-[60] opacity-[0.03] mix-blend-overlay">
+    <svg className="w-full h-full">
+      <filter id="noiseFilter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+    </svg>
+  </div>
+)
+
+const SectionHeader = ({ number, title, subtitle }: { number: string, title: string, subtitle?: string }) => (
+  <div className="flex flex-col gap-4 mb-12 md:mb-20 text-[#342e29]">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="flex items-center gap-4"
+    >
+      <span className="text-sm font-bold tracking-[0.2em] uppercase py-1 px-2 border border-[#342e29]/30">
+        {number}
+      </span>
+      <div className="h-px flex-1 bg-[#342e29]/20" />
+    </motion.div>
+    <div className="overflow-hidden">
+        <motion.h2 
+            initial={{ y: "100%" }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-tight font-arizona"
+        >
+            {title}
+        </motion.h2>
+    </div>
+    {subtitle && (
+      <motion.p 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2 }}
+        className="max-w-md text-lg md:text-xl font-arizona italic opacity-80 ml-auto mr-0 md:mr-12 text-right"
+      >
+        {subtitle}
+      </motion.p>
+    )}
+  </div>
+)
+
+interface ConfirmationClientProps {
+  action: string | null
+  email: string | null
+}
+
+export default function TrialConfirmationView({ action, email }: ConfirmationClientProps) {
+  const fired = useRef(false)
+  const sliderRef = useRef<HTMLDivElement>(null)
+
+  // Booking Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState('')
+
+  // Scroll functionality for horizontal slider
+  const scrollPrev = () => {
+    if (sliderRef.current) {
+      const scrollAmount = sliderRef.current.offsetWidth
+      sliderRef.current.scrollBy({
+        left: -scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollNext = () => {
+    if (sliderRef.current) {
+      const scrollAmount = sliderRef.current.offsetWidth
+      sliderRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  useEffect(() => {
+    // Fire webhook once if action and email are present
+    if (action && email && !fired.current) {
+      fired.current = true
+      const webhookUrl = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL
+
+      if (webhookUrl) {
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action,
+            email,
+            source: 'webinar_email_confirmation',
+            timestamp: new Date().toISOString()
+          })
+        }).catch(err => console.error('Webhook trigger failed:', err))
+      } else {
+        console.warn('Webhook URL not configured (NEXT_PUBLIC_N8N_WEBHOOK_URL)')
+      }
+    }
+  }, [action, email])
+
+  const handleBook = (locationName: string) => {
+    setSelectedLocation(locationName)
+    setIsModalOpen(true)
+  }
+
+  // Trial action - Show enhanced page with locations
+  if (action === 'trial') {
+    return (
+      <div className="w-full relative z-10 bg-[#fdfbf7] text-[#342e29] font-arizona">
+        <NoiseOverlay />
+
+        {/* Logo Header */}
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 flex justify-between items-center py-8">
+          <Link href="/" className="transition-opacity hover:opacity-70">
+            <div className="relative w-16 h-16 md:w-20 md:h-20 grayscale hover:grayscale-0 transition-all duration-500">
+              <Image
+                src="/10-Club-01.png"
+                alt="Beforest 10% Club"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </Link>
+          <div className="hidden md:block text-xs uppercase tracking-widest opacity-60">
+            The Art of Return
+          </div>
+        </div>
+
+        <TrialBookingModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          locationName={selectedLocation}
+        />
+
+        {/* Hero Section - Editorial Style */}
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 mb-24 pt-12 md:pt-24">
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-12 md:col-span-9">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <h1 className="text-[15vw] md:text-[12vw] leading-[0.8] tracking-tighter font-light text-[#342e29] mb-8 mix-blend-multiply">
+                            The Trial.
+                        </h1>
+                    </motion.div>
+                </div>
+                <div className="col-span-12 md:col-span-3 flex flex-col justify-end items-end text-right">
+                    <motion.p 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="text-lg md:text-xl leading-relaxed opacity-80 max-w-[280px]"
+                    >
+                        Experience wilderness before you commit.<br/>
+                        Three sanctuaries await your arrival.
+                    </motion.p>
+                </div>
+            </div>
+        </div>
+
+        {/* Locations Slider - Horizontal Scroll */}
+        <div className="relative w-full mb-32">
+          <div ref={sliderRef} className="w-full overflow-x-auto snap-x snap-mandatory flex scrollbar-hide">
+            {TRIAL_LOCATIONS.map((location, index) => (
+              <div key={location.name} className="min-w-full w-full snap-center shrink-0">
+                  <TrialLocationCard
+                  {...location}
+                  index={index}
+                  onBook={handleBook}
+                  />
+              </div>
+            ))}
+          </div>
+
+          {/* Slider Navigation Arrows */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-6 md:px-12 z-20 pointer-events-none"
+          >
+            <button 
+              onClick={scrollPrev} 
+              className="p-3 rounded-full bg-[#342e29]/50 backdrop-blur-sm text-[#fdfbf7] hover:bg-[#86312b] transition-colors duration-300 pointer-events-auto shadow-lg"
+              aria-label="Previous location"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <button 
+              onClick={scrollNext} 
+              className="p-3 rounded-full bg-[#342e29]/50 backdrop-blur-sm text-[#fdfbf7] hover:bg-[#86312b] transition-colors duration-300 pointer-events-auto shadow-lg"
+              aria-label="Next location"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Trial Details Section - Editorial Redesign */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 1 }}
+          className="max-w-[1800px] mx-auto mb-32 px-6 md:px-12"
+        >
+          <SectionHeader 
+            number="01" 
+            title="The Journey Ahead." 
+            subtitle="From request to arrival." 
+          />
+
+          {/* The Process - Horizontal Timeline */}
+          <div className="mb-40 mt-24">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
+              {/* Connecting Line (Desktop) */}
+              <div className="hidden md:block absolute top-12 left-0 right-0 h-px bg-[#342e29]/10 -z-10" />
+
+              {[
+                {
+                  step: "01",
+                  title: "Request",
+                  desc: "Select your preferred sanctuary and submit a request.",
+                  icon: MapPin
+                },
+                {
+                  step: "02",
+                  title: "Verify",
+                  desc: "Our community team contacts you to verify details.",
+                  icon: Phone
+                },
+                {
+                  step: "03",
+                  title: "Secure",
+                  desc: "₹50,000 adjustable token secures your dates.",
+                  icon: CreditCard
+                },
+                {
+                  step: "04",
+                  title: "Arrive",
+                  desc: "Receive your guide and arrive at the sanctuary.",
+                  icon: Compass
+                }
+              ].map((item, i) => (
+                <div key={i} className="text-center group">
+                  <div className="w-24 h-24 mx-auto bg-[#fdfbf7] border border-[#342e29]/10 rounded-full flex items-center justify-center mb-8 relative z-10 group-hover:border-[#86312b] transition-colors duration-500">
+                    <span className="font-arizona text-3xl text-[#342e29]/20 font-light group-hover:text-[#86312b] transition-colors duration-500">{item.step}</span>
+                  </div>
+                  <h3 className="text-2xl font-arizona text-[#342e29] mb-4 font-light">{item.title}</h3>
+                  <p className="text-[#342e29]/60 font-arizona text-sm leading-relaxed max-w-[200px] mx-auto">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <SectionHeader 
+            number="02" 
+            title="The Experience." 
+            subtitle="What to expect." 
+          />
+
+          {/* The Experience - 2x2 Grid with Imagery */}
+          <div className="grid md:grid-cols-2 gap-px bg-[#342e29]/10 border border-[#342e29]/10 overflow-hidden mt-20">
+            {[
+              {
+                title: "Time Unbound",
+                desc: "3 nights / 4 days. Long enough to forget the city, short enough to return.",
+                icon: Calendar
+              },
+              {
+                title: "All Inclusive",
+                desc: "Farm-to-table meals, guided walks, and curated experiences included.",
+                icon: Coffee
+              },
+              {
+                title: "Wilderness First",
+                desc: "Not a hotel. A sanctuary. Nature dictates the rhythm here.",
+                icon: Stars
+              },
+              {
+                title: "The 10% Life",
+                desc: "A firsthand trial of the lifestyle we've built for our members.",
+                icon: Tent
+              }
+            ].map((item, i) => (
+              <div key={i} className="bg-[#fdfbf7] p-12 md:p-24 flex flex-col items-center text-center hover:bg-[#fffdf9] transition-colors duration-500 group">
+                <item.icon className="w-10 h-10 text-[#86312b] mb-8 opacity-80 group-hover:scale-110 transition-transform duration-500" strokeWidth={1} />
+                <h3 className="text-3xl font-arizona text-[#342e29] mb-4 font-light">{item.title}</h3>
+                <p className="text-[#342e29]/60 font-arizona leading-relaxed max-w-sm text-lg">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-32 text-center">
+            <p className="font-arizona text-3xl md:text-5xl text-[#342e29]/30 italic font-light leading-tight">
+              "The wilderness doesn't rush,<br/>and neither do we."
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Return Home Link */}
+        <div className="text-center pb-24 max-w-[1800px] mx-auto px-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[#342e29] hover:text-[#86312b] transition-colors border-b border-[#342e29]/20 hover:border-[#86312b] pb-1 uppercase tracking-widest text-xs font-bold"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Return Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // Other actions - Simple message format
+  const content = {
+    subscribe: {
+      title: "The Path Chosen.",
+      message: "Thank you for your commitment. A team member will call you within 24-48 hours to assist with the payment and finalize your subscription to the 10% Club.",
+      sub: "Welcome to the fold."
+    },
+    optout: {
+      title: "Pause.",
+      message: "We've updated your preferences. The wilderness will be here when you are ready.",
+      sub: "See you down the road."
+    },
+    default: {
+      title: "Acknowledged.",
+      message: "We have received your response.",
+      sub: ""
+    }
+  }
+
+  const current = content[action as keyof typeof content] || content.default
+
+  return (
+    <div className="max-w-2xl mx-auto text-center relative z-10">
+      <h1 className="text-4xl md:text-6xl font-light text-[#342e29] mb-8 font-arizona">
+        {current.title}
+      </h1>
+      <p className="text-xl md:text-2xl text-[#342e29]/80 leading-relaxed mb-12 font-arizona font-light">
+        {current.message}
+      </p>
+      {current.sub && (
+        <p className="text-[#86312b] uppercase tracking-widest text-sm font-bold mb-16">
+          {current.sub}
+        </p>
+      )}
+
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 text-[#342e29] hover:text-[#86312b] transition-colors border-b border-[#342e29]/20 hover:border-[#86312b] pb-1 uppercase tracking-widest text-xs font-bold"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Return Home
+      </Link>
+    </div>
+  )
+}

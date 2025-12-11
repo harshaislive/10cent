@@ -1,10 +1,14 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { PopupButton } from '@typeform/embed-react'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 
 export default function TypeformChatWrapper() {
-  if (!TYPEFORM_CONFIG.ENABLED) {
+  const pathname = usePathname()
+  const isConfirmationPage = pathname === '/confirmation'
+
+  if (!TYPEFORM_CONFIG.ENABLED || isConfirmationPage) {
     return null
   }
 
