@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, Calendar, Compass, MapPin, CreditCard, Phone, St
 import { motion } from 'framer-motion'
 import TrialLocationCard from '@/components/TrialLocationCard'
 import TrialBookingModal from '@/components/TrialBookingModal'
+import TrialDetailModal from '@/components/TrialDetailModal'
 
 // Trial Locations Data
 const TRIAL_LOCATIONS = [
@@ -121,30 +122,30 @@ const NoiseOverlay = () => (
 
 const SectionHeader = ({ number, title, subtitle }: { number: string, title: string, subtitle?: string }) => (
   <div className="flex flex-col gap-4 mb-12 md:mb-20 text-[#342e29]">
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className="flex items-center gap-4"
     >
-      <span className="text-sm font-bold tracking-[0.2em] uppercase py-1 px-2 border border-[#342e29]/30">
+      <span className="text-sm font-medium tracking-[0.2em] uppercase py-1 px-2 border border-[#342e29]/30">
         {number}
       </span>
       <div className="h-px flex-1 bg-[#342e29]/20" />
     </motion.div>
     <div className="overflow-hidden">
-        <motion.h2 
-            initial={{ y: "100%" }}
-            whileInView={{ y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-tight font-arizona"
-        >
-            {title}
-        </motion.h2>
+      <motion.h2
+        initial={{ y: "100%" }}
+        whileInView={{ y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-tight font-arizona"
+      >
+        {title}
+      </motion.h2>
     </div>
     {subtitle && (
-      <motion.p 
+      <motion.p
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
@@ -169,25 +170,20 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
   // Booking Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState('')
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  // Scroll functionality for horizontal slider
-  const scrollPrev = () => {
-    if (sliderRef.current) {
-      const scrollAmount = sliderRef.current.offsetWidth
-      sliderRef.current.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth'
-      })
-    }
+  // New Detail Modal State
+  const [selectedDetailLocation, setSelectedDetailLocation] = useState<typeof TRIAL_LOCATIONS[0] | null>(null)
+
+  const handleCardClick = (location: typeof TRIAL_LOCATIONS[0]) => {
+    setSelectedDetailLocation(location)
   }
 
-  const scrollNext = () => {
-    if (sliderRef.current) {
-      const scrollAmount = sliderRef.current.offsetWidth
-      sliderRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth'
-      })
+  const handleBookFromDetail = () => {
+    if (selectedDetailLocation) {
+      setSelectedLocation(selectedDetailLocation.name)
+      setIsModalOpen(true)
+      setSelectedDetailLocation(null)
     }
   }
 
@@ -214,11 +210,6 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
     }
   }, [action, email])
 
-  const handleBook = (locationName: string) => {
-    setSelectedLocation(locationName)
-    setIsModalOpen(true)
-  }
-
   // Trial action - Show enhanced page with locations
   if (action === 'trial') {
     return (
@@ -242,76 +233,91 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           </div>
         </div>
 
+        {/* Booking Modal (Form) */}
         <TrialBookingModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           locationName={selectedLocation}
         />
 
+        {/* Detail Modal (Gallery + Info) */}
+        <TrialDetailModal
+          isOpen={!!selectedDetailLocation}
+          onClose={() => setSelectedDetailLocation(null)}
+          location={selectedDetailLocation}
+          onBook={handleBookFromDetail}
+        />
+
         {/* Hero Section - Editorial Style */}
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 mb-24 pt-12 md:pt-24">
-            <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-12 md:col-span-9">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h1 className="text-[15vw] md:text-[12vw] leading-[0.8] tracking-tighter font-light text-[#342e29] mb-8 mix-blend-multiply">
-                            The Trial.
-                        </h1>
-                    </motion.div>
-                </div>
-                <div className="col-span-12 md:col-span-3 flex flex-col justify-end items-end text-right">
-                    <motion.p 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5, duration: 1 }}
-                        className="text-lg md:text-xl leading-relaxed opacity-80 max-w-[280px]"
-                    >
-                        Experience wilderness before you commit.<br/>
-                        Three sanctuaries await your arrival.
-                    </motion.p>
-                </div>
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 mb-12 pt-12 md:pt-24">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-12 md:col-span-9">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h1 className="text-[12vw] md:text-[8vw] leading-[0.8] tracking-tighter font-light text-[#342e29] mb-8 mix-blend-multiply">
+                  The Trial.
+                </h1>
+              </motion.div>
             </div>
+            <div className="col-span-12 md:col-span-3 flex flex-col justify-end items-end text-right">
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="text-lg md:text-xl leading-relaxed opacity-80 max-w-[320px]"
+              >
+                Three sanctuaries. One philosophy.<br />
+                <span className="text-[#342e29] font-medium border-b border-[#342e29]/20 pb-1">Select a landscape</span> to begin your 10% trial.
+              </motion.p>
+            </div>
+          </div>
         </div>
 
-        {/* Locations Slider - Horizontal Scroll */}
-        <div className="relative w-full mb-32">
-          <div ref={sliderRef} className="w-full overflow-x-auto snap-x snap-mandatory flex scrollbar-hide">
-            {TRIAL_LOCATIONS.map((location, index) => (
-              <div key={location.name} className="min-w-full w-full snap-center shrink-0">
-                  <TrialLocationCard
+        {/* Locations - Mobile Vertical Stack */}
+        <div className="flex flex-col w-full md:hidden mb-24 px-4 gap-4">
+          {TRIAL_LOCATIONS.map((location, index) => (
+            <div key={location.name} className="w-full h-[600px] border border-[#342e29]/10">
+              <TrialLocationCard
+                {...location}
+                index={index}
+                onBook={() => handleCardClick(location)}
+                className="h-full"
+                heightClass="h-full"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Accordion View */}
+        <div className="hidden md:flex w-full h-[90vh] mb-32 overflow-hidden border-y border-[#342e29]/10">
+          {TRIAL_LOCATIONS.map((location, index) => {
+            const isHovered = hoveredIndex === index;
+            const isSomeoneHovered = hoveredIndex !== null;
+
+            return (
+              <motion.div
+                key={location.name}
+                layout
+                onHoverStart={() => setHoveredIndex(index)}
+                onHoverEnd={() => setHoveredIndex(null)}
+                className="relative h-full border-r border-[#fdfbf7]/10 last:border-0 overflow-hidden min-w-0"
+                initial={{ flex: 1 }}
+                animate={{ flex: isHovered ? 2.5 : 1 }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <TrialLocationCard
                   {...location}
                   index={index}
-                  onBook={handleBook}
-                  />
-              </div>
-            ))}
-          </div>
-
-          {/* Slider Navigation Arrows */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-6 md:px-12 z-20 pointer-events-none"
-          >
-            <button 
-              onClick={scrollPrev} 
-              className="p-3 rounded-full bg-[#342e29]/50 backdrop-blur-sm text-[#fdfbf7] hover:bg-[#86312b] transition-colors duration-300 pointer-events-auto shadow-lg"
-              aria-label="Previous location"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button 
-              onClick={scrollNext} 
-              className="p-3 rounded-full bg-[#342e29]/50 backdrop-blur-sm text-[#fdfbf7] hover:bg-[#86312b] transition-colors duration-300 pointer-events-auto shadow-lg"
-              aria-label="Next location"
-            >
-              <ArrowRight className="w-6 h-6" />
-            </button>
-          </motion.div>
+                  onBook={() => handleCardClick(location)}
+                  className="h-full border-b-0"
+                  heightClass="h-full"
+                />
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* Trial Details Section - Editorial Redesign */}
@@ -322,10 +328,10 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           transition={{ duration: 1 }}
           className="max-w-[1800px] mx-auto mb-32 px-6 md:px-12"
         >
-          <SectionHeader 
-            number="01" 
-            title="The Journey Ahead." 
-            subtitle="From request to arrival." 
+          <SectionHeader
+            number="01"
+            title="The Journey Ahead."
+            subtitle="From request to arrival."
           />
 
           {/* The Process - Horizontal Timeline */}
@@ -371,10 +377,10 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
             </div>
           </div>
 
-          <SectionHeader 
-            number="02" 
-            title="The Experience." 
-            subtitle="What to expect." 
+          <SectionHeader
+            number="02"
+            title="The Experience."
+            subtitle="What to expect."
           />
 
           {/* The Experience - 2x2 Grid with Imagery */}
@@ -382,7 +388,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
             {[
               {
                 title: "Time Unbound",
-                desc: "3 nights / 4 days. Long enough to forget the city, short enough to return.",
+                desc: "2 nights / 3 days. Long enough to forget the city, short enough to return.",
                 icon: Calendar
               },
               {
@@ -411,7 +417,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
 
           <div className="mt-32 text-center">
             <p className="font-arizona text-3xl md:text-5xl text-[#342e29]/30 italic font-light leading-tight">
-              "The wilderness doesn't rush,<br/>and neither do we."
+              "The wilderness doesn't rush,<br />and neither do we."
             </p>
           </div>
         </motion.div>
@@ -420,13 +426,13 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
         <div className="text-center pb-24 max-w-[1800px] mx-auto px-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-[#342e29] hover:text-[#86312b] transition-colors border-b border-[#342e29]/20 hover:border-[#86312b] pb-1 uppercase tracking-widest text-xs font-bold"
+            className="inline-flex items-center gap-2 text-[#342e29] hover:text-[#86312b] transition-colors border-b border-[#342e29]/20 hover:border-[#86312b] pb-1 uppercase tracking-widest text-xs font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Return Home
           </Link>
         </div>
-      </div>
+      </div >
     )
   }
 
@@ -460,7 +466,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
         {current.message}
       </p>
       {current.sub && (
-        <p className="text-[#86312b] uppercase tracking-widest text-sm font-bold mb-16">
+        <p className="text-[#86312b] uppercase tracking-widest text-sm font-medium mb-16">
           {current.sub}
         </p>
       )}
