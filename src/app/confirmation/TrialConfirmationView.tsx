@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { ArrowLeft, ArrowRight, Calendar, Compass, MapPin, CreditCard, Phone, Stars, Coffee, Tent } from 'lucide-react'
 import { motion } from 'framer-motion'
 import TrialLocationCard from '@/components/TrialLocationCard'
-import TrialPaymentModal from '@/components/TrialPaymentModal'
+import TrialRequestModal from '@/components/TrialRequestModal'
 import TrialDetailModal from '@/components/TrialDetailModal'
 import { imagePresets } from '@/utils/supabaseImage'
 
@@ -175,12 +175,13 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           </div>
         </div>
 
-        {/* Payment Modal */}
-        <TrialPaymentModal
+        {/* Trial Request Modal */}
+        <TrialRequestModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           locationName={AVAILABLE_LOCATION.name}
           location="blyton_coorg"
+          locationSlug="blyton_coorg"
         />
 
         {/* Detail Modal (Gallery + Info) */}
