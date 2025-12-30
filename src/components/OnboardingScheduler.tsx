@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calendar as CalendarIcon, Clock, User, Phone, CheckCircle2, ChevronRight, ChevronLeft, Loader2, ArrowRight } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, User, Phone, CheckCircle2, ChevronRight, ChevronLeft, Loader2, ArrowRight, Wallet, ShieldCheck, Sparkles } from 'lucide-react'
 import axios from 'axios'
 
 export default function OnboardingScheduler() {
-  const [step, setStep] = useState<'datetime' | 'details' | 'success'>('datetime')
+  const [step, setStep] = useState<'intro' | 'datetime' | 'details' | 'success'>('intro')
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [formData, setFormData] = useState({ name: '', phone: '' })
@@ -79,21 +79,124 @@ export default function OnboardingScheduler() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white/50 backdrop-blur-sm border border-[#342e29]/10 rounded-xl overflow-hidden p-6 md:p-12">
+    <div className="w-full max-w-5xl mx-auto">
       <AnimatePresence mode="wait">
+        
+        {/* STEP 1: INTRO */}
+        {step === 'intro' && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-white/50 backdrop-blur-sm border border-[#342e29]/10 rounded-xl overflow-hidden p-8 md:p-16"
+          >
+            <div className="text-center mb-16">
+              <p className="text-[#86312b] uppercase tracking-[0.3em] text-xs font-bold mb-6">
+                Welcome to the 10% Club
+              </p>
+              <h2 className="text-4xl md:text-6xl font-light font-arizona text-[#342e29] mb-8 leading-tight">
+                A Decision for a Lifetime.
+              </h2>
+              <p className="text-lg md:text-xl opacity-70 max-w-2xl mx-auto font-arizona leading-relaxed">
+                You are about to embark on a journey that few take—committing to a life in balance with nature. 
+                We understand the weight of this investment (₹17.6 Lakhs) and are here to ensure every question is answered.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12 mb-16">
+              <div className="space-y-8">
+                <h3 className="font-arizona text-2xl text-[#342e29] border-b border-[#342e29]/10 pb-4">
+                  What to Expect
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#fdfbf7] border border-[#342e29]/10 flex items-center justify-center shrink-0 text-[#86312b]">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-[#342e29] mb-1">Personal Onboarding</h4>
+                      <p className="text-sm opacity-60 leading-relaxed">A dedicated guide will welcome you, explaining the privileges and responsibilities of your membership.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#fdfbf7] border border-[#342e29]/10 flex items-center justify-center shrink-0 text-[#86312b]">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-[#342e29] mb-1">Secure Payment Assistance</h4>
+                      <p className="text-sm opacity-60 leading-relaxed">We will guide you through the secure transaction process for the membership fee.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#fdfbf7] border border-[#342e29]/10 flex items-center justify-center shrink-0 text-[#86312b]">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-[#342e29] mb-1">Immediate Activation</h4>
+                      <p className="text-sm opacity-60 leading-relaxed">Your access to our sanctuaries begins immediately upon confirmation.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <h3 className="font-arizona text-2xl text-[#342e29] border-b border-[#342e29]/10 pb-4">
+                  Please Keep Handy
+                </h3>
+                <div className="bg-[#fdfbf7] p-8 border border-[#342e29]/5 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Wallet className="w-6 h-6 text-[#342e29]/40" />
+                    <div>
+                      <p className="font-medium text-[#342e29]">Payment Method</p>
+                      <p className="text-xs opacity-50 uppercase tracking-wider mt-1">Netbanking / UPI / Credit Card</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-[#342e29]/5" />
+                  <div className="flex items-center gap-4">
+                    <User className="w-6 h-6 text-[#342e29]/40" />
+                    <div>
+                      <p className="font-medium text-[#342e29]">Identification</p>
+                      <p className="text-xs opacity-50 uppercase tracking-wider mt-1">PAN Card (For high value transactions)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => setStep('datetime')}
+                className="bg-[#342e29] text-[#fdfbf7] px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-[#86312b] transition-colors inline-flex items-center gap-3 group"
+              >
+                Schedule Your Onboarding
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* STEP 2: DATETIME */}
         {step === 'datetime' && (
           <motion.div
             key="datetime"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
+            className="bg-white/50 backdrop-blur-sm border border-[#342e29]/10 rounded-xl overflow-hidden p-6 md:p-12"
           >
             <div className="text-center mb-10">
+              <button 
+                onClick={() => setStep('intro')}
+                className="text-xs uppercase tracking-widest opacity-50 hover:opacity-100 mb-6 flex items-center gap-2 mx-auto"
+              >
+                <ArrowRight className="w-3 h-3 rotate-180" /> Back to Intro
+              </button>
               <h2 className="text-3xl md:text-4xl font-light font-arizona mb-4 text-[#342e29]">
-                Schedule Your Onboarding
+                Select a Time.
               </h2>
               <p className="opacity-60 max-w-lg mx-auto">
-                Select a convenient time for a 15-minute call to assist with your payment and welcome you to the club.
+                Choose a 15-minute window for your private onboarding call.
               </p>
             </div>
 
@@ -179,13 +282,14 @@ export default function OnboardingScheduler() {
           </motion.div>
         )}
 
+        {/* STEP 3: DETAILS */}
         {step === 'details' && (
           <motion.div
             key="details"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="max-w-xl mx-auto"
+            className="bg-white/50 backdrop-blur-sm border border-[#342e29]/10 rounded-xl overflow-hidden p-6 md:p-12 max-w-xl mx-auto"
           >
             <div className="text-center mb-10">
               <button 
@@ -252,12 +356,13 @@ export default function OnboardingScheduler() {
           </motion.div>
         )}
 
+        {/* STEP 4: SUCCESS */}
         {step === 'success' && (
           <motion.div
             key="success"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-12"
+            className="bg-white/50 backdrop-blur-sm border border-[#342e29]/10 rounded-xl overflow-hidden p-6 md:p-12 text-center py-12"
           >
             <div className="w-24 h-24 rounded-full border-2 border-[#86312b] text-[#86312b] flex items-center justify-center mx-auto mb-8 bg-[#86312b]/5">
               <CalendarIcon className="w-10 h-10" />
