@@ -1,96 +1,67 @@
 import { NextResponse } from "next/server"
-import crypto from "crypto"
 import axios from "axios"
-import { v4 as uuidv4 } from "uuid"
 
+/**
+ * Payment Proxy Route
+ *
+ * This route forwards payment requests to the experiences.beforest.co proxy
+ * which is the authorized domain for PhonePe payments.
+ *
+ * Flow:
+ * 1. 10percent.beforest.co receives payment request
+ * 2. Forwards to experiences.beforest.co/api/payment-proxy/initiate
+ * 3. Experiences proxy creates PhonePe order with authorized domain
+ * 4. User pays, PhonePe redirects to experiences.beforest.co callback
+ * 5. Experiences proxy redirects back to 10percent.beforest.co success/failure pages
+ */
 export async function POST(req: Request) {
   try {
     const { amount, mobileNumber, name, email, location } = await req.json()
 
-    const MERCHANT_ID = process.env.PHONEPE_MERCHANT_ID
-    const SALT_KEY = process.env.PHONEPE_SALT_KEY
-    const SALT_INDEX = process.env.PHONEPE_SALT_INDEX
-    const BASE_URL =
-      process.env.NEXT_PUBLIC_PHONEPE_ENV === "PROD"
-        ? process.env.PHONEPE_PROD_URL
-        : process.env.PHONEPE_UAT_URL
-    const ONBOARDING_URL = process.env.PHONEPE_ONBOARDING_URL || "https://experiences.beforest.co/"
+    const PROXY_URL = process.env.PAYMENT_PROXY_URL || "https://experiences.beforest.co/api/payment-proxy/initiate"
+    const API_KEY = process.env.PAYMENT_PROXY_API_KEY
+    const REDIRECT_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://10percent.beforest.co"
 
-    if (!MERCHANT_ID || !SALT_KEY || !SALT_INDEX || !BASE_URL) {
+    if (!API_KEY) {
       return NextResponse.json(
-        { error: "Payment gateway not configured properly" },
+        { error: "Payment proxy not configured - missing API key" },
         { status: 500 }
       )
     }
 
-    // 1. Define the Endpoint
-    const apiEndpoint = "/pg/v1/pay"
-
-    // 2. Generate a unique Transaction ID
-    const merchantTransactionId = "MT" + Date.now() + uuidv4().slice(0, 4)
-
-    // 3. Construct the Payload
-    const data = {
-      merchantId: MERCHANT_ID,
-      merchantTransactionId: merchantTransactionId,
-      merchantUserId: "MUID" + Date.now(),
-      amount: amount * 100, // Amount in Paise (1 INR = 100 Paise)
-      redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/phonepe/checkStatus?id=${merchantTransactionId}`,
-      redirectMode: "POST", // PhonePe will POST to the redirectUrl
-      callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/phonepe/checkStatus?id=${merchantTransactionId}`,
-      mobileNumber: mobileNumber || undefined,
-      paymentInstrument: {
-        type: "PAY_PAGE", // Standard Payment Gateway Page
-      },
-      // Add onboarding URLs - must match your registered domain with PhonePe
-      propertyUrls: {
-        onboardingUrl: ONBOARDING_URL,
-        transactionStatusUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
-      },
-    }
-
-    // 4. Encode Payload to Base64
-    const bufferObj = Buffer.from(JSON.stringify(data), "utf8")
-    const base64EncodedPayload = bufferObj.toString("base64")
-
-    // 5. Calculate X-VERIFY Checksum
-    // Formula: SHA256(Base64Payload + APIEndpoint + SaltKey) + "###" + SaltIndex
-    const stringToHash = base64EncodedPayload + apiEndpoint + SALT_KEY
-    const sha256 = crypto.createHash("sha256").update(stringToHash).digest("hex")
-    const checksum = sha256 + "###" + SALT_INDEX
-
-    // 6. Make the API Call to PhonePe
+    // Call the payment proxy on experiences.beforest.co
     const response = await axios.post(
-      `${BASE_URL}${apiEndpoint}`,
-      { request: base64EncodedPayload },
+      PROXY_URL,
+      {
+        amount,
+        mobileNumber,
+        name,
+        email,
+        location,
+        redirectUrl: `${REDIRECT_URL}/payment/success`,
+        failureUrl: `${REDIRECT_URL}/payment/failure`,
+      },
       {
         headers: {
           "Content-Type": "application/json",
-          "X-VERIFY": checksum,
+          "X-API-Key": API_KEY,
+          "X-Source-Domain": REDIRECT_URL,
         },
+        timeout: 30000, // 30 second timeout
       }
     )
 
-    // 7. Return the Redirect URL to Frontend
-    if (response.data.success) {
-      // Store payment details in a way we can retrieve after callback
-      // For now, we'll use the transaction ID to track
-      return NextResponse.json({
-        url: response.data.data.instrumentResponse.redirectInfo.url,
-        transactionId: merchantTransactionId,
-        amount: amount,
-      })
-    } else {
-      return NextResponse.json(
-        { error: "Payment initiation failed" },
-        { status: 500 }
-      )
-    }
+    // Return the proxy response to frontend
+    return NextResponse.json(response.data)
   } catch (error: any) {
-    console.error("PhonePe Error:", error.response?.data || error.message)
+    console.error("Payment Proxy Error:", error.response?.data || error.message)
+
+    const errorMessage = error.response?.data?.error || error.message || "Payment initiation failed"
+    const statusCode = error.response?.status || 500
+
     return NextResponse.json(
-      { error: error.message || "Payment initiation failed" },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     )
   }
 }
