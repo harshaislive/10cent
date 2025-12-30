@@ -41,6 +41,11 @@ export async function POST(req: Request) {
       paymentInstrument: {
         type: "PAY_PAGE", // Standard Payment Gateway Page
       },
+      // Add onboarding URLs - must match your registered domain with PhonePe
+      propertyUrls: {
+        onboardingUrl: "https://10percent.beforest.co/",
+        transactionStatusUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
+      },
     }
 
     // 4. Encode Payload to Base64
