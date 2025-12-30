@@ -78,6 +78,7 @@ export default function TrialDetailModal({ isOpen, onClose, location, onBook }: 
                                             className="object-cover"
                                             quality={95}
                                             priority={idx === 0}
+                                            unoptimized={img.desktop.includes('supabase.co')}
                                         />
                                         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#1a1816] to-transparent opacity-60" />
                                     </motion.div>
@@ -100,6 +101,7 @@ export default function TrialDetailModal({ isOpen, onClose, location, onBook }: 
                                             alt="thumbnails"
                                             fill
                                             className="object-cover"
+                                            unoptimized={img.desktop.includes('supabase.co')}
                                         />
                                     </button>
                                 ))}

@@ -6,107 +6,55 @@ import Image from 'next/image'
 import { ArrowLeft, ArrowRight, Calendar, Compass, MapPin, CreditCard, Phone, Stars, Coffee, Tent } from 'lucide-react'
 import { motion } from 'framer-motion'
 import TrialLocationCard from '@/components/TrialLocationCard'
-import TrialBookingModal from '@/components/TrialBookingModal'
+import TrialPaymentModal from '@/components/TrialPaymentModal'
 import TrialDetailModal from '@/components/TrialDetailModal'
+import { imagePresets } from '@/utils/supabaseImage'
 
-// Trial Locations Data
-const TRIAL_LOCATIONS = [
-  {
-    name: "Hammiyala, Coorg",
-    tagline: "Coffee agroforestry. High altitude grasslands where wind speaks.",
-    description: "Expansive coffee estates meet mountain wilderness. Experience the rhythm of plantation life while immersed in Coorg's misty highlands.",
-    features: [
-      "100+ acre coffee estate",
-      "Mountain views & grasslands",
-      "Traditional Coorgi culture",
-      "Wilderness trails"
-    ],
-    images: [
-      {
-        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg"
-      },
-      {
-        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
-        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"
-      },
-      {
-        desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
-        mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG"
-      }
-    ]
-  },
-  {
-    name: "Glamping, Hyderabad",
-    tagline: "Deccan plateau. Ancient rocks and scrub forests close to home.",
-    description: "Luxury meets wilderness on the Deccan plateau. Ancient rock formations and star-filled skies, just hours from the city.",
-    features: [
-      "Luxury glamping tents",
-      "Ancient rock formations",
-      "Stargazing experiences",
-      "Accessible from city"
-    ],
-    images: [
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1139.JPG",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1139.JPG"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1152.JPG",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1152.JPG"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1166.JPG",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1166.JPG"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1167.JPG",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1167.JPG"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1173.JPG",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/glamping/PBR_1173.JPG"
-      }
-    ]
-  },
-  {
-    name: "Blyton, Coorg",
-    tagline: "Misty forests. Colonial charm meets wilderness immersion.",
-    description: "A heritage property wrapped in dense forest. Where colonial elegance dissolves into the wild, and silence becomes your companion.",
-    features: [
-      "Heritage property",
-      "Dense forest cover",
-      "Bird watching paradise",
-      "Tranquil atmosphere"
-    ],
-    images: [
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
-      },
-      {
-        desktop: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
-        mobile: "https://mtzcvknnkeepgyyfntod.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
-      }
-    ]
-  }
-]
+// Trial Locations Data - Only Blyton is available for trial
+const AVAILABLE_LOCATION = {
+  name: "Blyton, Coorg",
+  tagline: "Misty forests. Colonial charm meets wilderness immersion.",
+  description: "The architecture of the Western Ghats is not built; it is grown. The Blyton Bungalow respects this law. Constructed from the earth it stands on, overlooking the canopy, it is a place to sleep with the windows open and wake to the call of the Malabar Whistling Thrush. A heritage property wrapped in dense forest, where colonial elegance dissolves into the wild, and silence becomes your companion.",
+  features: [
+    "128-acre Poomaale Estate",
+    "Coffee forest immersion",
+    "Traditional Kodava Ainmanes architecture",
+    "Laterite stone walls",
+    "Mangalore tile roofing",
+    "Malabar Whistling Thrush habitat",
+    "Western Ghats biodiversity hotspot"
+  ],
+  images: [
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
+    }
+  ]
+}
 
 // --- Utility Components ---
 const NoiseOverlay = () => (
@@ -165,26 +113,20 @@ interface ConfirmationClientProps {
 
 export default function TrialConfirmationView({ action, email }: ConfirmationClientProps) {
   const fired = useRef(false)
-  const sliderRef = useRef<HTMLDivElement>(null)
 
   // Booking Modal State
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedLocation, setSelectedLocation] = useState('')
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  // New Detail Modal State
-  const [selectedDetailLocation, setSelectedDetailLocation] = useState<typeof TRIAL_LOCATIONS[0] | null>(null)
+  // Detail Modal State
+  const [showDetailModal, setShowDetailModal] = useState(false)
 
-  const handleCardClick = (location: typeof TRIAL_LOCATIONS[0]) => {
-    setSelectedDetailLocation(location)
+  const handleCardClick = () => {
+    setShowDetailModal(true)
   }
 
   const handleBookFromDetail = () => {
-    if (selectedDetailLocation) {
-      setSelectedLocation(selectedDetailLocation.name)
-      setIsModalOpen(true)
-      setSelectedDetailLocation(null)
-    }
+    setShowDetailModal(false)
+    setIsModalOpen(true)
   }
 
   useEffect(() => {
@@ -233,18 +175,19 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           </div>
         </div>
 
-        {/* Booking Modal (Form) */}
-        <TrialBookingModal
+        {/* Payment Modal */}
+        <TrialPaymentModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          locationName={selectedLocation}
+          locationName={AVAILABLE_LOCATION.name}
+          location="blyton_coorg"
         />
 
         {/* Detail Modal (Gallery + Info) */}
         <TrialDetailModal
-          isOpen={!!selectedDetailLocation}
-          onClose={() => setSelectedDetailLocation(null)}
-          location={selectedDetailLocation}
+          isOpen={showDetailModal}
+          onClose={() => setShowDetailModal(false)}
+          location={AVAILABLE_LOCATION}
           onBook={handleBookFromDetail}
         />
 
@@ -269,55 +212,22 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
                 transition={{ delay: 0.5, duration: 1 }}
                 className="text-lg md:text-xl leading-relaxed opacity-80 max-w-[320px]"
               >
-                Three sanctuaries. One philosophy.<br />
-                <span className="text-[#342e29] font-medium border-b border-[#342e29]/20 pb-1">Select a landscape</span> to begin your 10% trial.
+                One sanctuary. Available now.<br />
+                <span className="text-[#342e29] font-medium border-b border-[#342e29]/20 pb-1">Click to explore</span> and begin your 10% trial.
               </motion.p>
             </div>
           </div>
         </div>
 
-        {/* Locations - Mobile Vertical Stack */}
-        <div className="flex flex-col w-full md:hidden mb-24 px-4 gap-4">
-          {TRIAL_LOCATIONS.map((location, index) => (
-            <div key={location.name} className="w-full h-[600px] border border-[#342e29]/10">
-              <TrialLocationCard
-                {...location}
-                index={index}
-                onBook={() => handleCardClick(location)}
-                className="h-full"
-                heightClass="h-full"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop Accordion View */}
-        <div className="hidden md:flex w-full h-[90vh] mb-32 overflow-hidden border-y border-[#342e29]/10">
-          {TRIAL_LOCATIONS.map((location, index) => {
-            const isHovered = hoveredIndex === index;
-            const isSomeoneHovered = hoveredIndex !== null;
-
-            return (
-              <motion.div
-                key={location.name}
-                layout
-                onHoverStart={() => setHoveredIndex(index)}
-                onHoverEnd={() => setHoveredIndex(null)}
-                className="relative h-full border-r border-[#fdfbf7]/10 last:border-0 overflow-hidden min-w-0"
-                initial={{ flex: 1 }}
-                animate={{ flex: isHovered ? 2.5 : 1 }}
-                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <TrialLocationCard
-                  {...location}
-                  index={index}
-                  onBook={() => handleCardClick(location)}
-                  className="h-full border-b-0"
-                  heightClass="h-full"
-                />
-              </motion.div>
-            )
-          })}
+        {/* Full-width Location Card */}
+        <div className="w-full h-[85vh] md:h-[90vh] mb-32 overflow-hidden border-y border-[#342e29]/10 relative">
+          <TrialLocationCard
+            {...AVAILABLE_LOCATION}
+            index={0}
+            onBook={handleCardClick}
+            className="h-full"
+            heightClass="h-full"
+          />
         </div>
 
         {/* Trial Details Section - Editorial Redesign */}
@@ -356,7 +266,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
                 {
                   step: "03",
                   title: "Secure",
-                  desc: "₹50,000 adjustable token secures your dates.",
+                  desc: "₹1 adjustable token secures your dates.",
                   icon: CreditCard
                 },
                 {

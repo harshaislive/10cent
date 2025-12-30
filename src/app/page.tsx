@@ -7,28 +7,29 @@ import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, M
 import TypeformButton from '@/components/TypeformButton'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
+import { imagePresets } from '@/utils/supabaseImage'
 
 // --- Data & Assets ---
 const IMAGES = {
   heroSlides: [
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg" }
+    { desktop: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"), mobile: imagePresets.heroMobile("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg") },
+    { desktop: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg"), mobile: imagePresets.heroMobile("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png") },
+    { desktop: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png"), mobile: imagePresets.heroMobile("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG") },
+    { desktop: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg"), mobile: imagePresets.heroMobile("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg") },
+    { desktop: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg"), mobile: imagePresets.heroMobile("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg") }
   ],
-  forest: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
-  office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
+  forest: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg"),
+  office: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"),
   founder: "/PBR_7935.jpg",
   founderAlt: "/PBR_4601.jpg",
   logo: "/10-Club-01.png",
   locations: {
-    poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
-    poomaale2: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
-    hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/hyderabad.jpg",
-    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png",
-    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg"
+    poomaale: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png"),
+    poomaale2: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"),
+    hammiyala: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg"),
+    hyderabad: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/hyderabad.jpg"),
+    bhopal: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png"),
+    mumbai: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg")
   }
 }
 

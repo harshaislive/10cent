@@ -70,6 +70,7 @@ export default function TrialLocationCarousel({ images, locationName }: TrialLoc
             sizes="100vw"
             quality={90}
             priority={currentIndex === 0}
+            unoptimized={images[currentIndex].desktop.includes('supabase.co')}
           />
           {/* Mobile Image */}
           <Image
@@ -79,6 +80,7 @@ export default function TrialLocationCarousel({ images, locationName }: TrialLoc
             className="md:hidden object-cover"
             sizes="100vw"
             quality={75}
+            unoptimized={images[currentIndex].mobile.includes('supabase.co')}
           />
         </motion.div>
       </AnimatePresence>
