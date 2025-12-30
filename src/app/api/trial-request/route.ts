@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error("Missing Supabase configuration")
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
-
 export async function POST(req: Request) {
   try {
+    // Get Supabase config at request time
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json(
+        { error: "Database not configured" },
+        { status: 503 }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
     const body = await req.json()
     const {
       name,
@@ -96,6 +100,18 @@ export async function POST(req: Request) {
 // GET endpoint to check request status
 export async function GET(req: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json(
+        { error: "Database not configured" },
+        { status: 503 }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
     const { searchParams } = new URL(req.url)
     const requestId = searchParams.get("requestId")
 
