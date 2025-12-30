@@ -1,32 +1,25 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import React, { Suspense, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Check, ArrowRight, Calendar, MapPin, CreditCard, Home } from 'lucide-react'
 
-export default function PaymentSuccessPage() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
+function PaymentSuccessContent() {
   const [transactionId, setTransactionId] = useState<string | null>(null)
   const [amount, setAmount] = useState<string | null>(null)
 
+  // Client-side only code to access search params
   useEffect(() => {
-    const tid = searchParams.get('tid')
-    const amt = searchParams.get('amount')
+    const params = new URLSearchParams(window.location.search)
+    const tid = params.get('tid')
+    const amt = params.get('amount')
     setTransactionId(tid)
     setAmount(amt)
 
     // TODO: Save payment details to Supabase here
-    // This is where you'd call your Supabase API to record the payment
-    const savePaymentToSupabase = async () => {
-      // Supabase integration will be added here
-      console.log('Payment successful:', { tid, amt })
-    }
-
-    savePaymentToSupabase()
-  }, [searchParams])
+    console.log('Payment successful:', { tid, amt })
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#fdfbf7] text-[#342e29] font-arizona">
@@ -199,5 +192,20 @@ export default function PaymentSuccessPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fdfbf7] text-[#342e29] font-arizona flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-2 border-[#86312b] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="opacity-60">Loading...</p>
+        </div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   )
 }

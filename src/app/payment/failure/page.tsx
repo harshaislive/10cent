@@ -1,14 +1,19 @@
 'use client'
 
-import React from 'react'
-import { useSearchParams } from 'next/navigation'
+import React, { Suspense, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { XCircle, ArrowRight, RefreshCw, Home, Phone } from 'lucide-react'
 
-export default function PaymentFailurePage() {
-  const searchParams = useSearchParams()
-  const transactionId = searchParams.get('tid')
+function PaymentFailureContent() {
+  const [transactionId, setTransactionId] = useState<string | null>(null)
+
+  // Client-side only code to access search params
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tid = params.get('tid')
+    setTransactionId(tid)
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#fdfbf7] text-[#342e29] font-arizona">
@@ -161,5 +166,20 @@ export default function PaymentFailurePage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function PaymentFailurePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fdfbf7] text-[#342e29] font-arizona flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-2 border-[#86312b] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="opacity-60">Loading...</p>
+        </div>
+      </div>
+    }>
+      <PaymentFailureContent />
+    </Suspense>
   )
 }
