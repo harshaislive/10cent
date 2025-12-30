@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { XCircle, ArrowRight, Calendar as CalendarIcon, Users, Loader2, CheckCircle2, AlertCircle, Info } from 'lucide-react'
+import { XCircle, ArrowRight, Calendar as CalendarIcon, Loader2, CheckCircle2, AlertCircle, Info, ChevronLeft, ChevronRight } from 'lucide-react'
 import axios from 'axios'
 
 interface TrialRequestModalProps {
@@ -13,7 +13,16 @@ interface TrialRequestModalProps {
   locationSlug: string
 }
 
-type AvailabilityStatus = 'idle' | 'checking' | 'available' | 'sold_out' | 'error'
+type DayAvailability = {
+  date: string
+  displayDate: string
+  dayName: string
+  month: string
+  available: boolean | null // null = checking, true = available, false = sold out
+  rooms?: any[]
+}
+
+type Step = 'intro' | 'calendar' | 'form' | 'processing' | 'success'
 
 export default function TrialRequestModal({
   isOpen,
@@ -22,7 +31,7 @@ export default function TrialRequestModal({
   location,
   locationSlug
 }: TrialRequestModalProps) {
-  const [step, setStep] = useState<'intro' | 'form' | 'processing' | 'success'>('intro')
+  const [step, setStep] = useState<Step>('intro')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Form State
@@ -30,15 +39,14 @@ export default function TrialRequestModal({
     name: '',
     email: '',
     phone: '',
-    preferredDate: '',
-    guestCount: '2',
+    selectedDate: '',
     specialRequests: '',
   })
 
-  // Availability State
-  const [availabilityStatus, setAvailabilityStatus] = useState<AvailabilityStatus>('idle')
-  const [availableRooms, setAvailableRooms] = useState<any[]>([])
-  const [availabilityError, setAvailabilityError] = useState('')
+  // Calendar State
+  const [days, setDays] = useState<DayAvailability[]>([])
+  const [isLoadingCalendar, setIsLoadingCalendar] = useState(false)
+  const [currentMonthStart, setCurrentMonthStart] = useState<Date>(new Date())
 
   // Success State
   const [successData, setSuccessData] = useState<{
@@ -50,8 +58,10 @@ export default function TrialRequestModal({
   useEffect(() => {
     if (!isOpen) {
       resetModal()
+    } else if (step === 'calendar' && days.length === 0) {
+      loadCalendarDays()
     }
-  }, [isOpen])
+  }, [isOpen, step])
 
   const resetModal = () => {
     setStep('intro')
@@ -59,68 +69,100 @@ export default function TrialRequestModal({
       name: '',
       email: '',
       phone: '',
-      preferredDate: '',
-      guestCount: '2',
+      selectedDate: '',
       specialRequests: '',
     })
-    setAvailabilityStatus('idle')
-    setAvailableRooms([])
-    setAvailabilityError('')
+    setDays([])
     setSuccessData(null)
     setIsSubmitting(false)
+    setCurrentMonthStart(new Date())
   }
 
-  // Check availability when date changes
-  useEffect(() => {
-    if (formData.preferredDate) {
-      checkAvailability(formData.preferredDate)
-    } else {
-      setAvailabilityStatus('idle')
-      setAvailableRooms([])
+  // Load 15 days starting from currentMonthStart
+  const loadCalendarDays = async () => {
+    setIsLoadingCalendar(true)
+    const newDays: DayAvailability[] = []
+
+    // Generate 15 days
+    for (let i = 0; i < 15; i++) {
+      const date = new Date(currentMonthStart)
+      date.setDate(date.getDate() + i)
+
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
+      const month = date.toLocaleDateString('en-US', { month: 'short' })
+      const displayDate = date.getDate().toString()
+      const dateStr = date.toISOString().split('T')[0]
+
+      newDays.push({
+        date: dateStr,
+        displayDate,
+        dayName,
+        month,
+        available: null, // Will be updated after API call
+      })
     }
-  }, [formData.preferredDate])
 
-  const checkAvailability = async (date: string) => {
-    setAvailabilityStatus('checking')
-    setAvailableRooms([])
-    setAvailabilityError('')
+    setDays(newDays)
 
+    // Check availability for all 15 days concurrently
     try {
-      // Format date to YYYY-MM-DD for the API
-      const formattedDate = new Date(date).toISOString().split('T')[0]
+      const availabilityPromises = newDays.map(day =>
+        axios.get(`/api/availability/check?startDate=${day.date}`)
+      )
 
-      const { data } = await axios.get(`/api/availability/check?startDate=${formattedDate}`)
+      const responses = await Promise.allSettled(availabilityPromises)
 
-      if (data.data?.available) {
-        setAvailabilityStatus('available')
-        setAvailableRooms(data.data.rooms || [])
-      } else {
-        setAvailabilityStatus('sold_out')
-        setAvailableRooms([])
-      }
+      const updatedDays = newDays.map((day, index) => {
+        const response = responses[index]
+        if (response.status === 'fulfilled' && response.value.data?.data) {
+          return {
+            ...day,
+            available: response.value.data.data.available,
+            rooms: response.value.data.data.rooms || [],
+          }
+        }
+        return { ...day, available: null }
+      })
+
+      setDays(updatedDays)
     } catch (error) {
-      console.error('Availability check failed:', error)
-      setAvailabilityStatus('error')
-      setAvailabilityError('Could not check availability. Please try again.')
+      console.error('Error checking availability:', error)
+    } finally {
+      setIsLoadingCalendar(false)
     }
+  }
+
+  const handleMonthChange = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentMonthStart)
+    if (direction === 'prev') {
+      newDate.setDate(newDate.getDate() - 15)
+    } else {
+      newDate.setDate(newDate.getDate() + 15)
+    }
+    setCurrentMonthStart(newDate)
+    setDays([]) // Will trigger reload
+  }
+
+  const handleDateSelect = (date: string) => {
+    setFormData({ ...formData, selectedDate: date })
+    setStep('form')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setStep('processing')
 
     try {
-      const formattedDate = new Date(formData.preferredDate).toISOString().split('T')[0]
-
       const { data } = await axios.post('/api/trial-request', {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         location: locationName,
         locationSlug: locationSlug,
-        preferredDate: formattedDate,
+        preferredDate: formData.selectedDate,
         durationNights: 2,
-        guestCount: parseInt(formData.guestCount),
+        guestCount: 2,
         specialRequests: formData.specialRequests || null,
       })
 
@@ -133,23 +175,15 @@ export default function TrialRequestModal({
     } catch (error: any) {
       console.error('Trial request failed:', error)
       const errorMsg = error.response?.data?.error || 'Failed to submit request. Please try again.'
-      setAvailabilityError(errorMsg)
-    } finally {
+      alert(errorMsg)
+      setStep('form')
       setIsSubmitting(false)
     }
   }
 
-  // Get minimum date (today)
   const getMinDate = () => {
     const today = new Date()
     return today.toISOString().split('T')[0]
-  }
-
-  // Get maximum date (1 year from now)
-  const getMaxDate = () => {
-    const maxDate = new Date()
-    maxDate.setFullYear(maxDate.getFullYear() + 1)
-    return maxDate.toISOString().split('T')[0]
   }
 
   return (
@@ -169,7 +203,7 @@ export default function TrialRequestModal({
             <XCircle className="w-8 h-8 opacity-50 hover:opacity-100" />
           </button>
 
-          <div className="w-full max-w-3xl px-6 relative z-10">
+          <div className="w-full max-w-4xl px-6 relative z-10">
             {/* STEP 1: INTRO */}
             {step === 'intro' && (
               <motion.div
@@ -192,7 +226,7 @@ export default function TrialRequestModal({
 
                 <div className="max-w-2xl mx-auto space-y-8 text-lg md:text-xl font-arizona font-light border-l border-[#fdfbf7]/20 pl-8 text-left mb-12">
                   <p>
-                    Select your preferred dates at <strong>{locationName}</strong>, and we'll hold space for you.
+                    Select your preferred dates at <strong>{locationName}</strong> for a 2-night wilderness stay for two.
                   </p>
                   <p className="opacity-80">
                     The wilderness doesn't rush, and neither do we. We'll reach out to confirm your dates and prepare for your arrival.
@@ -207,7 +241,7 @@ export default function TrialRequestModal({
                   <div className="space-y-4 text-left">
                     <div className="flex justify-between items-center">
                       <span className="text-sm opacity-60">Trial Stay</span>
-                      <span className="font-arizona text-xl">2 Nights</span>
+                      <span className="font-arizona text-xl">2 Nights · 2 Guests</span>
                     </div>
                     <div className="h-px bg-[#fdfbf7]/20" />
                     <div className="flex justify-between items-center">
@@ -228,7 +262,7 @@ export default function TrialRequestModal({
                 </div>
 
                 <button
-                  onClick={() => setStep('form')}
+                  onClick={() => setStep('calendar')}
                   className="bg-[#fdfbf7] text-[#342e29] px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors flex items-center gap-3 mx-auto group"
                 >
                   <span>Select Your Dates</span>
@@ -237,7 +271,136 @@ export default function TrialRequestModal({
               </motion.div>
             )}
 
-            {/* STEP 2: FORM */}
+            {/* STEP 2: CALENDAR */}
+            {step === 'calendar' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                className="text-left"
+              >
+                <div className="mb-8 flex items-center justify-between">
+                  <button
+                    onClick={() => setStep('intro')}
+                    className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-70 transition-opacity flex items-center gap-2"
+                  >
+                    <ArrowRight className="w-3 h-3 rotate-180" /> Back
+                  </button>
+                  <div className="text-right">
+                    <p className="text-[#ffc083] uppercase tracking-widest text-xs font-medium">Choose Your Dates</p>
+                    <h2 className="text-2xl md:text-4xl font-light font-arizona">{locationName}</h2>
+                  </div>
+                </div>
+
+                {/* Month Navigation */}
+                <div className="flex items-center justify-between mb-6">
+                  <button
+                    onClick={() => handleMonthChange('prev')}
+                    className="p-2 hover:bg-[#fdfbf7]/10 rounded-full transition-colors"
+                    disabled={isLoadingCalendar}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <span className="font-arizona text-lg">
+                    {days[0]?.month} {new Date(days[0]?.date || '').getFullYear()}
+                  </span>
+                  <button
+                    onClick={() => handleMonthChange('next')}
+                    className="p-2 hover:bg-[#fdfbf7]/10 rounded-full transition-colors"
+                    disabled={isLoadingCalendar}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Calendar Grid - 15 Days */}
+                {isLoadingCalendar && days.length === 0 ? (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#ffc083]" />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-5 gap-3 mb-8">
+                    {days.map((day, index) => (
+                      <motion.button
+                        key={day.date}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => day.available === true && handleDateSelect(day.date)}
+                        disabled={day.available !== true}
+                        className={`
+                          relative p-4 rounded-lg border text-center transition-all
+                          ${day.available === true
+                            ? 'border-[#ffc083] bg-[#ffc083]/10 hover:bg-[#ffc083]/20 cursor-pointer'
+                            : day.available === false
+                            ? 'border-[#86312b]/30 bg-[#86312b]/10 cursor-not-allowed opacity-50'
+                            : 'border-[#fdfbf7]/20 bg-[#fdfbf7]/5'
+                          }
+                        `}
+                      >
+                        {/* Day Name */}
+                        <p className="text-[10px] uppercase tracking-wider opacity-60 mb-1">{day.dayName}</p>
+
+                        {/* Date */}
+                        <p className="text-2xl font-arizona mb-2">{day.displayDate}</p>
+
+                        {/* Status */}
+                        {day.available === null && day.available !== false && (
+                          <div className="flex justify-center">
+                            <Loader2 className="w-4 h-4 animate-spin opacity-50" />
+                          </div>
+                        )}
+                        {day.available === true && (
+                          <div className="flex items-center justify-center gap-1 text-[#ffc083] text-xs">
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>Available</span>
+                          </div>
+                        )}
+                        {day.available === false && (
+                          <div className="flex items-center justify-center gap-1 text-[#86312b] text-xs">
+                            <AlertCircle className="w-3 h-3" />
+                            <span>Sold Out</span>
+                          </div>
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Legend */}
+                <div className="flex items-center justify-center gap-6 text-xs opacity-60">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded border border-[#ffc083] bg-[#ffc083]/10" />
+                    <span>Available</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded border border-[#86312b]/30 bg-[#86312b]/10" />
+                    <span>Sold Out</span>
+                  </div>
+                </div>
+
+                {/* Selected Date Info */}
+                {formData.selectedDate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-8 p-6 border border-[#fdfbf7]/10 bg-[#fdfbf7]/5 text-center"
+                  >
+                    <p className="text-sm opacity-60 mb-1">Selected Check-in</p>
+                    <p className="text-xl font-arizona">
+                      {new Date(formData.selectedDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-sm opacity-60 mt-2">2 nights · 2 guests</p>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+
+            {/* STEP 3: FORM */}
             {step === 'form' && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -247,107 +410,25 @@ export default function TrialRequestModal({
               >
                 <div className="mb-12 pl-1">
                   <button
-                    onClick={() => setStep('intro')}
+                    onClick={() => setStep('calendar')}
                     className="text-[10px] uppercase tracking-widest opacity-40 hover:opacity-70 transition-opacity mb-4 flex items-center gap-2"
                   >
-                    <ArrowRight className="w-3 h-3 rotate-180" /> Back
+                    <ArrowRight className="w-3 h-3 rotate-180" /> Back to Calendar
                   </button>
-                  <p className="text-[#ffc083] uppercase tracking-widest text-xs font-medium mb-3">Choose Your Dates</p>
+                  <p className="text-[#ffc083] uppercase tracking-widest text-xs font-medium mb-3">Your Details</p>
                   <h2 className="text-3xl md:text-5xl font-light font-arizona">{locationName}</h2>
-                  <p className="text-[#fdfbf7]/60 font-arizona mt-2 text-sm">2 nights of wilderness immersion</p>
+                  <p className="text-[#fdfbf7]/60 font-arizona mt-2">
+                    {new Date(formData.selectedDate).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                    {' · '} 2 nights · 2 guests
+                  </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-10">
-                    {/* Date Selection */}
-                    <div className="space-y-3">
-                      <label className="text-[10px] uppercase tracking-widest opacity-60 flex items-center gap-2">
-                        <CalendarIcon className="w-4 h-4" />
-                        Preferred Check-in Date
-                      </label>
-                      <input
-                        type="date"
-                        required
-                        min={getMinDate()}
-                        max={getMaxDate()}
-                        value={formData.preferredDate}
-                        onChange={e => setFormData({ ...formData, preferredDate: e.target.value })}
-                        className="w-full bg-transparent border-b border-[#fdfbf7]/20 py-3 text-xl font-light focus:outline-none focus:border-[#ffc083] transition-colors placeholder:text-[#fdfbf7]/10"
-                      />
-
-                      {/* Availability Status */}
-                      {formData.preferredDate && (
-                        <div className="mt-3">
-                          {availabilityStatus === 'checking' && (
-                            <div className="flex items-center gap-2 text-sm opacity-70">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              <span>Checking availability...</span>
-                            </div>
-                          )}
-
-                          {availabilityStatus === 'available' && (
-                            <div className="p-4 bg-[#ffc083]/10 border border-[#ffc083]/30 rounded">
-                              <div className="flex items-center gap-2 text-[#ffc083] mb-2">
-                                <CheckCircle2 className="w-5 h-5" />
-                                <span className="font-medium">Available!</span>
-                              </div>
-                              {availableRooms.length > 0 && (
-                                <div className="text-sm opacity-80">
-                                  {availableRooms.map((room: any) => (
-                                    <div key={room.name} className="flex justify-between items-center py-1">
-                                      <span>{room.name}</span>
-                                      <span className="text-[#ffc083]">₹{room.price}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {availabilityStatus === 'sold_out' && (
-                            <div className="p-4 bg-[#86312b]/20 border border-[#86312b]/30 rounded">
-                              <div className="flex items-center gap-2 text-[#86312b] mb-2">
-                                <AlertCircle className="w-5 h-5" />
-                                <span className="font-medium">Fully Booked</span>
-                              </div>
-                              <p className="text-sm opacity-80">
-                                This date is sold out. You can still submit your request and we'll add you to the waitlist.
-                              </p>
-                            </div>
-                          )}
-
-                          {availabilityStatus === 'error' && (
-                            <div className="p-4 bg-red-900/20 border border-red-700/30 rounded">
-                              <div className="flex items-center gap-2 text-red-400">
-                                <AlertCircle className="w-5 h-5" />
-                                <span className="text-sm">{availabilityError}</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Guest Count */}
-                    <div className="space-y-3">
-                      <label className="text-[10px] uppercase tracking-widest opacity-60 flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        Number of Guests
-                      </label>
-                      <select
-                        required
-                        value={formData.guestCount}
-                        onChange={e => setFormData({ ...formData, guestCount: e.target.value })}
-                        className="w-full bg-transparent border-b border-[#fdfbf7]/20 py-3 text-xl font-light focus:outline-none focus:border-[#ffc083] transition-colors"
-                      >
-                        <option value="1" className="bg-[#342e29]">1 Guest</option>
-                        <option value="2" className="bg-[#342e29]">2 Guests</option>
-                        <option value="3" className="bg-[#342e29]">3 Guests</option>
-                        <option value="4" className="bg-[#342e29]">4 Guests</option>
-                        <option value="5" className="bg-[#342e29]">5+ Guests</option>
-                      </select>
-                    </div>
-
                     {/* Name */}
                     <div className="space-y-3">
                       <label className="text-[10px] uppercase tracking-widest opacity-60">Full Name</label>
@@ -413,7 +494,7 @@ export default function TrialRequestModal({
 
                   <button
                     type="submit"
-                    disabled={isSubmitting || !formData.preferredDate}
+                    disabled={isSubmitting}
                     className="w-full bg-[#fdfbf7] text-[#342e29] py-5 uppercase tracking-widest text-xs font-bold hover:bg-[#ffc083] transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed mt-8"
                   >
                     {isSubmitting ? (
@@ -432,7 +513,24 @@ export default function TrialRequestModal({
               </motion.div>
             )}
 
-            {/* STEP 3: SUCCESS */}
+            {/* STEP 4: PROCESSING */}
+            {step === 'processing' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center"
+              >
+                <div className="w-20 h-20 rounded-full border-2 border-[#ffc083] text-[#ffc083] flex items-center justify-center mx-auto mb-8">
+                  <Loader2 className="w-10 h-10 animate-spin" />
+                </div>
+                <h2 className="text-4xl font-light font-arizona mb-4">Holding Your Space</h2>
+                <p className="opacity-70 max-w-md mx-auto font-arizona">
+                  The wilderness is preparing for your arrival...
+                </p>
+              </motion.div>
+            )}
+
+            {/* STEP 5: SUCCESS */}
             {step === 'success' && successData && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
