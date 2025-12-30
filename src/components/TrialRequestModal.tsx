@@ -302,7 +302,10 @@ export default function TrialRequestModal({
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <span className="font-arizona text-lg">
-                    {days[0]?.month} {new Date(days[0]?.date || '').getFullYear()}
+                    {days.length > 0 && days[0]?.month
+                      ? `${days[0].month} ${new Date(days[0].date).getFullYear()}`
+                      : new Date(currentMonthStart).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                    }
                   </span>
                   <button
                     onClick={() => handleMonthChange('next')}
@@ -314,9 +317,16 @@ export default function TrialRequestModal({
                 </div>
 
                 {/* Calendar Grid - 15 Days */}
-                {isLoadingCalendar && days.length === 0 ? (
-                  <div className="flex items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#ffc083]" />
+                {isLoadingCalendar ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#ffc083] mb-4" />
+                    <p className="text-sm opacity-60 font-arizona">Checking availability across 15 days...</p>
+                    <p className="text-xs opacity-40 mt-2">This may take 10-15 seconds</p>
+                  </div>
+                ) : days.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#ffc083] mb-4" />
+                    <p className="text-sm opacity-60 font-arizona">Loading calendar...</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-5 gap-3 mb-8">
