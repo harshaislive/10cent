@@ -14,6 +14,7 @@ export async function POST(req: Request) {
       process.env.NEXT_PUBLIC_PHONEPE_ENV === "PROD"
         ? process.env.PHONEPE_PROD_URL
         : process.env.PHONEPE_UAT_URL
+    const ONBOARDING_URL = process.env.PHONEPE_ONBOARDING_URL || "https://experiences.beforest.co/"
 
     if (!MERCHANT_ID || !SALT_KEY || !SALT_INDEX || !BASE_URL) {
       return NextResponse.json(
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
       },
       // Add onboarding URLs - must match your registered domain with PhonePe
       propertyUrls: {
-        onboardingUrl: "https://experiences.beforest.co/",
+        onboardingUrl: ONBOARDING_URL,
         transactionStatusUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
       },
     }
