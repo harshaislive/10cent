@@ -300,8 +300,18 @@ export default function TrialRequestModal({
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <span className="font-arizona text-lg">
-                    {days.length > 0 && days[0]?.month
-                      ? `${days[0].month} ${new Date(days[0].date).getFullYear()}`
+                    {days.length > 0
+                      ? (() => {
+                          const firstDay = days[0];
+                          const lastDay = days[days.length - 1];
+                          const firstYear = new Date(firstDay.date).getFullYear();
+                          const lastYear = new Date(lastDay.date).getFullYear();
+                          
+                          if (firstDay.month === lastDay.month && firstYear === lastYear) {
+                            return `${firstDay.month} ${firstYear}`;
+                          }
+                          return `${firstDay.month} - ${lastDay.month} ${lastYear}`;
+                        })()
                       : new Date(currentMonthStart).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
                     }
                   </span>
@@ -353,7 +363,8 @@ export default function TrialRequestModal({
                         <p className="text-[10px] uppercase tracking-wider opacity-60 mb-1">{day.dayName}</p>
 
                         {/* Date */}
-                        <p className="text-2xl font-arizona mb-2">{day.displayDate}</p>
+                        <p className="text-2xl font-arizona mb-0 leading-none">{day.displayDate}</p>
+                        <p className="text-[10px] uppercase tracking-wider opacity-60 mb-2">{day.month}</p>
 
                         {/* Status */}
                         {day.available === null && day.available !== false && (
