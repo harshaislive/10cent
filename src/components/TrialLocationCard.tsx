@@ -74,7 +74,7 @@ export default function TrialLocationCard({
                                 {/* CTA Button */}
                                 <div className="px-6 py-3 md:px-8 md:py-4 rounded-full border border-[#fdfbf7]/20 backdrop-blur-sm bg-[#fdfbf7]/5 flex items-center justify-center group-hover:bg-[#fdfbf7] group-hover:border-[#fdfbf7] transition-all duration-500 shrink-0">
                                     <span className="text-sm md:text-base text-[#fdfbf7] group-hover:text-[#342e29] transition-all duration-500 uppercase tracking-widest font-medium">
-                                        Click to explore
+                                        Book trial
                                     </span>
                                 </div>
                             </div>
