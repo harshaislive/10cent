@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import TrialLocationCard from '@/components/TrialLocationCard'
 import TrialRequestModal from '@/components/TrialRequestModal'
 import TrialDetailModal from '@/components/TrialDetailModal'
+import OnboardingScheduler from '@/components/OnboardingScheduler'
 import { imagePresets } from '@/utils/supabaseImage'
 
 // Trial Locations Data - Only Blyton is available for trial
@@ -344,6 +345,31 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           </Link>
         </div>
       </div >
+    )
+  }
+
+  // Subscribe action - Show Onboarding Scheduler
+  if (action === 'subscribe') {
+    return (
+      <div className="w-full relative z-10 bg-[#fdfbf7] min-h-screen py-20 px-6">
+        <NoiseOverlay />
+        
+        {/* Logo Header */}
+        <div className="max-w-[1800px] mx-auto mb-12 flex justify-center">
+          <Link href="/" className="transition-opacity hover:opacity-70">
+            <div className="relative w-20 h-20 grayscale hover:grayscale-0 transition-all duration-500">
+              <Image
+                src="/10-Club-01.png"
+                alt="Beforest 10% Club"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </Link>
+        </div>
+
+        <OnboardingScheduler />
+      </div>
     )
   }
 

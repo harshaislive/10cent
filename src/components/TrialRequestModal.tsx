@@ -61,7 +61,7 @@ export default function TrialRequestModal({
     } else if (step === 'calendar' && days.length === 0) {
       loadCalendarDays()
     }
-  }, [isOpen, step])
+  }, [isOpen, step, days.length, currentMonthStart])
 
   const resetModal = () => {
     setStep('intro')
