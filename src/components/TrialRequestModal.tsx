@@ -80,7 +80,7 @@ export default function TrialRequestModal({
 
   // Load 15 days starting from currentMonthStart
   const loadCalendarDays = async () => {
-    setIsLoadingCalendar(true)
+    // First, generate and display the 15 days immediately
     const newDays: DayAvailability[] = []
 
     // Generate 15 days
@@ -104,7 +104,7 @@ export default function TrialRequestModal({
 
     setDays(newDays)
 
-    // Check availability for all 15 days concurrently
+    // Then check availability for all 15 days concurrently in background
     try {
       const availabilityPromises = newDays.map(day =>
         axios.get(`/api/availability/check?startDate=${day.date}`)
@@ -127,8 +127,6 @@ export default function TrialRequestModal({
       setDays(updatedDays)
     } catch (error) {
       console.error('Error checking availability:', error)
-    } finally {
-      setIsLoadingCalendar(false)
     }
   }
 
@@ -317,19 +315,22 @@ export default function TrialRequestModal({
                 </div>
 
                 {/* Calendar Grid - 15 Days */}
-                {isLoadingCalendar ? (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#ffc083] mb-4" />
-                    <p className="text-sm opacity-60 font-arizona">Checking availability across 15 days...</p>
-                    <p className="text-xs opacity-40 mt-2">This may take 10-15 seconds</p>
-                  </div>
-                ) : days.length === 0 ? (
+                {days.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-8 h-8 animate-spin text-[#ffc083] mb-4" />
                     <p className="text-sm opacity-60 font-arizona">Loading calendar...</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-5 gap-3 mb-8">
+                  <>
+                    {/* Loading hint when any day is still checking */}
+                    {days.some(d => d.available === null) && (
+                      <div className="flex items-center justify-center gap-2 mb-4 text-xs opacity-50">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span>Checking availability... (may take 10-15 seconds)</span>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-5 gap-3 mb-8">
                     {days.map((day, index) => (
                       <motion.button
                         key={day.date}
@@ -375,6 +376,7 @@ export default function TrialRequestModal({
                       </motion.button>
                     ))}
                   </div>
+                  </>
                 )}
 
                 {/* Legend */}
