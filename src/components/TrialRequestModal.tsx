@@ -578,13 +578,27 @@ export default function TrialRequestModal({
 
                 <p className="text-lg opacity-80 font-arizona mb-8 leading-relaxed">
                   {successData.status === 'AVAILABLE'
-                    ? "We've received your request. The wilderness will reach out within 24-48 hours to confirm your dates and prepare for your arrival."
+                    ? "One of us will reach from the wilderness of Blyton to confirm within 24hrs."
                     : "The dates you've chosen are fully occupied. We've added you to the waitlist—if space opens, you'll be the first to know."}
                 </p>
 
-                <div className="p-6 border border-[#fdfbf7]/10 bg-[#fdfbf7]/5 mb-8">
-                  <p className="text-sm opacity-60 mb-2">Your Reference</p>
-                  <p className="text-2xl font-arizona text-[#ffc083]">{successData.requestId}</p>
+                <div className="p-6 border border-[#fdfbf7]/10 bg-[#fdfbf7]/5 mb-8 space-y-4">
+                  <div>
+                    <p className="text-sm opacity-60 mb-1">Requested Dates</p>
+                    <p className="text-xl font-arizona text-[#ffc083]">
+                      {new Date(formData.selectedDate).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                      {' — '} 2 Nights
+                    </p>
+                  </div>
+                  <div className="h-px bg-[#fdfbf7]/10" />
+                  <div>
+                    <p className="text-sm opacity-60 mb-1">Your Reference</p>
+                    <p className="text-2xl font-arizona text-[#fdfbf7]">{successData.requestId}</p>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-center gap-4">
