@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       },
       // Add onboarding URLs - must match your registered domain with PhonePe
       propertyUrls: {
-        onboardingUrl: "https://10percent.beforest.co/",
+        onboardingUrl: "https://experiences.beforest.co/",
         transactionStatusUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`,
       },
     }
