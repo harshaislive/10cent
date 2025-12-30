@@ -125,18 +125,10 @@ function PaymentFailureContent() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
-              href="tel:+919876543210"
+              href="mailto:hello@beforest.co"
               className="inline-flex items-center gap-2 text-[#86312b] hover:underline"
             >
-              <Phone className="w-4 h-4" />
-              Call us directly
-            </a>
-            <span className="opacity-50">or</span>
-            <a
-              href="mailto:trials@10percentclub.com"
-              className="inline-flex items-center gap-2 text-[#86312b] hover:underline"
-            >
-              Email us at trials@10percentclub.com
+              Email us at hello@beforest.co
             </a>
           </div>
         </motion.div>

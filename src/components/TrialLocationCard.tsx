@@ -1,9 +1,7 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import TrialLocationCarousel from './TrialLocationCarousel'
-import { ArrowRight } from 'lucide-react'
 
 interface LocationImage {
     desktop: string
@@ -73,9 +71,11 @@ export default function TrialLocationCard({
                                     </h3>
                                 </div>
 
-                                {/* Arrow Button */}
-                                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border border-[#fdfbf7]/20 backdrop-blur-sm bg-[#fdfbf7]/5 flex items-center justify-center group-hover:bg-[#fdfbf7] group-hover:border-[#fdfbf7] transition-all duration-500 shrink-0">
-                                    <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-[#fdfbf7] -rotate-45 group-hover:rotate-0 group-hover:text-[#342e29] transition-all duration-500" />
+                                {/* CTA Button */}
+                                <div className="px-6 py-3 md:px-8 md:py-4 rounded-full border border-[#fdfbf7]/20 backdrop-blur-sm bg-[#fdfbf7]/5 flex items-center justify-center group-hover:bg-[#fdfbf7] group-hover:border-[#fdfbf7] transition-all duration-500 shrink-0">
+                                    <span className="text-sm md:text-base text-[#fdfbf7] group-hover:text-[#342e29] transition-all duration-500 uppercase tracking-widest font-medium">
+                                        Click to explore
+                                    </span>
                                 </div>
                             </div>
 
