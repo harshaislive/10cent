@@ -27,7 +27,7 @@ const IMAGES = {
     poomaale: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png"),
     poomaale2: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"),
     hammiyala: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg"),
-    hyderabad: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/hyderabad.jpg"),
+    hyderabad: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/1762346094681-1ljldd.webp"),
     bhopal: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png"),
     mumbai: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg")
   }
