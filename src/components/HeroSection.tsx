@@ -26,37 +26,53 @@ const generateBlurDataURL = (width: number, height: number) => {
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentBgIndex, setCurrentBgIndex] = useState(0)
-  const [preloadNextIndex, setPreloadNextIndex] = useState(1)
+  const [prevBgIndex, setPrevBgIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
-  // Preload next image when current changes
-  useEffect(() => {
-    const nextIndex = (currentBgIndex + 1) % headlineVariations.length
-    setPreloadNextIndex(nextIndex)
-  }, [currentBgIndex])
+  // Handle smooth image transitions
+  const handleHeadingChange = (newIndex: number) => {
+    if (newIndex !== currentBgIndex) {
+      setPrevBgIndex(currentBgIndex)
+      setIsTransitioning(true)
+      setCurrentBgIndex(newIndex)
+
+      // Reset transitioning state after animation
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 1000)
+    }
+  }
+
+  // Always preload next and previous images for smooth transitions
+  const preloadIndices = [
+    currentBgIndex,
+    (currentBgIndex + 1) % headlineVariations.length,
+    (currentBgIndex - 1 + headlineVariations.length) % headlineVariations.length
+  ]
 
   return (
     <section id="hero" className="relative min-h-screen overflow-hidden">
       {/* Background Layer */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-[#0d2818]">
         {headlineVariations.map((variation, index) => {
-          // Only render current, previous, and next images
-          const shouldRender =
-            index === currentBgIndex ||
-            index === preloadNextIndex ||
-            (currentBgIndex === 0 && index === headlineVariations.length - 1)
+          const shouldRender = preloadIndices.includes(index)
 
           if (!shouldRender) return null
+
+          const isCurrent = index === currentBgIndex
+          const isPrev = index === prevBgIndex && isTransitioning
+          const opacity = isCurrent || isPrev ? 'opacity-100' : 'opacity-0'
+          const zIndex = isCurrent ? '10' : isPrev ? '5' : '1'
 
           return (
             <div
               key={variation.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentBgIndex ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${opacity}`}
+              style={{ zIndex }}
             >
               {/* Desktop Image - Optimized */}
               <Image
@@ -103,7 +119,7 @@ export default function HeroSection() {
 
             {/* Right Panel - Text Content */}
             <div className="text-right space-y-8">
-              <HeroTextContent isLoaded={isLoaded} onHeadingChange={setCurrentBgIndex} />
+              <HeroTextContent isLoaded={isLoaded} onHeadingChange={handleHeadingChange} />
             </div>
 
           </div>
