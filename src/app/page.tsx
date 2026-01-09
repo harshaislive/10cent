@@ -184,9 +184,6 @@ const SectionHeader = ({ number, title, subtitle, light = false }: { number: str
 const InsightCard = ({ label, quote, light = false }: { label: string, quote: string, light?: boolean }) => {
   return (
     <div className={`group relative p-8 border transition-colors duration-500 h-full flex flex-col justify-between ${light ? 'border-[#fdfbf7]/20 hover:border-[#fdfbf7]' : 'border-[#342e29]/10 hover:border-[#86312b] bg-[#fdfbf7]'}`}>
-      <div className={`absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity ${light ? 'text-[#fdfbf7]' : 'text-[#86312b]'}`}>
-        <ArrowRight className="w-5 h-5 -rotate-45" />
-      </div>
       <div>
         <p className={`text-xs font-bold uppercase tracking-widest mb-4 ${light ? 'text-[#fdfbf7]/60' : 'text-[#342e29]/60'}`}>{label}</p>
         <motion.p

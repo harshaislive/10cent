@@ -82,6 +82,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {/* Preconnect to Supabase CDN for faster image loading */}
+        <link rel="preconnect" href="https://isdbyvwocudnlwzghphw.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://isdbyvwocudnlwzghphw.supabase.co" />
+
         <AnalyticsWrapper
           gaId={process.env.NEXT_PUBLIC_GA_ID}
           facebookPixelId={process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}

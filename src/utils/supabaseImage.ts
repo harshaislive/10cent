@@ -65,12 +65,25 @@ export const imagePresets = {
   // Hero images - high quality, responsive width
   heroDesktop: (url: string) => getOptimizedImageUrl(url, {
     width: 1920,
-    quality: 70,
+    quality: 75,
     format: 'webp',
   }),
 
   heroMobile: (url: string) => getOptimizedImageUrl(url, {
     width: 1080,
+    quality: 70,
+    format: 'webp',
+  }),
+
+  // Hero images with higher compression for faster loading
+  heroDesktopFast: (url: string) => getOptimizedImageUrl(url, {
+    width: 1600,
+    quality: 65,
+    format: 'webp',
+  }),
+
+  heroMobileFast: (url: string) => getOptimizedImageUrl(url, {
+    width: 900,
     quality: 65,
     format: 'webp',
   }),

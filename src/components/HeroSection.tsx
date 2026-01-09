@@ -26,49 +26,66 @@ const generateBlurDataURL = (width: number, height: number) => {
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [currentBgIndex, setCurrentBgIndex] = useState(0)
+  const [preloadNextIndex, setPreloadNextIndex] = useState(1)
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
+  // Preload next image when current changes
+  useEffect(() => {
+    const nextIndex = (currentBgIndex + 1) % headlineVariations.length
+    setPreloadNextIndex(nextIndex)
+  }, [currentBgIndex])
+
   return (
     <section id="hero" className="relative min-h-screen overflow-hidden">
       {/* Background Layer */}
       <div className="absolute inset-0">
-        {headlineVariations.map((variation, index) => (
-          <div
-            key={variation.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentBgIndex ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            {/* Desktop Image - Optimized */}
-            <Image
-              src={variation.imageDesktop}
-              alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
-              fill
-              className="hidden md:block object-cover"
-              priority={index === 0}
-              quality={85}
-              sizes="100vw"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            />
-            {/* Mobile Image - Optimized */}
-            <Image
-              src={variation.imageMobile}
-              alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
-              fill
-              className="md:hidden object-cover"
-              priority={index === 0}
-              quality={75}
-              sizes="100vw"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            />
-          </div>
-        ))}
-        
+        {headlineVariations.map((variation, index) => {
+          // Only render current, previous, and next images
+          const shouldRender =
+            index === currentBgIndex ||
+            index === preloadNextIndex ||
+            (currentBgIndex === 0 && index === headlineVariations.length - 1)
+
+          if (!shouldRender) return null
+
+          return (
+            <div
+              key={variation.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentBgIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {/* Desktop Image - Optimized */}
+              <Image
+                src={variation.imageDesktop}
+                alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
+                fill
+                className="hidden md:block object-cover"
+                priority={index === 0}
+                quality={80}
+                sizes="100vw"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              />
+              {/* Mobile Image - Optimized */}
+              <Image
+                src={variation.imageMobile}
+                alt={typeof variation.mainText === 'string' ? variation.mainText : 'Hero background'}
+                fill
+                className="md:hidden object-cover"
+                priority={index === 0}
+                quality={75}
+                sizes="100vw"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              />
+            </div>
+          )
+        })}
+
         <div className="hero-overlay absolute inset-0" />
       </div>
 
