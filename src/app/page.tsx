@@ -520,7 +520,7 @@ export default function EditorialPage() {
           onClick={() => setIsModalOpen(true)}
           className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
         >
-          <span>Begin The Art of Return</span>
+          <span>Join The Conversation</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
