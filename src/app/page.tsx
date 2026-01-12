@@ -556,7 +556,7 @@ export default function EditorialPage() {
               : 'hover:bg-[#fdfbf7] hover:text-[#342e29]'
           }`}
         >
-          <span className="hidden md:block">Join the Club</span>
+          <span className="hidden md:block">Join the Conversation</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </nav>
@@ -650,10 +650,12 @@ export default function EditorialPage() {
                  transition={{ delay: 1, type: "spring" }}
               >
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    document.getElementById('manifesto')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="w-24 h-24 rounded-full bg-[#86312b] text-[#fdfbf7] flex items-center justify-center group cursor-none hover:scale-110 transition-transform duration-300"
                 >
-                  <ArrowDown className="w-8 h-8 group-hover:animate-bounce" />
+                  <ArrowDown className="w-8 h-8 group-hover:translate-y-2 transition-transform duration-300" />
                 </button>
               </motion.div>
             </div>
