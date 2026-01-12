@@ -193,7 +193,7 @@ const InsightCard = ({ label, quote, light = false }: { label: string, quote: st
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={`text-xl md:text-2xl font-light font-arizona leading-relaxed transition-colors ${light ? 'text-[#fdfbf7]' : 'text-[#342e29] group-hover:text-[#86312b]'}`}
         >
-          "{quote}"
+          {quote}
         </motion.p>
       </div>
     </div>
@@ -724,6 +724,21 @@ export default function EditorialPage() {
         </div>
       </section>
 
+      {/* 10% Lifestyle Statement */}
+      <section className="py-24 bg-[#fdfbf7] border-t border-[#342e29]/10">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-light font-arizona text-[#342e29] leading-[1.1] max-w-5xl"
+          >
+            The 10% lifestyle is your turn to pause, breathe and return.
+          </motion.h2>
+        </div>
+      </section>
+
       {/* The Founder */}
       <section className="py-32 bg-[#fdfbf7] relative border-t border-[#342e29]/10">
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
@@ -788,17 +803,20 @@ export default function EditorialPage() {
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-8 border-t border-[#342e29]/10 pt-8">
-                     <div>
-                        <h4 className="text-3xl font-light text-[#86312b]">8+ Years</h4>
-                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Building Communities</p>
+                     <div className="col-span-2 md:col-span-3 mb-4">
+                        <h4 className="text-xs uppercase tracking-widest text-[#342e29]/60 font-bold">The Beforest Effect</h4>
                      </div>
                      <div>
-                        <h4 className="text-3xl font-light text-[#86312b]">1000+ Acres</h4>
-                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Under Regeneration</p>
+                        <h4 className="text-3xl font-light text-[#86312b]">7 Years</h4>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">of Proven Impact</p>
+                     </div>
+                     <div>
+                        <h4 className="text-3xl font-light text-[#86312b]">1300+ Acres</h4>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Regenerated</p>
                      </div>
                      <div>
                         <h4 className="text-3xl font-light text-[#86312b]">6 Collectives</h4>
-                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">Established</p>
+                        <p className="text-xs uppercase tracking-widest mt-2 opacity-60">and counting</p>
                      </div>
                   </div>
                </div>
@@ -813,7 +831,6 @@ export default function EditorialPage() {
              <SectionHeader
                number="02"
                title="The 10% Solution."
-               subtitle="A mathematical approach to happiness."
                light
             />
 
@@ -908,7 +925,7 @@ export default function EditorialPage() {
             <SectionHeader
                number="04"
                title="The Tribe."
-               subtitle="This is not for everyone."
+               subtitle="Who is this for"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
@@ -949,7 +966,7 @@ export default function EditorialPage() {
          <div className="max-w-[1800px] mx-auto px-6 md:px-12">
             <SectionHeader
                number="05"
-               title="This is not for"
+               title="Who is this not for"
                subtitle="This is a commitment, not a consumption."
                light
             />

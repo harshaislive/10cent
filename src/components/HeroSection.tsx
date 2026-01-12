@@ -150,7 +150,7 @@ function HeroTextContent({ isLoaded, onHeadingChange }: { isLoaded: boolean; onH
             size="sm"
             className="text-white/60 leading-relaxed"
           >
-            30 nights a year. Your turn to pause, breathe, and return.
+            Spending 30 nights a year in the deep quiet of the wilderness.
           </HeroSubHeading>
         </div>
       </AnimatedWrapper>
