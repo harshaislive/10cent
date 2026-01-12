@@ -539,12 +539,12 @@ export default function EditorialPage() {
             : 'text-[#fdfbf7] py-6'
         }`}
       >
-        <div className={`w-32 md:w-40 relative h-12 transition-all duration-500 ${isScrolled ? 'filter-none' : 'grayscale brightness-200 contrast-200'}`}>
+        <div className={`w-32 md:w-40 relative h-12 transition-all duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
              <Image
                src={IMAGES.logo}
                alt="Beforest"
                fill
-               className={`object-contain transition-all duration-500 ${isScrolled ? '' : 'invert'}`}
+               className="object-contain"
              />
         </div>
 
@@ -605,23 +605,27 @@ export default function EditorialPage() {
         <div className="relative z-10 w-full max-w-[1800px] mx-auto">
           <div className="grid grid-cols-12 gap-4 text-[#fdfbf7]">
             <div className="col-span-12 md:col-span-8 lg:col-span-9">
-              <div className="overflow-hidden">
-                <motion.h1
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-[18vw] md:text-[14vw] leading-[0.8] tracking-tighter font-light mix-blend-overlay"
-                >
-                  10%
-                </motion.h1>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="w-64 md:w-80 lg:w-[400px] mb-8"
+              >
+                <Image
+                  src={IMAGES.logo}
+                  alt="Beforest 10% Club"
+                  width={400}
+                  height={120}
+                  className="w-full h-auto invert mix-blend-overlay"
+                  priority
+                />
+              </motion.div>
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-4xl md:text-6xl lg:text-7xl font-light ml-2 md:ml-4 -mt-4 md:-mt-8"
+                className="ml-2 md:ml-4"
               >
-                <span className="italic font-serif">Club</span>
                 <span className="block text-lg md:text-xl font-sans font-normal tracking-widest uppercase mt-4 opacity-80">
                   The Art of Return
                 </span>
