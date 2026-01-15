@@ -1013,12 +1013,12 @@ export default function EditorialPage() {
            </h2>
            <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto leading-relaxed">
              The world never stops pulling at you. There is a space here where you can finally pause.
-             <span className="text-sm uppercase tracking-widest mt-8 block text-[#ffc083] opacity-100">Next Conversation: {getNextSaturdayWithTime()}</span>
+             <span className="text-sm uppercase tracking-widest mt-8 block text-[#ffc083] opacity-100">Next Conversation: 20th Jan 2026</span>
            </p>
 
            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
              <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
-               Begin The Art of Return
+               Start the Conversation
              </MagneticButton>
            </div>
 
