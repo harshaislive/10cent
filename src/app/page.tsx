@@ -639,9 +639,7 @@ export default function EditorialPage() {
                 transition={{ delay: 0.8, duration: 1 }}
                 className="text-lg md:text-xl leading-relaxed text-left md:text-right opacity-90 max-w-[280px]"
               >
-                30 nights a year.<br/>
-                Your turn to pause,<br/>
-                breathe, and return.
+                Spending 30 nights a year in the deep quiet of the wilderness.
               </motion.p>
 
               <motion.div
