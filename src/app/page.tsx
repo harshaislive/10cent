@@ -12,24 +12,24 @@ import { imagePresets } from '@/utils/supabaseImage'
 // --- Data & Assets ---
 const IMAGES = {
   heroSlides: [
-    { desktop: imagePresets.heroDesktopFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"), mobile: imagePresets.heroMobileFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg") },
-    { desktop: imagePresets.heroDesktopFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg"), mobile: imagePresets.heroMobileFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png") },
-    { desktop: imagePresets.heroDesktopFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png"), mobile: imagePresets.heroMobileFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG") },
-    { desktop: imagePresets.heroDesktopFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg"), mobile: imagePresets.heroMobileFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg") },
-    { desktop: imagePresets.heroDesktopFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg"), mobile: imagePresets.heroMobileFast("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg") }
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg" },
+    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg" }
   ],
-  forest: imagePresets.heroDesktop("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg"),
-  office: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"),
+  forest: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
+  office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
   founder: "/PBR_7935.jpg",
   founderAlt: "/PBR_4601.jpg",
   logo: "/10-Club-01.png",
   locations: {
-    poomaale: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png"),
-    poomaale2: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg"),
-    hammiyala: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg"),
-    hyderabad: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/1762346094681-1ljldd.webp"),
-    bhopal: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png"),
-    mumbai: imagePresets.card("https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg")
+    poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
+    poomaale2: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
+    hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
+    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/1762346094681-1ljldd.webp",
+    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png",
+    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg"
   }
 }
 
@@ -586,10 +586,11 @@ export default function EditorialPage() {
                 fill
                 className="hidden md:block object-cover brightness-[0.85]"
                 priority={heroImageIndex === 0}
-                quality={65}
+                quality={60}
                 sizes="100vw"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                fetchPriority={heroImageIndex === 0 ? "high" : "auto"}
               />
               {/* Mobile Image - Optimized with priority only on first */}
               <Image
@@ -598,31 +599,14 @@ export default function EditorialPage() {
                 fill
                 className="md:hidden object-cover brightness-[0.85]"
                 priority={heroImageIndex === 0}
-                quality={60}
+                quality={55}
                 sizes="100vw"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                fetchPriority={heroImageIndex === 0 ? "high" : "auto"}
               />
             </motion.div>
           </AnimatePresence>
-
-          {/* Preload next image for smooth transition */}
-          {heroImageIndex < IMAGES.heroSlides.length - 1 && (
-            <link
-              rel="preload"
-              as="image"
-              href={IMAGES.heroSlides[heroImageIndex + 1].desktop}
-              key={`preload-desktop-${heroImageIndex + 1}`}
-            />
-          )}
-          {heroImageIndex < IMAGES.heroSlides.length - 1 && (
-            <link
-              rel="preload"
-              as="image"
-              href={IMAGES.heroSlides[heroImageIndex + 1].mobile}
-              key={`preload-mobile-${heroImageIndex + 1}`}
-            />
-          )}
 
           <div className="absolute inset-0 bg-gradient-to-b from-[#342e29]/30 via-transparent to-[#342e29]/90 mix-blend-multiply z-[1]" />
         </div>

@@ -12,12 +12,16 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 365, // Cache images for 1 year
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Use sharper downscaling and better quality defaults
+    quality: 60,
+    // Enable lazy loading for below-the-fold images by default
+    loading: 'lazy',
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],
