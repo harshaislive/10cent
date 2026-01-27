@@ -18,10 +18,6 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 365, // Cache images for 1 year
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Use sharper downscaling and better quality defaults
-    quality: 60,
-    // Enable lazy loading for below-the-fold images by default
-    loading: 'lazy',
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],
