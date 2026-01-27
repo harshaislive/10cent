@@ -1,26 +1,61 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { HeroMainHeading, HeroSubHeading } from './headings'
 import { headlineVariations } from './content/heroContent'
 import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
-// Generate blur placeholder for faster perceived loading
-const generateBlurDataURL = (width: number, height: number) => {
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  const ctx = canvas.getContext('2d')!
+// Alias native browser Image to avoid conflict with Next.js Image
+const NativeImage: { new (): any } = typeof window !== 'undefined' ? window.Image : (class {})
 
-  // Create a subtle gradient blur placeholder
-  const gradient = ctx.createLinearGradient(0, 0, width, height)
-  gradient.addColorStop(0, '#1a472a')
-  gradient.addColorStop(1, '#0d2818')
-  ctx.fillStyle = gradient
-  ctx.fillRect(0, 0, width, height)
+// Track which images have been preloaded
+const useImagePreloader = (images: string[]) => {
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
+  const [isLoading, setIsLoading] = useState(true)
+  const preloadingStarted = useRef(false)
 
-  return canvas.toDataURL('image/jpeg', 0.1)
+  const preloadImages = useCallback(() => {
+    if (preloadingStarted.current) return
+    preloadingStarted.current = true
+
+    const loadPromises = images.map((src) => {
+      return new Promise<string>((resolve) => {
+        if (loadedImages.has(src)) {
+          resolve(src)
+          return
+        }
+
+        const img = new NativeImage()
+        img.src = src
+
+        if (img.complete) {
+          setLoadedImages((prev) => new Set(Array.from(prev).concat(src)))
+          resolve(src)
+        } else {
+          img.onload = () => {
+            setLoadedImages((prev) => new Set(Array.from(prev).concat(src)))
+            resolve(src)
+          }
+          img.onerror = () => {
+            // Still mark as loaded even on error to avoid infinite loading
+            setLoadedImages((prev) => new Set(Array.from(prev).concat(src)))
+            resolve(src)
+          }
+        }
+      })
+    })
+
+    Promise.all(loadPromises).then(() => {
+      setIsLoading(false)
+    })
+  }, [images, loadedImages])
+
+  useEffect(() => {
+    preloadImages()
+  }, [preloadImages])
+
+  return { loadedImages, isLoading }
 }
 
 export default function HeroSection() {
@@ -28,45 +63,91 @@ export default function HeroSection() {
   const [currentBgIndex, setCurrentBgIndex] = useState(0)
   const [prevBgIndex, setPrevBgIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [readyIndex, setReadyIndex] = useState(0)
+
+  // Collect all image URLs for preloading
+  const allImageUrls = headlineVariations.flatMap((v) => [
+    v.imageDesktop,
+    v.imageMobile,
+  ])
+
+  const { loadedImages, isLoading: isPreloading } = useImagePreloader(allImageUrls)
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
 
-  // Handle smooth image transitions
-  const handleHeadingChange = (newIndex: number) => {
-    if (newIndex !== currentBgIndex) {
+  // Handle smooth image transitions - only change when images are ready
+  const handleHeadingChange = useCallback((newIndex: number) => {
+    if (newIndex === currentBgIndex) return
+
+    const nextVariation = headlineVariations[newIndex]
+    const isImageLoaded =
+      loadedImages.has(nextVariation.imageDesktop) &&
+      loadedImages.has(nextVariation.imageMobile)
+
+    if (isImageLoaded && !isPreloading) {
       setPrevBgIndex(currentBgIndex)
       setIsTransitioning(true)
-      setCurrentBgIndex(newIndex)
+      setReadyIndex(newIndex)
+
+      // Start the transition
+      setTimeout(() => {
+        setCurrentBgIndex(newIndex)
+      }, 50) // Small delay for smooth crossfade
 
       // Reset transitioning state after animation
       setTimeout(() => {
         setIsTransitioning(false)
-      }, 1000)
+      }, 1050)
     }
-  }
+  }, [currentBgIndex, loadedImages, isPreloading])
 
   // Always preload next and previous images for smooth transitions
   const preloadIndices = [
     currentBgIndex,
     (currentBgIndex + 1) % headlineVariations.length,
-    (currentBgIndex - 1 + headlineVariations.length) % headlineVariations.length
+    (currentBgIndex - 1 + headlineVariations.length) % headlineVariations.length,
   ]
+
+  // Check if an index's images are loaded
+  const isIndexLoaded = (index: number) => {
+    const variation = headlineVariations[index]
+    return (
+      loadedImages.has(variation.imageDesktop) &&
+      loadedImages.has(variation.imageMobile)
+    )
+  }
 
   return (
     <section id="hero" className="relative min-h-screen overflow-hidden">
       {/* Background Layer */}
       <div className="absolute inset-0 bg-[#0d2818]">
         {headlineVariations.map((variation, index) => {
-          const shouldRender = preloadIndices.includes(index)
+          // Only render if images are loaded, but render all loaded images
+          const imagesLoaded = isIndexLoaded(index)
 
-          if (!shouldRender) return null
+          if (!imagesLoaded) return null
 
+          // Crossfade logic: keep current and transitioning images visible
           const isCurrent = index === currentBgIndex
           const isPrev = index === prevBgIndex && isTransitioning
-          const opacity = isCurrent || isPrev ? 'opacity-100' : 'opacity-0'
-          const zIndex = isCurrent ? '10' : isPrev ? '5' : '1'
+          const isNextReady = index === readyIndex && isTransitioning
+
+          // Multiple images can be visible during transition
+          let opacity = 'opacity-0'
+          let zIndex = 1
+
+          if (isCurrent) {
+            opacity = 'opacity-100'
+            zIndex = 10
+          } else if (isPrev) {
+            opacity = 'opacity-100' // Keep previous visible during crossfade
+            zIndex = 5
+          } else if (isNextReady) {
+            opacity = 'opacity-100' // Show next image
+            zIndex = 10
+          }
 
           return (
             <div
@@ -101,6 +182,11 @@ export default function HeroSection() {
             </div>
           )
         })}
+
+        {/* Loading indicator - fades out when all images are ready */}
+        {isPreloading && (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0d2818] via-[#1a472a]/80 to-[#0d2818] z-20 animate-pulse" />
+        )}
 
         <div className="hero-overlay absolute inset-0" />
       </div>
