@@ -11,16 +11,16 @@ import { imagePresets } from '@/utils/supabaseImage'
 // --- Data & Assets ---
 const IMAGES = {
   heroSlides: [
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg" },
-    { desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg", mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg" }
+    { desktop: "/hero-5.webp", mobile: "/hero-5.webp" },
+    { desktop: "/hero-1.webp", mobile: "/hero-1.webp" },
+    { desktop: "/hero-2.webp", mobile: "/hero-2.webp" },
+    { desktop: "/hero-3.webp", mobile: "/hero-3.webp" },
+    { desktop: "/hero-4.webp", mobile: "/hero-4.webp" }
   ],
-  forest: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
+  forest: "/hero-3.webp",
   office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
-  founder: "/PBR_7935.jpg",
-  founderAlt: "/PBR_4601.jpg",
+  founder: "/PBR_7935.webp",
+  founderAlt: "/PBR_4601.webp",
   logo: "/10-Club-01.png",
   locations: {
     poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
@@ -596,31 +596,25 @@ export default function EditorialPage() {
               transition={{ duration: 0.5 }}
               className="absolute inset-0 w-full h-full"
             >
-              {/* Desktop Image - Optimized with priority only on first */}
+              {/* Desktop Image */}
               <Image
                 src={IMAGES.heroSlides[heroImageIndex].desktop}
                 alt="Hero Background"
                 fill
                 className="hidden md:block object-cover brightness-[0.85]"
                 priority={heroImageIndex === 0}
-                quality={60}
+                quality={80}
                 sizes="100vw"
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                fetchPriority={heroImageIndex === 0 ? "high" : "auto"}
               />
-              {/* Mobile Image - Optimized with priority only on first */}
+              {/* Mobile Image */}
               <Image
                 src={IMAGES.heroSlides[heroImageIndex].mobile}
                 alt="Hero Background"
                 fill
                 className="md:hidden object-cover brightness-[0.85]"
                 priority={heroImageIndex === 0}
-                quality={55}
+                quality={80}
                 sizes="100vw"
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                fetchPriority={heroImageIndex === 0 ? "high" : "auto"}
               />
             </motion.div>
           </AnimatePresence>
