@@ -507,6 +507,17 @@ export default function EditorialPage() {
     }
   }, [])
 
+  // Preload next slide images
+  useEffect(() => {
+    const nextIndex = (heroImageIndex + 1) % IMAGES.heroSlides.length
+    const preloadImage = (src: string) => {
+      const img = new window.Image()
+      img.src = src
+    }
+    preloadImage(IMAGES.heroSlides[nextIndex].desktop)
+    preloadImage(IMAGES.heroSlides[nextIndex].mobile)
+  }, [heroImageIndex])
+
   return (
     <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden cursor-none">
       <NoiseOverlay />
@@ -574,7 +585,7 @@ export default function EditorialPage() {
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="absolute inset-0 w-full h-full"
             >
               {/* Desktop Image - Optimized with priority only on first */}
