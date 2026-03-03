@@ -579,6 +579,14 @@ export default function EditorialPage() {
 
         {/* Background Slideshow with optimized preloading */}
         <div className="absolute inset-0 z-0 bg-[#342e29]">
+          {/* Placeholder image */}
+          <Image
+            src="/og-image.jpg"
+            alt=""
+            fill
+            className="object-cover opacity-30"
+            aria-hidden="true"
+          />
           <AnimatePresence mode="wait">
             <motion.div
               key={heroImageIndex}
