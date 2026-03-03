@@ -578,14 +578,14 @@ export default function EditorialPage() {
         <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-black/70 to-transparent z-10 pointer-events-none" />
 
         {/* Background Slideshow with optimized preloading */}
-        <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="popLayout">
+        <div className="absolute inset-0 z-0 bg-[#342e29]">
+          <AnimatePresence mode="wait">
             <motion.div
               key={heroImageIndex}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.5 }}
               className="absolute inset-0 w-full h-full"
             >
               {/* Desktop Image - Optimized with priority only on first */}
