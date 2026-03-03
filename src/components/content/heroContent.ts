@@ -6,21 +6,21 @@ export interface HeroContent extends TypewriterVariation {
   imageMobile: string
 }
 
-// Base Supabase URLs - optimization applied via presets
+// Local optimized WebP images
 const baseDesktopUrls = [
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/1.jpg",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/3.jpg",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"
+  "/hero-1.webp",
+  "/hero-2.webp",
+  "/hero-3.webp",
+  "/hero-4.webp",
+  "/hero-5.webp"
 ]
 
 const baseMobileUrls = [
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/1.png",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/2.JPG",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/3.jpg",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/4.jpg",
-  "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg"
+  "/hero-1.webp",
+  "/hero-2.webp",
+  "/hero-3.webp",
+  "/hero-4.webp",
+  "/hero-5.webp"
 ]
 
 export const headlineVariations: HeroContent[] = [

@@ -82,26 +82,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* Preconnect to Supabase CDN for faster image loading */}
-        <link rel="preconnect" href="https://isdbyvwocudnlwzghphw.supabase.co" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://isdbyvwocudnlwzghphw.supabase.co" />
 
         {/* Preload critical hero images for faster LCP */}
         <link
           rel="preload"
           as="image"
-          href="https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg"
-          imageSrcSet="https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg 1920w, https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg 1280w, https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/5.jpg 640w"
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href="https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg"
-          imageSrcSet="https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg 1080w, https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg 750w, https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/mobile/5.jpg 640w"
-          imageSizes="100vw"
-          media="(max-width: 768px)"
+          href="/hero-5.webp"
           fetchPriority="high"
         />
 
