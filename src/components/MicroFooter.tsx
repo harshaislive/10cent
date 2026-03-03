@@ -32,7 +32,7 @@ export default function MicroFooter() {
         <div className="border-t border-stone-300 pt-8">
           <div className="text-center">
             <p className="text-xs text-stone-500 mb-2">
-              © 2025 Beforest 10cent Club. All rights reserved.
+              © 2026 Beforest 10cent Club. All rights reserved.
             </p>
             <div className="text-xs text-stone-400 space-x-4">
               <a href="https://beforest.co/privacy-policy/" className="hover:text-stone-600 transition-colors">Privacy Policy</a>

@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { HeroMainHeading, HeroSubHeading } from './headings'
 import { headlineVariations } from './content/heroContent'
-import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 // Alias native browser Image to avoid conflict with Next.js Image
 const NativeImage: { new (): any } = typeof window !== 'undefined' ? window.Image : (class {})
@@ -270,7 +269,7 @@ function HeroTextContent({ isLoaded, onHeadingChange }: { isLoaded: boolean; onH
       <AnimatedWrapper delay={600} isLoaded={isLoaded} className="order-3 md:order-4">
         <div className="pr-8">
           <p className="text-white/50 text-sm font-light tracking-widest uppercase">
-            {getNextSaturdayWithTime()}
+            Saturday, 7th Mar 2026, 6:00 PM IST
           </p>
         </div>
       </AnimatedWrapper>

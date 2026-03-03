@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import TypeformButton from '@/components/TypeformButton'
-import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 import { imagePresets } from '@/utils/supabaseImage'
 
@@ -419,49 +418,48 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
               exit={{ scale: 1.1, opacity: 0 }}
               className="max-w-4xl w-full px-6 relative z-10"
             >
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                 <div className="space-y-12 border-r border-[#fdfbf7]/10 pr-12">
-                    <div className="space-y-2">
-                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Protocol</p>
-                       <h3 className="text-5xl font-light">30 Nights</h3>
-                       <p className="opacity-60 font-arizona">Every year. For introspection.</p>
+              <div className="text-center mb-12">
+                 <h2 className="text-3xl md:text-5xl font-light font-arizona mb-6 md:mb-8">The 10% Lifestyle</h2>
+                 <div className="flex flex-wrap items-center justify-center gap-6 md:gap-16">
+                    <div className="text-center min-w-[80px]">
+                       <div className="text-4xl md:text-6xl font-light text-[#ffc083]">30</div>
+                       <div className="text-xs md:text-sm uppercase tracking-widest opacity-60">Nights/Year</div>
                     </div>
-                    <div className="space-y-2">
-                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Duration</p>
-                       <h3 className="text-5xl font-light">10 Years</h3>
-                       <p className="opacity-60 font-arizona">A decade of wilderness access.</p>
+                    <div className="text-center min-w-[80px]">
+                       <div className="text-4xl md:text-6xl font-light text-[#ffc083]">10</div>
+                       <div className="text-xs md:text-sm uppercase tracking-widest opacity-60">Years</div>
                     </div>
-                    <div className="space-y-2">
-                       <p className="text-xs uppercase tracking-[0.3em] opacity-50">The Landscapes</p>
-                       <h3 className="text-5xl font-light">All Collectives</h3>
-                       <p className="opacity-60 font-arizona">Poomaale, Hammiyala, Hyderabad & more.</p>
+                    <div className="text-center min-w-[80px]">
+                       <div className="text-4xl md:text-6xl font-light text-[#ffc083]">₹17.6L</div>
+                       <div className="text-xs md:text-sm uppercase tracking-widest opacity-60">Tentative</div>
                     </div>
                  </div>
+              </div>
 
-                 <div className="space-y-8 pl-4">
-                    <h2 className="text-3xl font-light font-arizona">The Commitment</h2>
-                    <div className="text-6xl md:text-7xl font-light text-[#ffc083]">
-                      ₹17.6 L
-                      <span className="text-xl md:text-2xl ml-2 opacity-50 block mt-2 text-[#fdfbf7]">All inclusive for 10 years</span>
-                    </div>
-                    <p className="opacity-70 leading-relaxed font-arizona border-l-2 border-[#86312b] pl-4">
-                       "10% of your life spent with nature restores 100% of your nature."
-                    </p>
+              <div className="text-center space-y-6">
+                 <h3 className="text-3xl font-light font-arizona">Save Your Seat for a Virtual Chitchat</h3>
+                 <p className="opacity-70 leading-relaxed font-arizona max-w-xl mx-auto">
+                    This is not a commitment to buy — it's an invitation to a conversation. 
+                    We'll share more about the 10% lifestyle, answer your questions, and explore if it resonates with you.
+                 </p>
+                 
+                 <p className="text-lg font-light text-[#ffc083]">
+                   No pressure. No hard sell. Just a real conversation.
+                 </p>
 
-                    <TypeformButton
-                      formId={TYPEFORM_CONFIG.FORM_ID}
-                      className="mt-8 w-full bg-[#fdfbf7] text-[#342e29] py-4 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors"
-                    >
-                      I Accept the Protocol
-                    </TypeformButton>
-                    <p className="text-sm text-center text-[#fdfbf7]/70 mt-4 font-arizona">
-                       "The Protocol begins with a conversation."
-                       <br />
-                       <span className="opacity-80 text-xs uppercase tracking-widest mt-2 block">
-                         An Open Dialogue: {getNextSaturdayWithTime()}
-                       </span>
-                    </p>
-                 </div>
+                 <p className="text-sm text-[#fdfbf7]/70 font-arizona">
+                    Saturday, 7th Mar 2026, 6:00 PM IST • Via Zoom
+                 </p>
+
+                <TypeformButton
+                  formId={TYPEFORM_CONFIG.FORM_ID}
+                  className="w-full max-w-md bg-[#fdfbf7] text-[#342e29] py-4 uppercase tracking-widest text-sm font-bold hover:bg-[#ffc083] transition-colors"
+                >
+                  Save My Seat
+                </TypeformButton>
+                <p className="text-xs text-[#fdfbf7]/50 font-arizona">
+                   Limited spots available
+                </p>
               </div>
             </motion.div>
           )}
@@ -519,7 +517,7 @@ export default function EditorialPage() {
       {/* Mobile Sticky CTA - Overrides global button */}
       <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden p-4 bg-[#fdfbf7] border-t border-[#342e29]/10 pb-6">
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' })}
           className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
         >
           <span>Join The Conversation</span>
@@ -551,7 +549,7 @@ export default function EditorialPage() {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' })}
           className={`group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full transition-all duration-300 ${
             isScrolled
               ? 'bg-[#342e29] text-[#fdfbf7] hover:bg-[#86312b] border-transparent'
@@ -1025,26 +1023,29 @@ export default function EditorialPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-[#342e29] text-[#fdfbf7] py-32 px-6 md:px-12 relative overflow-hidden">
+      <section id="join" className="bg-[#342e29] text-[#fdfbf7] py-32 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-1/2 h-full bg-[#86312b]/10 skew-x-12 transform origin-top-right" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-           <h2 className="text-5xl md:text-7xl lg:text-8xl font-light mb-12 leading-tight">
-             We have held a seat under the trees for you.
-           </h2>
-           <p className="text-xl md:text-2xl font-light opacity-70 mb-16 max-w-2xl mx-auto leading-relaxed">
-             The world never stops pulling at you. There is a space here where you can finally pause.
-             <span className="text-sm uppercase tracking-widest mt-8 block text-[#ffc083] opacity-100">Next Conversation: 20th Jan 2026</span>
-           </p>
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-light mb-12 leading-tight">
+              We have held a seat under the trees for you.
+            </h2>
+            <p className="text-xl md:text-2xl font-light opacity-70 mb-8 max-w-2xl mx-auto leading-relaxed">
+              The world never stops pulling at you. There is a space here where you can finally pause.
+            </p>
+            <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
+              Sign up for a conversation — no commitment, just a real dialogue about what this could mean for you.
+            </p>
+            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Conversation: 7th Mar 2026 • 6:00 PM IST</span>
 
-           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-             <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
-               Start the Conversation
-             </MagneticButton>
-           </div>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+              <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
+                Save My Seat
+              </MagneticButton>
+            </div>
 
            <p className="mt-12 text-xs tracking-widest opacity-30 uppercase">
-             Beforest 10% Club &copy; 2025
+             Beforest 10% Club &copy; 2026
            </p>
         </div>
       </section>
