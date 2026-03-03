@@ -437,14 +437,14 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
               </div>
 
               <div className="text-center space-y-6">
-                 <h3 className="text-3xl font-light font-arizona">Save Your Seat for a Virtual Chitchat</h3>
+                 <h3 className="text-3xl font-light font-arizona">Save Your Seat for the Next Webinar</h3>
                  <p className="opacity-70 leading-relaxed font-arizona max-w-xl mx-auto">
-                    This is not a commitment to buy — it's an invitation to a conversation. 
+                    This is not a commitment to buy — it's an invitation to a webinar. 
                     We'll share more about the 10% lifestyle, answer your questions, and explore if it resonates with you.
                  </p>
                  
                  <p className="text-lg font-light text-[#ffc083]">
-                   No pressure. No hard sell. Just a real conversation.
+                   No pressure. No hard sell. Just a real webinar.
                  </p>
 
                  <p className="text-sm text-[#fdfbf7]/70 font-arizona">
@@ -1047,9 +1047,9 @@ export default function EditorialPage() {
               The world never stops pulling at you. There is a space here where you can finally pause.
             </p>
             <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
-              Sign up for a conversation — no commitment, just a real dialogue about what this could mean for you.
+              Sign up for the webinar — no commitment, just a real dialogue about what this could mean for you.
             </p>
-            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Conversation: 7th Mar 2026 • 6:00 PM IST</span>
+            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Webinar: 7th Mar 2026 • 6:00 PM IST</span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
