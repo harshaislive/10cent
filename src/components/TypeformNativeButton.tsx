@@ -87,6 +87,7 @@ export default function TypeformNativeButton({
           mode: 'popup',
           hideHeaders: true,
           hideFooter: true,
+          transitiveSearchParams: true,
           onSubmit: () => {
             console.log('Form submitted')
             popup.close()

@@ -19,6 +19,7 @@ export default function TypeformChatWrapper() {
         <PopupButton
           id={TYPEFORM_CONFIG.FORM_ID}
           className="w-full bg-sustainable-green text-text-primary px-6 py-3 font-arizona text-base tracking-wide rounded-lg transition-all duration-300 hover:bg-opacity-90"
+          transitiveSearchParams={TYPEFORM_CONFIG.POPUP_OPTIONS.transitiveSearchParams}
         >
           Request an Invite
         </PopupButton>

@@ -36,6 +36,7 @@ interface TypeformGlobal {
 declare global {
   interface Window {
     tf?: TypeformGlobal
+    __getTypeformData?: () => Record<string, string>
   }
 }
 

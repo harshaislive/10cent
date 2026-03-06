@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 const AVAILABILITY_API_URL = "https://blytonavailability.devsharsha.live/api/availability"
+export const dynamic = "force-dynamic"
 
 export async function GET(req: Request) {
   try {

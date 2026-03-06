@@ -30,6 +30,10 @@ export interface SupabaseImageOptions {
  */
 export function getOptimizedImageUrl(url: string, options: SupabaseImageOptions = {}): string {
   try {
+    if (!isSupabaseUrl(url)) {
+      return url
+    }
+
     const urlObj = new URL(url)
 
     // Set default values

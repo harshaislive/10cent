@@ -52,6 +52,7 @@ export default function TypeformPopupButton({
       hideHeaders={hideHeaders}
       hideFooter={hideFooter}
       medium={medium}
+      transitiveSearchParams={TYPEFORM_CONFIG.POPUP_OPTIONS.transitiveSearchParams}
       onSubmit={onSubmit}
       onReady={onReady}
       onClose={onClose}
