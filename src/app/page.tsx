@@ -444,7 +444,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                  </p>
                  
                  <p className="text-lg font-light text-[#ffc083]">
-                   No pressure. No hard sell. Just a real webinar.
+                   No pressure. No hard sell. Just a real conversation.
                  </p>
 
                  <p className="text-sm text-[#fdfbf7]/70 font-arizona">
