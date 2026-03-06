@@ -507,8 +507,12 @@ export default function EditorialPage() {
     }
   }, [])
 
-  // Preload next slide images
+  // Avoid competing with the initial hero request during first paint.
   useEffect(() => {
+    if (heroImageIndex === 0) {
+      return
+    }
+
     const nextIndex = (heroImageIndex + 1) % IMAGES.heroSlides.length
     const preloadImage = (src: string) => {
       const img = new window.Image()
@@ -577,16 +581,8 @@ export default function EditorialPage() {
         {/* Dark Scrim for Header Visibility */}
         <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-black/70 to-transparent z-10 pointer-events-none" />
 
-        {/* Background Slideshow with optimized preloading */}
+        {/* Background Slideshow */}
         <div className="absolute inset-0 z-0 bg-[#342e29]">
-          {/* Placeholder image */}
-          <Image
-            src="/og-image.jpg"
-            alt=""
-            fill
-            className="object-cover opacity-30"
-            aria-hidden="true"
-          />
           <AnimatePresence mode="wait">
             <motion.div
               key={heroImageIndex}
