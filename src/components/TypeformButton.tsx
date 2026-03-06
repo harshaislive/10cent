@@ -57,9 +57,9 @@ export default function TypeformButton({
       onReady={onReady}
       onSubmit={onSubmit}
       onClose={onClose}
-      hideHeaders={true}
-      hideFooter={true}
-      transitiveSearchParams={true}
+      hideHeaders={TYPEFORM_CONFIG.POPUP_OPTIONS.hideHeaders}
+      hideFooter={TYPEFORM_CONFIG.POPUP_OPTIONS.hideFooter}
+      transitiveSearchParams={TYPEFORM_CONFIG.POPUP_OPTIONS.transitiveSearchParams}
       hidden={hiddenFields}
     >
       {children || buttonText}

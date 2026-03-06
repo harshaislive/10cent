@@ -86,7 +86,7 @@ export default function TypeformNativeButton({
         const popup = window.tf.makePopup(`https://form.typeform.com/to/${formId}`, {
           mode: 'popup',
           hideHeaders: true,
-          hideFooter: true,
+          hideFooter: false,
           transitiveSearchParams: true,
           onSubmit: () => {
             console.log('Form submitted')

@@ -11,7 +11,7 @@ export const TYPEFORM_CONFIG = {
   POPUP_OPTIONS: {
     mode: 'popup' as const,
     hideHeaders: true,
-    hideFooter: true,
+    hideFooter: false,
     medium: '10cent-club',
     transitiveSearchParams: true,
   },
