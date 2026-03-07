@@ -290,7 +290,7 @@ export default function FoundingSilencePage() {
                   rel="noreferrer"
                   className="inline-flex items-center justify-center rounded-full border border-text-primary/15 px-8 py-4 text-sm uppercase tracking-[0.22em] text-text-primary transition-colors hover:border-brand-red hover:text-brand-red"
                 >
-                  Subscribe On WhatsApp
+                  Join The 10% Lifestyle
                 </a>
               </div>
             </div>
