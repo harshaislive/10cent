@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import StickyTrialCta from '@/components/StickyTrialCta'
 
 export const metadata: Metadata = {
   title: 'The Founding Silence | Beforest 10cent Club',
@@ -24,19 +25,19 @@ const questions = [
 const faqItems = [
   {
     question: 'How does this work for couples and families?',
-    answer: 'We allow immediate family participation. At the same time, we explained usage in terms of person-nights rather than a single family-night unit.'
+    answer: 'We allow immediate family participation. At the same time, we spoke about it in terms of person-nights rather than a single family-night unit.'
   },
   {
     question: 'Why count usage as person-nights instead of family nights?',
-    answer: 'Our reasoning is philosophical as much as operational: we mean this as a recurring reset practice for individuals, while still making room for family participation.'
+    answer: 'The reason is simple: we mean this as a recurring reset practice for individuals, while still making room for family participation.'
   },
   {
     question: 'Can the nights be used in long stretches?',
-    answer: 'Yes. We discussed that as possible, subject to availability and the broader effort to keep access equitable across members.'
+    answer: 'Yes. We said that is possible, subject to availability and the broader effort to keep access workable for everyone.'
   },
   {
     question: 'Will unused nights carry forward?',
-    answer: 'No. Our position is that unused nights should expire, because the idea is to build a rhythm of return rather than a stockpile of holiday inventory.'
+    answer: 'No. We clarified why there is no carry-forward: the aim is rhythm, not accumulation.'
   },
   {
     question: 'How much of the allocation can sit on weekends?',
@@ -44,7 +45,7 @@ const faqItems = [
   },
   {
     question: 'How is this actually different from a conventional timeshare?',
-    answer: 'Our answer is that the similarity is only transactional. The real difference lies in density, intent, and the philosophy of recurring immersion rather than leisure consumption.'
+    answer: 'We said the similarity is only transactional. The real difference lies in density, intent, and in returning to the land as a way of life rather than as leisure consumption.'
   }
 ]
 
@@ -52,13 +53,13 @@ const clarifications = [
   'We discussed a structure of 30 nights a year across Beforest hospitality landscapes, over a 10-year window, at an introductory INR 17.6 lakh.',
   'We spoke about access, not ownership, and about this as a bridge for people who feel aligned but are not ready to buy into a collective.',
   'We clarified that immediate family participation is allowed, while children under 12 do not count toward person-night usage.',
-  'We defended no carry-forward as a matter of philosophy: the aim is rhythm, not accumulation.',
+  'We clarified why there is no carry-forward: the aim is rhythm, not accumulation.',
   'We kept returning to one idea: this should be understood as a recurring reset practice, not as a leisure product.'
 ]
 
 export default function FoundingSilencePage() {
   return (
-    <main className="min-h-screen bg-warm-white text-text-primary">
+    <main className="min-h-screen bg-warm-white pb-24 text-text-primary">
       <section className="section-padding pb-8">
         <div className="container-max max-w-6xl">
           <div className="border-b border-text-primary/10 pb-6 text-xs uppercase tracking-[0.26em] text-text-secondary">
@@ -76,9 +77,11 @@ export default function FoundingSilencePage() {
                 The Founding Silence
               </p>
               <h1 className="mt-4 max-w-4xl text-5xl font-light leading-[0.94] md:text-7xl">
-                For those who were there
-                <span className="block">before this became a category.</span>
+                The 10% Conversation
               </h1>
+              <p className="mt-4 text-lg leading-relaxed text-text-secondary md:text-xl">
+                March 7, 2026
+              </p>
 
               <div className="mt-10 max-w-3xl space-y-6 text-lg leading-relaxed text-text-secondary md:text-xl">
                 <p>
@@ -108,7 +111,7 @@ export default function FoundingSilencePage() {
               <div className="mt-8 border-t border-text-primary/10 pt-6">
                 <div className="text-3xl font-light text-brand-red">Summary</div>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                  One evening, one conversation, and one early group of listeners who helped us test whether this way of thinking could hold under practical scrutiny.
+                  One evening, one conversation, and one early group of listeners who helped us see whether this way of thinking could hold in real life.
                 </p>
               </div>
             </aside>
@@ -208,8 +211,8 @@ export default function FoundingSilencePage() {
                   family, fairness, frequency, planning, and value.
                 </p>
                 <p>
-                  That matters to us because it tells us what the webinar actually achieved:
-                  it moved the conversation from abstract philosophy into lived feasibility.
+                  That matters to us because it tells us what the webinar actually did:
+                  it moved the conversation from abstraction into lived practicality.
                 </p>
               </div>
             </article>
@@ -255,7 +258,7 @@ export default function FoundingSilencePage() {
               ))}
             </div>
 
-            <div className="mt-10 flex justify-start">
+            <div id="embedded-trial-cta" className="mt-10 flex justify-start">
               <a
                 href="https://hospitality.beforest.co"
                 target="_blank"
@@ -268,28 +271,7 @@ export default function FoundingSilencePage() {
           </div>
         </div>
       </section>
-
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-text-primary/10 bg-warm-white/95 px-4 py-3 backdrop-blur-md shadow-[0_-6px_24px_rgba(0,33,64,0.08)]">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
-              Experience Before Commitment
-            </p>
-            <p className="mt-1 text-sm leading-relaxed text-text-primary md:text-base">
-              The land will explain this more clearly than we can.
-            </p>
-          </div>
-
-          <a
-            href="https://hospitality.beforest.co"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center rounded-full bg-brand-red px-6 py-3 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
-          >
-            Book A Trial Stay
-          </a>
-        </div>
-      </div>
+      <StickyTrialCta targetId="embedded-trial-cta" />
     </main>
   )
 }
