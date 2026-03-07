@@ -25,7 +25,7 @@ const questions = [
 const faqItems = [
   {
     question: 'How does this work for couples and families?',
-    answer: 'We allow immediate family participation. At the same time, we spoke about it in terms of person-nights rather than a single family-night unit.'
+    answer: 'We allow immediate family participation. At the same time, we spoke about it in terms of person-nights rather than treating one family stay as a single unit.'
   },
   {
     question: 'Why count usage as person-nights instead of family nights?',
@@ -45,16 +45,16 @@ const faqItems = [
   },
   {
     question: 'How is this actually different from a conventional timeshare?',
-    answer: 'We said the similarity is only transactional. The real difference lies in density, intent, and in returning to the land as a way of life rather than as leisure consumption.'
+    answer: 'We said the similarity is only at the level of transaction. The real difference lies in density, intent, and in returning to the land as a way of life rather than as a leisure purchase.'
   }
 ]
 
 const clarifications = [
   'We discussed a structure of 30 nights a year across Beforest hospitality landscapes, over a 10-year window, at an introductory INR 17.6 lakh.',
   'We spoke about access, not ownership, and about this as a bridge for people who feel aligned but are not ready to buy into a collective.',
-  'We clarified that immediate family participation is allowed, while children under 12 do not count toward person-night usage.',
+  'We clarified that immediate family participation is allowed, while children under 12 do not count toward person-night counting.',
   'We clarified why there is no carry-forward: the aim is rhythm, not accumulation.',
-  'We kept returning to one idea: this should be understood as a recurring reset practice, not as a leisure product.'
+  'We kept returning to one idea: this should be understood as a recurring reset practice, not as a leisure plan.'
 ]
 
 export default function FoundingSilencePage() {
@@ -111,7 +111,7 @@ export default function FoundingSilencePage() {
               <div className="mt-8 border-t border-text-primary/10 pt-6">
                 <div className="text-3xl font-light text-brand-red">Summary</div>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                  One evening, one conversation, and one early group of listeners who helped us see whether this way of thinking could hold in real life.
+                  One evening, one conversation, and one early group of listeners.
                 </p>
               </div>
             </aside>
@@ -145,7 +145,7 @@ export default function FoundingSilencePage() {
                   That makes what we are saying narrower. It also makes it more serious.
                 </p>
                 <p>
-                  In that sense, this was less a pitch than an attempt to name something clearly. We wanted to speak about the 10% Club on its own terms.
+                  In that sense, this was less about persuasion than about naming something clearly. We wanted to speak about the 10% Club on its own terms.
                 </p>
               </div>
             </article>
@@ -201,18 +201,15 @@ export default function FoundingSilencePage() {
             <article>
               <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">What The Evening Revealed</p>
               <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                This was not passive interest.
+                The questions in the room were practical, as they should have been.
               </h2>
 
               <div className="mt-8 space-y-6 text-base leading-relaxed text-text-secondary md:text-lg">
                 <p>
-                  People did not respond like passive attendees. They responded like evaluators.
-                  They wanted to know how this would behave under the pressure of real life:
-                  family, fairness, frequency, planning, and value.
+                  You asked about family, frequency, weekends, carry-forward, and how this would work in the rhythm of real life.
                 </p>
                 <p>
-                  That matters to us because it tells us what the webinar actually did:
-                  it moved the conversation from abstraction into lived practicality.
+                  That changed the quality of the conversation. It moved us from idea into reality.
                 </p>
               </div>
             </article>
