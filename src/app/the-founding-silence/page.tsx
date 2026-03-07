@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 }
 
 const openingBullets = [
-  'This was not framed as a holiday club.',
-  'It was not framed as a shortcut to ownership.',
-  'It was framed as a disciplined way to return to nature, again and again.'
+  'We did not frame this as a holiday club.',
+  'We did not frame this as a shortcut to ownership.',
+  'We framed it as a disciplined way to return to nature, again and again.'
 ]
 
 const questions = [
@@ -24,36 +24,36 @@ const questions = [
 const faqItems = [
   {
     question: 'How does this work for couples and families?',
-    answer: 'The webinar clarified that immediate family participation is allowed. Usage, however, was explained in terms of person-nights rather than a single family-night unit.'
+    answer: 'We allow immediate family participation. At the same time, we explained usage in terms of person-nights rather than a single family-night unit.'
   },
   {
     question: 'Why count usage as person-nights instead of family nights?',
-    answer: 'The explanation given was philosophical as much as operational: the product is meant as a recurring reset practice for individuals, while still making room for family participation.'
+    answer: 'Our reasoning is philosophical as much as operational: we mean this as a recurring reset practice for individuals, while still making room for family participation.'
   },
   {
     question: 'Can the nights be used in long stretches?',
-    answer: 'Yes, that was discussed as possible, subject to availability and the broader effort to keep access equitable across members.'
+    answer: 'Yes. We discussed that as possible, subject to availability and the broader effort to keep access equitable across members.'
   },
   {
     question: 'Will unused nights carry forward?',
-    answer: 'No. The position stated in the webinar was that unused nights should expire, because the idea is to build a rhythm of return rather than a stockpile of holiday inventory.'
+    answer: 'No. Our position is that unused nights should expire, because the idea is to build a rhythm of return rather than a stockpile of holiday inventory.'
   },
   {
     question: 'How much of the allocation can sit on weekends?',
-    answer: 'A weekday-weekend balance was described, with the intention of keeping access workable for everyone rather than allowing demand to collapse onto a few peak dates.'
+    answer: 'We described a 2:1 weekday-to-weekend balance. In simple terms, for every weekend booking, we ask members to book roughly two weekday nights as well, so access does not collapse onto a small number of peak dates.'
   },
   {
     question: 'How is this actually different from a conventional timeshare?',
-    answer: 'The answer offered in the room was that the similarity is only transactional. The real difference lies in density, intent, and the philosophy of recurring immersion rather than leisure consumption.'
+    answer: 'Our answer is that the similarity is only transactional. The real difference lies in density, intent, and the philosophy of recurring immersion rather than leisure consumption.'
   }
 ]
 
 const clarifications = [
-  'The structure discussed was 30 nights a year across Beforest hospitality landscapes, over a 10-year window, at an introductory INR 17.6 lakh.',
-  'The product was positioned as access, not ownership, and as a bridge for aligned people not yet ready to buy into a collective.',
-  'Immediate family participation was allowed, while children under 12 were described as not counting toward person-night usage.',
-  'No carry-forward was defended as a matter of philosophy: the aim was rhythm, not accumulation.',
-  'The conversation consistently returned to one idea: this should be understood as a recurring reset practice, not as a leisure product.'
+  'We discussed a structure of 30 nights a year across Beforest hospitality landscapes, over a 10-year window, at an introductory INR 17.6 lakh.',
+  'We spoke about access, not ownership, and about this as a bridge for people who feel aligned but are not ready to buy into a collective.',
+  'We clarified that immediate family participation is allowed, while children under 12 do not count toward person-night usage.',
+  'We defended no carry-forward as a matter of philosophy: the aim is rhythm, not accumulation.',
+  'We kept returning to one idea: this should be understood as a recurring reset practice, not as a leisure product.'
 ]
 
 export default function FoundingSilencePage() {
@@ -82,12 +82,12 @@ export default function FoundingSilencePage() {
 
               <div className="mt-10 max-w-3xl space-y-6 text-lg leading-relaxed text-text-secondary md:text-xl">
                 <p>
-                  This page is a refined record of the first webinar, shared primarily for those who attended.
+                  We are sharing this page primarily for those who attended the first webinar.
                   It gathers the main argument, the key questions raised in the room, and the practical clarifications that followed.
                 </p>
                 <p>
-                  The title remains ceremonial, but the purpose here is simple:
-                  to return the evening in a cleaner, quieter form, without the noise of the live call.
+                  The title remains ceremonial, but our purpose here is simple:
+                  to return that evening in a cleaner, quieter form, without the noise of the live call.
                 </p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function FoundingSilencePage() {
               <div className="mt-8 border-t border-text-primary/10 pt-6">
                 <div className="text-3xl font-light text-brand-red">Summary</div>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                  One evening, one proposition, and one early group of listeners who helped test whether the idea could hold under practical scrutiny.
+                  One evening, one conversation, and one early group of listeners who helped us test whether this way of thinking could hold under practical scrutiny.
                 </p>
               </div>
             </aside>
@@ -123,35 +123,35 @@ export default function FoundingSilencePage() {
               <div className="border-b border-text-primary/10 pb-4">
                 <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Main Argument</p>
                 <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                  What the webinar argued
+                  What we were trying to say
                 </h2>
               </div>
 
               <div className="mt-8 space-y-6 text-base leading-relaxed text-text-secondary md:text-lg">
                 <p>
-                  The strongest idea presented that evening was not ownership, not hospitality, not even land.
-                  It was rhythm. The argument was that modern life does not merely exhaust us through speed.
+                  The strongest idea we presented that evening was not ownership, not hospitality, not even land.
+                  It was rhythm. Our argument was that modern life does not merely exhaust us through speed.
                   It exhausts us through continuous sensory demand, continuous decision load, and continuous interruption.
                 </p>
                 <p>
-                  Nature, in this framing, was not luxury. It was calibration.
-                  The 10% Club was therefore described not as an escape hatch, but as a recurring reset.
-                  Something closer to a practice than a purchase.
+                  Nature, in our framing, was not luxury. It was calibration.
+                  The 10% Club was therefore not an escape hatch, but a recurring reset.
+                  Something closer to a practice than a plan you buy into and forget.
                 </p>
                 <p>
-                  That made the offer much narrower. It also made it more serious.
+                  That makes what we are saying narrower. It also makes it more serious.
                 </p>
                 <p>
-                  In that sense, the webinar was less a pitch than a framing device. It gave attendees a way to understand the 10% Club on its own terms.
+                  In that sense, this was less a pitch than an attempt to name something clearly. We wanted to speak about the 10% Club on its own terms.
                 </p>
               </div>
             </article>
 
             <article>
               <div className="border-b border-text-primary/10 pb-4">
-                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Offer, Clearly Stated</p>
+                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">What We Discussed</p>
                 <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                  What was actually being offered
+                  The practical points we covered
                 </h2>
               </div>
 
@@ -204,11 +204,11 @@ export default function FoundingSilencePage() {
               <div className="mt-8 space-y-6 text-base leading-relaxed text-text-secondary md:text-lg">
                 <p>
                   People did not respond like passive attendees. They responded like evaluators.
-                  They wanted to know how the idea would behave under the pressure of real life:
+                  They wanted to know how this would behave under the pressure of real life:
                   family, fairness, frequency, planning, and value.
                 </p>
                 <p>
-                  That matters because it tells us what the webinar actually achieved:
+                  That matters to us because it tells us what the webinar actually achieved:
                   it moved the conversation from abstract philosophy into lived feasibility.
                 </p>
               </div>
@@ -222,11 +222,11 @@ export default function FoundingSilencePage() {
 
               <div className="mt-8 space-y-6 text-base leading-relaxed text-text-secondary md:text-lg">
                 <p>
-                  What the webinar left behind was not a closed conclusion, but a clearer frame.
-                  It gave attendees a shared vocabulary for thinking about access, reset, family usage, and the difference between nature as leisure and nature as practice.
+                  What we wanted to leave behind was not a closed conclusion, but a clearer frame.
+                  A shared vocabulary for thinking about access, reset, family stays, and the difference between nature as leisure and nature as practice.
                 </p>
                 <p>
-                  This page is meant to preserve that frame in a quieter, more readable form.
+                  We hope this page preserves that frame in a quieter, more readable form.
                 </p>
               </div>
             </article>
@@ -239,7 +239,7 @@ export default function FoundingSilencePage() {
           <div className="border-t border-text-primary/10 pt-8">
             <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">FAQ</p>
             <h2 className="mt-3 text-3xl font-light md:text-5xl">
-              Questions from attendees, answered plainly
+              Questions that came up in the room
             </h2>
 
             <div className="mt-10 divide-y divide-text-primary/10 border-y border-text-primary/10">
@@ -268,6 +268,28 @@ export default function FoundingSilencePage() {
           </div>
         </div>
       </section>
+
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-text-primary/10 bg-warm-white/95 px-4 py-3 backdrop-blur-md shadow-[0_-6px_24px_rgba(0,33,64,0.08)]">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
+              Experience Before Commitment
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-text-primary md:text-base">
+              The land will explain this more clearly than we can.
+            </p>
+          </div>
+
+          <a
+            href="https://hospitality.beforest.co"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-full bg-brand-red px-6 py-3 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
+          >
+            Book A Trial Stay
+          </a>
+        </div>
+      </div>
     </main>
   )
 }

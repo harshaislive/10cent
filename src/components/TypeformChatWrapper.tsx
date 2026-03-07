@@ -7,8 +7,9 @@ import { TYPEFORM_CONFIG } from '@/config/typeform'
 export default function TypeformChatWrapper() {
   const pathname = usePathname()
   const isConfirmationPage = pathname === '/confirmation'
+  const isFoundingSilencePage = pathname === '/the-founding-silence'
 
-  if (!TYPEFORM_CONFIG.ENABLED || isConfirmationPage) {
+  if (!TYPEFORM_CONFIG.ENABLED || isConfirmationPage || isFoundingSilencePage) {
     return null
   }
 
