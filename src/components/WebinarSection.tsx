@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 export default function WebinarSection() {
   const [expandedTopic, setExpandedTopic] = useState<number | null>(null)
   const [showFloatingCTA, setShowFloatingCTA] = useState(false)
+  const webinarDateTime = getNextSaturdayWithTime()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,7 +100,7 @@ export default function WebinarSection() {
                 <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
               </svg>
               <span className="text-sm font-medium text-text-primary">
-                Saturday, 7th Mar 2026, 6:00 PM IST
+                {webinarDateTime}
               </span>
             </div>
 

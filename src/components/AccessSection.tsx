@@ -2,8 +2,11 @@
 
 import TypeformButton from './TypeformButton'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
+import { getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 export default function AccessSection() {
+  const webinarDateTime = getNextSaturdayWithTime()
+
   return (
     <section id="access" className="section-padding bg-text-primary text-white relative overflow-hidden">
       {/* Subtle organic background */}
@@ -54,7 +57,7 @@ export default function AccessSection() {
               <div className="space-y-6 max-w-md mx-auto">
                 <div className="text-center">
                   <h4 className="text-sm uppercase tracking-wide text-sustainable-green font-arizona mb-2">When We'll Meet</h4>
-                  <p className="text-white font-arizona">Saturday, 7th Mar 2026, 6:00 PM IST</p>
+                  <p className="text-white font-arizona">{webinarDateTime}</p>
                 </div>
 
                 <div className="text-center">

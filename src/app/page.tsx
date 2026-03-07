@@ -7,6 +7,7 @@ import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, M
 import TypeformButton from '@/components/TypeformButton'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 import { imagePresets } from '@/utils/supabaseImage'
+import { getNextSaturday, getNextSaturdayWithTime } from '@/utils/dateUtils'
 
 // --- Data & Assets ---
 const IMAGES = {
@@ -448,7 +449,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                  </p>
 
                  <p className="text-sm text-[#fdfbf7]/70 font-arizona">
-                    Saturday, 7th Mar 2026, 6:00 PM IST • Via Zoom
+                    {webinarDateTime} • Via Zoom
                  </p>
 
                 <TypeformButton
@@ -473,6 +474,8 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
 // --- Main Page ---
 
 export default function EditorialPage() {
+  const webinarDate = getNextSaturday()
+  const webinarDateTime = getNextSaturdayWithTime()
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -1045,7 +1048,7 @@ export default function EditorialPage() {
             <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
               Sign up for the webinar — no commitment, just a real dialogue about what this could mean for you.
             </p>
-            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Webinar: 7th Mar 2026 • 6:00 PM IST</span>
+            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Webinar: {webinarDate} • 6:00 PM IST</span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
