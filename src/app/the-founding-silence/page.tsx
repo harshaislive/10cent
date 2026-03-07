@@ -123,7 +123,7 @@ export default function FoundingSilencePage() {
               <div className="border-b border-text-primary/10 pb-4">
                 <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Main Argument</p>
                 <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                  What we were trying to say
+                  What We Wanted To Make Clear
                 </h2>
               </div>
 
