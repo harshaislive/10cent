@@ -97,8 +97,7 @@ export default function FoundingSilencePage() {
                   It gathers the main argument, the key questions raised in the room, and the practical clarifications that followed.
                 </p>
                 <p>
-                  The title remains ceremonial, but our purpose here is simple:
-                  to return that evening in a cleaner, quieter form, without the noise of the live call.
+                  Our purpose here is simple: to return that evening in a cleaner, quieter form, without the noise of the live call.
                 </p>
               </div>
             </div>
