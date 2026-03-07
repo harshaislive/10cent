@@ -262,15 +262,37 @@ export default function FoundingSilencePage() {
               ))}
             </div>
 
-            <div id="embedded-trial-cta" className="mt-10 flex justify-start">
-              <a
-                href="https://hospitality.beforest.co"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
-              >
-                Book A Trial Stay
-              </a>
+            <div id="embedded-trial-cta" className="mt-10">
+              <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">
+                Next Steps
+              </p>
+              <h3 className="mt-3 text-2xl font-light text-text-primary md:text-4xl">
+                Continue in the way that feels right to you.
+              </h3>
+              <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
+                Experience Before Commitment
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-text-primary md:text-base">
+                The land will explain this more clearly than we can.
+              </p>
+              <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+                <a
+                  href="https://hospitality.beforest.co"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
+                >
+                  Book A Trial Stay
+                </a>
+                <a
+                  href="https://wa.me/918977945351?text=I%27d%20like%20to%20subscribe%20to%2010%25%20Lifestyle"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded-full border border-text-primary/15 px-8 py-4 text-sm uppercase tracking-[0.22em] text-text-primary transition-colors hover:border-brand-red hover:text-brand-red"
+                >
+                  Subscribe On WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         </div>
