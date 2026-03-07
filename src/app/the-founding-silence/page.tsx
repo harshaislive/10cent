@@ -254,6 +254,17 @@ export default function FoundingSilencePage() {
                 </div>
               ))}
             </div>
+
+            <div className="mt-10 flex justify-start">
+              <a
+                href="https://hospitality.beforest.co"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Book A Trial Stay
+              </a>
+            </div>
           </div>
         </div>
       </section>
