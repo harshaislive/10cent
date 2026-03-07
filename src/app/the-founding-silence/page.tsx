@@ -21,12 +21,39 @@ const questions = [
   'How is this actually different from a conventional timeshare?'
 ]
 
+const faqItems = [
+  {
+    question: 'How does this work for couples and families?',
+    answer: 'The webinar clarified that immediate family participation is allowed. Usage, however, was explained in terms of person-nights rather than a single family-night unit.'
+  },
+  {
+    question: 'Why count usage as person-nights instead of family nights?',
+    answer: 'The explanation given was philosophical as much as operational: the product is meant as a recurring reset practice for individuals, while still making room for family participation.'
+  },
+  {
+    question: 'Can the nights be used in long stretches?',
+    answer: 'Yes, that was discussed as possible, subject to availability and the broader effort to keep access equitable across members.'
+  },
+  {
+    question: 'Will unused nights carry forward?',
+    answer: 'No. The position stated in the webinar was that unused nights should expire, because the idea is to build a rhythm of return rather than a stockpile of holiday inventory.'
+  },
+  {
+    question: 'How much of the allocation can sit on weekends?',
+    answer: 'A weekday-weekend balance was described, with the intention of keeping access workable for everyone rather than allowing demand to collapse onto a few peak dates.'
+  },
+  {
+    question: 'How is this actually different from a conventional timeshare?',
+    answer: 'The answer offered in the room was that the similarity is only transactional. The real difference lies in density, intent, and the philosophy of recurring immersion rather than leisure consumption.'
+  }
+]
+
 const clarifications = [
   'The structure discussed was 30 nights a year across Beforest hospitality landscapes, over a 10-year window, at an introductory INR 17.6 lakh.',
   'The product was positioned as access, not ownership, and as a bridge for aligned people not yet ready to buy into a collective.',
   'Immediate family participation was allowed, while children under 12 were described as not counting toward person-night usage.',
   'No carry-forward was defended as a matter of philosophy: the aim was rhythm, not accumulation.',
-  'The cleanest next step was not another abstract explanation. It was a stay on the land.'
+  'The conversation consistently returned to one idea: this should be understood as a recurring reset practice, not as a leisure product.'
 ]
 
 export default function FoundingSilencePage() {
@@ -114,6 +141,9 @@ export default function FoundingSilencePage() {
                 <p>
                   That made the offer much narrower. It also made it more serious.
                 </p>
+                <p>
+                  In that sense, the webinar was less a pitch than a framing device. It gave attendees a way to understand the 10% Club on its own terms.
+                </p>
               </div>
             </article>
 
@@ -143,7 +173,7 @@ export default function FoundingSilencePage() {
           <div className="border-y border-text-primary/10 py-8">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
               <div>
-                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">What The Room Asked</p>
+                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Questions Raised In The Room</p>
                 <h2 className="mt-3 text-3xl font-light md:text-5xl">
                   The questions were practical.
                   <span className="block">That was a good sign.</span>
@@ -185,39 +215,45 @@ export default function FoundingSilencePage() {
             </article>
 
             <article>
-              <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">What Comes Next</p>
+              <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Closing Note</p>
               <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                Not a louder argument.
-                <span className="block">A truer proof.</span>
+                What remains after the first conversation
               </h2>
 
               <div className="mt-8 space-y-6 text-base leading-relaxed text-text-secondary md:text-lg">
                 <p>
-                  If the first conversation resonated, the next step should remain faithful to its tone.
-                  Do not move immediately into abstraction. Do not move immediately into commitment.
+                  What the webinar left behind was not a closed conclusion, but a clearer frame.
+                  It gave attendees a shared vocabulary for thinking about access, reset, family usage, and the difference between nature as leisure and nature as practice.
                 </p>
                 <p>
-                  Go and stay. Walk the land. Sit through the stillness. Let the proposition be tested by experience.
+                  This page is meant to preserve that frame in a quieter, more readable form.
                 </p>
               </div>
-
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <a
-                  href="https://hospitality.beforest.co"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
-                >
-                  Book A Trial Stay
-                </a>
-                <Link
-                  href="/"
-                  className="inline-flex items-center justify-center rounded-full border border-text-primary/15 px-8 py-4 text-sm uppercase tracking-[0.22em] text-text-primary transition-colors hover:border-brand-red hover:text-brand-red"
-                >
-                  Return To Main Page
-                </Link>
-              </div>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding pt-4">
+        <div className="container-max max-w-6xl">
+          <div className="border-t border-text-primary/10 pt-8">
+            <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">FAQ</p>
+            <h2 className="mt-3 text-3xl font-light md:text-5xl">
+              Questions from attendees, answered plainly
+            </h2>
+
+            <div className="mt-10 divide-y divide-text-primary/10 border-y border-text-primary/10">
+              {faqItems.map((item) => (
+                <div key={item.question} className="grid gap-4 py-6 md:grid-cols-[0.42fr_0.58fr] md:gap-8">
+                  <h3 className="text-lg font-light leading-relaxed text-text-primary md:text-2xl">
+                    {item.question}
+                  </h3>
+                  <p className="text-base leading-relaxed text-text-secondary md:text-lg">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
