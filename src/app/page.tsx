@@ -329,6 +329,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
   const [step, setStep] = useState<'filter' | 'reveal' | 'form'>('filter')
   const [holdProgress, setHoldProgress] = useState(0)
   const holdInterval = useRef<NodeJS.Timeout | null>(null)
+  const webinarDateTime = getNextSaturdayWithTime()
 
   useEffect(() => {
     if (!isOpen) {
