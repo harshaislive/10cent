@@ -207,7 +207,11 @@ export default function HeroSection() {
 
             {/* Right Panel - Text Content */}
             <div className="text-right space-y-8">
-              <HeroTextContent isLoaded={isLoaded} onHeadingChange={handleHeadingChange} />
+              <HeroTextContent
+                isLoaded={isLoaded}
+                onHeadingChange={handleHeadingChange}
+                webinarDateTime={webinarDateTime}
+              />
             </div>
 
           </div>
@@ -224,7 +228,15 @@ export default function HeroSection() {
 }
 
 // Extracted text content component
-function HeroTextContent({ isLoaded, onHeadingChange }: { isLoaded: boolean; onHeadingChange: (index: number) => void }) {
+function HeroTextContent({
+  isLoaded,
+  onHeadingChange,
+  webinarDateTime
+}: {
+  isLoaded: boolean
+  onHeadingChange: (index: number) => void
+  webinarDateTime: string
+}) {
   return (
     <div className="relative text-right max-w-xl lg:max-w-2xl flex flex-col -mt-10 md:mt-0">
       {/* Right edge line anchor */}
