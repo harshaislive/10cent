@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import StickyTrialCta from '@/components/StickyTrialCta'
 
@@ -64,8 +65,15 @@ export default function FoundingSilencePage() {
         <div className="container-max max-w-6xl">
           <div className="border-b border-text-primary/10 pb-6 text-xs uppercase tracking-[0.26em] text-text-secondary">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <Link href="/" className="transition-colors hover:text-brand-red">
-                Beforest 10cent Club
+              <Link href="/" className="inline-flex items-center">
+                <Image
+                  src="/10-Club-01.png"
+                  alt="Beforest 10% Club"
+                  width={80}
+                  height={80}
+                  className="h-12 w-auto"
+                  priority
+                />
               </Link>
               <span>March 7, 2026 • The First Gathering</span>
             </div>
