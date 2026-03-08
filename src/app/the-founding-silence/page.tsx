@@ -131,7 +131,35 @@ export default function FoundingSilencePage() {
 
       <section className="section-padding py-8">
         <div className="container-max max-w-6xl">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1fr]">
+          <div className="border-y border-text-primary/10 py-8">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+              <div>
+                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Recording</p>
+                <h2 className="mt-3 text-3xl font-light md:text-5xl">
+                  If you would like to revisit the full conversation, you can watch it here.
+                </h2>
+                <p className="mt-6 max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
+                  We have kept the recording here for those who attended and for those who prefer to take in the conversation at their own pace.
+                </p>
+              </div>
+
+              <div className="rounded-[2rem] border border-text-primary/10 bg-[#f6f1e9] p-3 shadow-[0_20px_60px_rgba(0,33,64,0.08)]">
+                <div className="overflow-hidden rounded-[1.5rem] bg-[#0f1412]">
+                  <video
+                    controls
+                    preload="metadata"
+                    controlsList="nodownload noplaybackrate"
+                    className="aspect-video w-full bg-black"
+                  >
+                    <source src={webinarVideoUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-12 pt-8 lg:grid-cols-[1fr_1fr]">
             <article>
               <div className="border-b border-text-primary/10 pb-4">
                 <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Main Argument</p>
@@ -240,38 +268,6 @@ export default function FoundingSilencePage() {
                 </p>
               </div>
             </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding py-8">
-        <div className="container-max max-w-6xl">
-          <div className="border-y border-text-primary/10 py-8">
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <div>
-                <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">Recording</p>
-                <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                  If you would like to revisit the full conversation, you can watch it here.
-                </h2>
-                <p className="mt-6 max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
-                  We have kept the recording here for those who attended and for those who prefer to take in the conversation at their own pace.
-                </p>
-              </div>
-
-              <div className="rounded-[2rem] border border-text-primary/10 bg-[#f6f1e9] p-3 shadow-[0_20px_60px_rgba(0,33,64,0.08)]">
-                <div className="overflow-hidden rounded-[1.5rem] bg-[#0f1412]">
-                  <video
-                    controls
-                    preload="metadata"
-                    controlsList="nodownload noplaybackrate"
-                    className="aspect-video w-full bg-black"
-                  >
-                    <source src={webinarVideoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
