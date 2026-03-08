@@ -300,29 +300,44 @@ export default function FoundingSilencePage() {
               <h3 className="mt-3 text-2xl font-light text-text-primary md:text-4xl">
                 Continue in the way that feels right to you.
               </h3>
-              <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
-                Experience Before Commitment
-              </p>
-              <p className="mt-1 text-sm leading-relaxed text-text-primary md:text-base">
-                The land will explain this more clearly than we can.
-              </p>
-              <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-                <a
-                  href="https://hospitality.beforest.co"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
-                >
-                  Book A Trial Stay
-                </a>
-                <a
-                  href="https://wa.me/918977945351?text=I%27d%20like%20to%20subscribe%20to%2010%25%20Lifestyle"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-full border border-text-primary/15 px-8 py-4 text-sm uppercase tracking-[0.22em] text-text-primary transition-colors hover:border-brand-red hover:text-brand-red"
-                >
-                  Join The 10% Lifestyle
-                </a>
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                <div className="rounded-[1.75rem] border border-text-primary/10 bg-[#fdfbf7] p-6">
+                  <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
+                    Experience Before Commitment
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-text-primary md:text-base">
+                    The land will explain this more clearly than we can.
+                  </p>
+                  <div className="mt-5">
+                    <a
+                      href="https://hospitality.beforest.co"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-full bg-brand-red px-8 py-4 text-sm uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5"
+                    >
+                      Book A Trial Stay
+                    </a>
+                  </div>
+                </div>
+
+                <div className="rounded-[1.75rem] border border-text-primary/10 bg-[#fdfbf7] p-6">
+                  <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
+                    If You Already Know
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-text-primary md:text-base">
+                    If the direction is already clear to you, write to us directly about joining the 10% Lifestyle.
+                  </p>
+                  <div className="mt-5">
+                    <a
+                      href="https://wa.me/918977945351?text=I%27d%20like%20to%20subscribe%20to%2010%25%20Lifestyle"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-full border border-text-primary/15 px-8 py-4 text-sm uppercase tracking-[0.22em] text-text-primary transition-colors hover:border-brand-red hover:text-brand-red"
+                    >
+                      Join The 10% Lifestyle
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
