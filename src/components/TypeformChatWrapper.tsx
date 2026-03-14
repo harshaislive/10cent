@@ -8,8 +8,14 @@ export default function TypeformChatWrapper() {
   const pathname = usePathname()
   const isConfirmationPage = pathname === '/confirmation'
   const isFoundingSilencePage = pathname === '/the-founding-silence'
+  const isSecondConversationPage = pathname === '/the-second-conversation'
 
-  if (!TYPEFORM_CONFIG.ENABLED || isConfirmationPage || isFoundingSilencePage) {
+  if (
+    !TYPEFORM_CONFIG.ENABLED ||
+    isConfirmationPage ||
+    isFoundingSilencePage ||
+    isSecondConversationPage
+  ) {
     return null
   }
 
