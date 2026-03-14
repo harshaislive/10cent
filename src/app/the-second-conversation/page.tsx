@@ -142,28 +142,28 @@ export default function SecondConversationPage() {
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <div>
                 <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">
-                  Recording
+                  Listen
                 </p>
                 <h2 className="mt-3 text-3xl font-light md:text-5xl">
-                  This session was recorded as audio.
+                  If you would like to revisit the conversation, you can listen here.
                 </h2>
                 <p className="mt-6 max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
-                  The audio excerpt used for this page sits here, and the rest of the page
-                  carries the essential frame and practical clarifications from the room.
+                  We have kept the audio here for those who prefer to return to the
+                  conversation in its original spoken form.
                 </p>
               </div>
 
               <div className="rounded-[2rem] border border-text-primary/10 bg-[#f6f1e9] p-8 shadow-[0_20px_60px_rgba(0,33,64,0.08)]">
                 <div className="rounded-[1.5rem] border border-text-primary/10 bg-[#fbf7f0] px-6 py-8">
                   <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">
-                    Audio Recording
+                    Audio
                   </p>
                   <p className="mt-4 text-2xl font-light text-text-primary md:text-3xl">
-                    Listen to the webinar segment used for this page.
+                    The March 14 conversation
                   </p>
                   <p className="mt-4 max-w-lg text-base leading-relaxed text-text-secondary">
-                    This page uses only the portion from 09:18 to 48:31 of the March 14
-                    recording.
+                    Listen at your own pace, then continue below for the distilled version
+                    of the main argument and the practical clarifications that followed.
                   </p>
                   <audio
                     controls
@@ -173,9 +173,6 @@ export default function SecondConversationPage() {
                   >
                     Your browser does not support the audio element.
                   </audio>
-                  <p className="mt-4 text-sm leading-relaxed text-text-secondary">
-                    Clip window: 09:18 to 48:31.
-                  </p>
                 </div>
               </div>
             </div>
