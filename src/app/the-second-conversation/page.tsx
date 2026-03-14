@@ -153,26 +153,60 @@ export default function SecondConversationPage() {
                 </p>
               </div>
 
-              <div className="rounded-[2rem] border border-text-primary/10 bg-[#f6f1e9] p-8 shadow-[0_20px_60px_rgba(0,33,64,0.08)]">
-                <div className="rounded-[1.5rem] border border-text-primary/10 bg-[#fbf7f0] px-6 py-8">
-                  <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">
-                    Audio
-                  </p>
-                  <p className="mt-4 text-2xl font-light text-text-primary md:text-3xl">
-                    The March 14 conversation
-                  </p>
-                  <p className="mt-4 max-w-lg text-base leading-relaxed text-text-secondary">
-                    Listen at your own pace, then continue below for the distilled version
-                    of the main argument and the practical clarifications that followed.
-                  </p>
-                  <audio
-                    controls
-                    preload="metadata"
-                    className="mt-6 w-full"
-                    src={audioClipUrl}
-                  >
-                    Your browser does not support the audio element.
-                  </audio>
+              <div className="overflow-hidden rounded-[2rem] border border-text-primary/10 bg-[#f6f1e9] shadow-[0_20px_60px_rgba(0,33,64,0.08)]">
+                <div className="relative aspect-[16/9]">
+                  <Image
+                    src="/PBR_0209.webp"
+                    alt="Beforest landscape"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0c1b20]/70 via-[#0c1b20]/35 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                    <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-white/85 backdrop-blur-sm">
+                      Audio
+                    </div>
+                    <p className="mt-4 max-w-md text-2xl font-light leading-tight text-white md:text-3xl">
+                      The March 14 conversation, kept in its spoken form.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-[#fbf7f0] p-6 md:p-8">
+                  <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] md:items-end">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.26em] text-text-secondary">
+                        Listen
+                      </p>
+                      <p className="mt-3 max-w-lg text-base leading-relaxed text-text-secondary md:text-lg">
+                        Return to the full cadence of the conversation, then continue below
+                        for the distilled argument and the practical clarifications.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      {[40, 72, 54, 82, 46, 66, 38, 78, 58, 70, 44, 62].map(
+                        (height, index) => (
+                          <span
+                            key={`${height}-${index}`}
+                            className="rounded-full bg-brand-red/70"
+                            style={{ height: `${height}px` }}
+                          />
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-[1.5rem] border border-text-primary/10 bg-white px-4 py-4 shadow-[0_12px_30px_rgba(0,33,64,0.06)]">
+                    <audio
+                      controls
+                      preload="metadata"
+                      className="w-full"
+                      src={audioClipUrl}
+                    >
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
                 </div>
               </div>
             </div>
