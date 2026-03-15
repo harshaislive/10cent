@@ -450,7 +450,7 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
                  </p>
 
                  <p className="text-sm text-[#fdfbf7]/70 font-arizona">
-                    {webinarDateTime} • Via Zoom
+                    {webinarDateTime ?? 'Saturday, 6:00 PM IST'} • Via Zoom
                  </p>
 
                 <TypeformButton
@@ -475,8 +475,6 @@ const ManifestoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
 // --- Main Page ---
 
 export default function EditorialPage() {
-  const webinarDate = getNextSaturday()
-  const webinarDateTime = getNextSaturdayWithTime()
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -493,6 +491,8 @@ export default function EditorialPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [heroImageIndex, setHeroImageIndex] = useState(0)
   const [isStoryOpen, setIsStoryOpen] = useState(false)
+  const [webinarDate, setWebinarDate] = useState<string | null>(null)
+  const [webinarDateTime, setWebinarDateTime] = useState<string | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -509,6 +509,12 @@ export default function EditorialPage() {
       window.removeEventListener('scroll', handleScroll)
       clearInterval(interval)
     }
+  }, [])
+
+  useEffect(() => {
+    // Compute this on the client so static builds do not freeze the date label.
+    setWebinarDate(getNextSaturday())
+    setWebinarDateTime(getNextSaturdayWithTime())
   }, [])
 
   // Avoid competing with the initial hero request during first paint.
@@ -1049,7 +1055,9 @@ export default function EditorialPage() {
             <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
               Sign up for the webinar — no commitment, just a real dialogue about what this could mean for you.
             </p>
-            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">Next Webinar: {webinarDate} • 6:00 PM IST</span>
+            <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">
+              Next Webinar: {webinarDate ?? 'Saturday'} • 6:00 PM IST
+            </span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
