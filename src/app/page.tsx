@@ -107,11 +107,12 @@ const CustomCursor = ({ isLight }: { isLight: boolean }) => {
   );
 }
 
-const MagneticButton = ({ children, className = "", onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
+const MagneticButton = ({ children, className = "", onClick, disabled = false }: { children: React.ReactNode, className?: string, onClick?: () => void, disabled?: boolean }) => {
   const ref = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouse = (e: React.MouseEvent) => {
+    if (disabled) return;
     const { clientX, clientY } = e;
     const { height, width, left, top } = ref.current!.getBoundingClientRect();
     const middleX = clientX - (left + width / 2);
@@ -126,12 +127,13 @@ const MagneticButton = ({ children, className = "", onClick }: { children: React
   return (
     <motion.button
       ref={ref}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x, y }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-      className={`inline-flex items-center justify-center px-8 py-4 uppercase tracking-widest text-sm font-medium border border-current transition-colors duration-300 ${className}`}
+      className={`inline-flex items-center justify-center px-8 py-4 uppercase tracking-widest text-sm font-medium border border-current transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
     >
       {children}
     </motion.button>
@@ -1053,15 +1055,15 @@ export default function EditorialPage() {
               The world never stops pulling at you. There is a space here where you can finally pause.
             </p>
             <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
-              Sign up for the webinar — no commitment, just a real dialogue about what this could mean for you.
+              Webinar registrations are on hold for now. We will reopen seats when the next conversation is scheduled.
             </p>
             <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">
-              Next Webinar: {webinarDate ?? 'Saturday'} • 6:00 PM IST
+              Registrations on hold
             </span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              <MagneticButton onClick={() => setIsModalOpen(true)} className="bg-[#fdfbf7] text-[#342e29] hover:bg-[#ffc083] border-transparent w-full md:w-auto cursor-none">
-                Save My Seat
+              <MagneticButton disabled className="bg-[#fdfbf7] text-[#342e29] border-transparent w-full md:w-auto cursor-not-allowed opacity-60">
+                Registrations on Hold
               </MagneticButton>
             </div>
 
