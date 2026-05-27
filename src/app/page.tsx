@@ -33,6 +33,8 @@ const IMAGES = {
   }
 }
 
+const PRE_INTEREST_TYPEFORM_URL = "https://form.typeform.com/to/bfpkatKE?utm_source=xxxxx&utm_medium=xxxxx&utm_campaign=xxxxx&utm_content=xxxxx&utm_term=xxxxx&utm_time_spent=xxxxx#current_page=xxxxx&behavioral_journey=xxxxx&total_visits=xxxxx&first_visit=xxxxx&distraction_score=xxxxx&intent_copy=xxxxx&device=xxxxx&rage_clicks=xxxxx&confusion_score=xxxxx"
+
 const wildernessPoints = [
   {
     id: 1,
@@ -1055,15 +1057,18 @@ export default function EditorialPage() {
               The world never stops pulling at you. There is a space here where you can finally pause.
             </p>
             <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
-              Webinar registrations are on hold for now. We will reopen seats when the next conversation is scheduled.
+              Registrations are not open yet. Share your interest now, and we will notify you as soon as the next conversation goes live.
             </p>
             <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">
-              Registrations on hold
+              Pre-interest now open
             </span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              <MagneticButton disabled className="bg-[#fdfbf7] text-[#342e29] border-transparent w-full md:w-auto cursor-not-allowed opacity-60">
-                Registrations on Hold
+              <MagneticButton
+                onClick={() => window.open(PRE_INTEREST_TYPEFORM_URL, "_blank", "noopener,noreferrer")}
+                className="bg-[#fdfbf7] text-[#342e29] border-transparent w-full md:w-auto hover:bg-[#ffc083]"
+              >
+                Register Your Interest
               </MagneticButton>
             </div>
 
