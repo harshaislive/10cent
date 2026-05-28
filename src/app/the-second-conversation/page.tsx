@@ -82,6 +82,7 @@ export default function SecondConversationPage() {
                   height={80}
                   className="h-12 w-auto"
                   priority
+                  unoptimized
                 />
               </Link>
               <span>March 14, 2026 • The Second Gathering</span>

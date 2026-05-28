@@ -2,9 +2,10 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowDown, Menu, X, Wind, Mountain, Tent, Clock, Battery, Map, XCircle, CheckCircle2, Loader2, Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import TypeformButton from '@/components/TypeformButton'
+import TrialDetailModal from '@/components/TrialDetailModal'
 import { TYPEFORM_CONFIG } from '@/config/typeform'
 import { imagePresets } from '@/utils/supabaseImage'
 import { getNextSaturday, getNextSaturdayWithTime } from '@/utils/dateUtils'
@@ -32,8 +33,6 @@ const IMAGES = {
     mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg"
   }
 }
-
-const PRE_INTEREST_TYPEFORM_URL = "https://form.typeform.com/to/bfpkatKE?utm_source=xxxxx&utm_medium=xxxxx&utm_campaign=xxxxx&utm_content=xxxxx&utm_term=xxxxx&utm_time_spent=xxxxx#current_page=xxxxx&behavioral_journey=xxxxx&total_visits=xxxxx&first_visit=xxxxx&distraction_score=xxxxx&intent_copy=xxxxx&device=xxxxx&rage_clicks=xxxxx&confusion_score=xxxxx"
 
 const wildernessPoints = [
   {
@@ -74,6 +73,51 @@ const wildernessPoints = [
   }
 ]
 
+const TRIAL_LOCATION = {
+  name: "Blyton, Coorg",
+  tagline: "Misty forests. Colonial charm meets wilderness immersion.",
+  description: "The architecture of the Western Ghats is not built; it is grown. The Blyton Bungalow respects this law. Constructed from the earth it stands on, overlooking the canopy, it is a place to sleep with the windows open and wake to the call of the Malabar Whistling Thrush. A heritage property wrapped in dense forest, where colonial elegance dissolves into the wild, and silence becomes your companion.",
+  features: [
+    "128-acre Poomaale Estate",
+    "Coffee forest immersion",
+    "Traditional Kodava Ainmanes architecture",
+    "Laterite stone walls",
+    "Mangalore tile roofing",
+    "Malabar Whistling Thrush habitat",
+    "Western Ghats biodiversity hotspot"
+  ],
+  images: [
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
+    },
+    {
+      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
+      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
+    }
+  ]
+}
+
 // --- Utility Components ---
 
 const NoiseOverlay = () => (
@@ -86,28 +130,6 @@ const NoiseOverlay = () => (
     </svg>
   </div>
 )
-
-const CustomCursor = ({ isLight }: { isLight: boolean }) => {
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      mouseX.set(e.clientX - 16);
-      mouseY.set(e.clientY - 16);
-    }
-    window.addEventListener("mousemove", moveCursor);
-    return () => window.removeEventListener("mousemove", moveCursor);
-  }, [mouseX, mouseY]);
-
-  return (
-    <motion.div
-      className={`fixed top-0 left-0 w-8 h-8 border rounded-full pointer-events-none z-[100] hidden md:block transition-colors duration-300 ${isLight ? 'border-[#fdfbf7] bg-[#fdfbf7]/10' : 'border-[#86312b] mix-blend-difference'}`}
-      style={{ x: mouseX, y: mouseY }}
-      transition={{ type: "spring", stiffness: 500, damping: 28 }}
-    />
-  );
-}
 
 const MagneticButton = ({ children, className = "", onClick, disabled = false }: { children: React.ReactNode, className?: string, onClick?: () => void, disabled?: boolean }) => {
   const ref = useRef<HTMLButtonElement>(null);
@@ -497,6 +519,7 @@ export default function EditorialPage() {
   const [isStoryOpen, setIsStoryOpen] = useState(false)
   const [webinarDate, setWebinarDate] = useState<string | null>(null)
   const [webinarDateTime, setWebinarDateTime] = useState<string | null>(null)
+  const [isTrialDetailOpen, setIsTrialDetailOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -536,20 +559,31 @@ export default function EditorialPage() {
     preloadImage(IMAGES.heroSlides[nextIndex].mobile)
   }, [heroImageIndex])
 
+  const handleTrialNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    document.getElementById('trial')?.scrollIntoView({ behavior: 'smooth' })
+    window.history.replaceState(null, '', '#trial')
+  }
+
   return (
-    <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden cursor-none">
+    <div ref={containerRef} className="bg-[#fdfbf7] text-[#342e29] font-arizona selection:bg-[#86312b] selection:text-white overflow-x-hidden">
       <NoiseOverlay />
-      <CustomCursor isLight={isModalOpen} />
 
       <ManifestoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <TrialDetailModal
+        isOpen={isTrialDetailOpen}
+        onClose={() => setIsTrialDetailOpen(false)}
+        location={TRIAL_LOCATION}
+      />
 
       {/* Mobile Sticky CTA - Overrides global button */}
       <div className="fixed bottom-0 left-0 right-0 z-[60] md:hidden p-4 bg-[#fdfbf7] border-t border-[#342e29]/10 pb-6">
         <button
-          onClick={() => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' })}
+          type="button"
+          onClick={() => setIsTrialDetailOpen(true)}
           className="w-full bg-[#342e29] text-[#fdfbf7] py-4 rounded-full uppercase tracking-widest text-sm font-bold shadow-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
         >
-          <span>Join The Conversation</span>
+          <span>Request A Trial</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -574,20 +608,22 @@ export default function EditorialPage() {
                alt="Beforest"
                fill
                className="object-contain"
+               unoptimized
              />
         </div>
 
-        <button
-          onClick={() => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' })}
-          className={`group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity cursor-none border border-current px-6 py-3 rounded-full transition-all duration-300 ${
+        <a
+          href="/#trial"
+          onClick={handleTrialNavClick}
+          className={`group flex items-center gap-2 uppercase text-xs tracking-widest hover:opacity-70 transition-opacity border border-current px-6 py-3 rounded-full transition-all duration-300 ${
             isScrolled
               ? 'bg-[#342e29] text-[#fdfbf7] hover:bg-[#86312b] border-transparent'
               : 'hover:bg-[#fdfbf7] hover:text-[#342e29]'
           }`}
         >
-          <span className="hidden md:block">Join the Conversation</span>
+          <span>Request A Trial</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
+        </a>
       </nav>
 
       {/* Hero Section - Editorial Cover Style */}
@@ -648,6 +684,7 @@ export default function EditorialPage() {
                   height={120}
                   className="w-full h-auto invert mix-blend-overlay"
                   priority
+                  unoptimized
                 />
               </motion.div>
               <motion.div
@@ -681,7 +718,7 @@ export default function EditorialPage() {
                   onClick={() => {
                     document.getElementById('manifesto')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="w-24 h-24 rounded-full bg-[#86312b] text-[#fdfbf7] flex items-center justify-center group cursor-none hover:scale-110 transition-transform duration-300"
+                  className="w-24 h-24 rounded-full bg-[#86312b] text-[#fdfbf7] flex items-center justify-center group hover:scale-110 transition-transform duration-300"
                 >
                   <ArrowDown className="w-8 h-8 group-hover:translate-y-2 transition-transform duration-300" />
                 </button>
@@ -917,7 +954,7 @@ export default function EditorialPage() {
                { name: "Mumbai", desc: "Maximum City. The silence closest to the chaos.", img: IMAGES.locations.mumbai },
                { name: "And Growing...", desc: "Across India's wildest landscapes.", img: IMAGES.forest, blur: true }
              ].map((loc, i) => (
-               <div key={i} className="group cursor-none">
+               <div key={i} className="group">
                  <div className="aspect-[4/3] relative overflow-hidden mb-6 bg-gray-100">
                    <Image
                      src={loc.img}
@@ -1046,30 +1083,61 @@ export default function EditorialPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="join" className="bg-[#342e29] text-[#fdfbf7] py-32 px-6 md:px-12 relative overflow-hidden">
+      <section id="trial" className="bg-[#342e29] text-[#fdfbf7] py-32 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute right-0 top-0 w-1/2 h-full bg-[#86312b]/10 skew-x-12 transform origin-top-right" />
 
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+        <div className="max-w-5xl mx-auto text-center relative z-10">
             <h2 className="text-5xl md:text-7xl lg:text-8xl font-light mb-12 leading-tight">
-              We have held a seat under the trees for you.
+              Begin with the trial.
             </h2>
             <p className="text-xl md:text-2xl font-light opacity-70 mb-8 max-w-2xl mx-auto leading-relaxed">
-              The world never stops pulling at you. There is a space here where you can finally pause.
+              One sanctuary. Two nights. Three days. Long enough to forget the city, short enough to return with clarity.
             </p>
-            <p className="text-lg md:text-xl font-light opacity-90 mb-16 max-w-2xl mx-auto leading-relaxed">
-              Registrations are not open yet. Share your interest now, and we will notify you as soon as the next conversation goes live.
+            <p className="text-lg md:text-xl font-light opacity-90 mb-14 max-w-3xl mx-auto leading-relaxed">
+              The trial is a firsthand glimpse of the 10% life: farm-to-table meals, guided walks, unfiltered wilderness, and enough silence to understand whether this commitment belongs in your rhythm.
             </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-[#fdfbf7]/10 border border-[#fdfbf7]/10 mb-14 text-left">
+              {[
+                {
+                  title: "Request",
+                  desc: "Select Blyton, Coorg and share your preferred trial dates."
+                },
+                {
+                  title: "Verify",
+                  desc: "Our community team contacts you to understand fit and availability."
+                },
+                {
+                  title: "Secure",
+                  desc: "A small adjustable token confirms your dates once they are available."
+                },
+                {
+                  title: "Arrive",
+                  desc: "Receive your guide and step into the wilderness rhythm we have built."
+                }
+              ].map((item, i) => (
+                <div key={item.title} className="bg-[#342e29] p-8 md:p-10">
+                  <span className="text-xs uppercase tracking-[0.2em] text-[#ffc083] opacity-80">
+                    0{i + 1}
+                  </span>
+                  <h3 className="mt-6 mb-4 text-2xl font-light">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-[#fdfbf7]/60">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
             <span className="text-sm uppercase tracking-widest mb-8 block text-[#ffc083] opacity-100">
-              Pre-interest now open
+              Trial stay at Blyton, Coorg
             </span>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-              <MagneticButton
-                onClick={() => window.open(PRE_INTEREST_TYPEFORM_URL, "_blank", "noopener,noreferrer")}
-                className="bg-[#fdfbf7] text-[#342e29] border-transparent w-full md:w-auto hover:bg-[#ffc083]"
+              <button
+                type="button"
+                onClick={() => setIsTrialDetailOpen(true)}
+                className="inline-flex items-center justify-center px-8 py-4 uppercase tracking-widest text-sm font-medium border border-transparent bg-[#fdfbf7] text-[#342e29] w-full md:w-auto hover:bg-[#ffc083] transition-colors duration-300"
               >
-                Register Your Interest
-              </MagneticButton>
+                Request A Trial
+              </button>
             </div>
 
            <p className="mt-12 text-xs tracking-widest opacity-30 uppercase">

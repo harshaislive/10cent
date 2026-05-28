@@ -60,6 +60,7 @@ export default function FeedbackPage() {
               alt="Beforest 10% Club"
               fill
               className="object-contain"
+              unoptimized
             />
           </div>
         </Link>

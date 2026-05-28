@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { ArrowLeft, ArrowRight, Calendar, Compass, MapPin, CreditCard, Phone, Stars, Coffee, Tent } from 'lucide-react'
 import { motion } from 'framer-motion'
 import TrialLocationCard from '@/components/TrialLocationCard'
-import TrialRequestModal from '@/components/TrialRequestModal'
 import TrialDetailModal from '@/components/TrialDetailModal'
 import OnboardingScheduler from '@/components/OnboardingScheduler'
 import { imagePresets } from '@/utils/supabaseImage'
@@ -115,19 +114,11 @@ interface ConfirmationClientProps {
 export default function TrialConfirmationView({ action, email }: ConfirmationClientProps) {
   const fired = useRef(false)
 
-  // Booking Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
   // Detail Modal State
   const [showDetailModal, setShowDetailModal] = useState(false)
 
   const handleCardClick = () => {
     setShowDetailModal(true)
-  }
-
-  const handleBookFromDetail = () => {
-    setShowDetailModal(false)
-    setIsModalOpen(true)
   }
 
   useEffect(() => {
@@ -168,6 +159,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
                 alt="Beforest 10% Club"
                 fill
                 className="object-contain"
+                unoptimized
               />
             </div>
           </Link>
@@ -176,21 +168,11 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
           </div>
         </div>
 
-        {/* Trial Request Modal */}
-        <TrialRequestModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          locationName={AVAILABLE_LOCATION.name}
-          location="blyton_coorg"
-          locationSlug="blyton_coorg"
-        />
-
         {/* Detail Modal (Gallery + Info) */}
         <TrialDetailModal
           isOpen={showDetailModal}
           onClose={() => setShowDetailModal(false)}
           location={AVAILABLE_LOCATION}
-          onBook={handleBookFromDetail}
         />
 
         {/* Hero Section - Editorial Style */}
@@ -363,6 +345,7 @@ export default function TrialConfirmationView({ action, email }: ConfirmationCli
                 alt="Beforest 10% Club"
                 fill
                 className="object-contain"
+                unoptimized
               />
             </div>
           </Link>

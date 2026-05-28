@@ -4,6 +4,8 @@ import React from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowRight, MapPin, Wind, Mountain, Trees } from 'lucide-react'
+import TypeformButton from '@/components/TypeformButton'
+import { TYPEFORM_CONFIG } from '@/config/typeform'
 
 interface LocationImage {
     desktop: string
@@ -22,10 +24,9 @@ interface TrialDetailModalProps {
     isOpen: boolean
     onClose: () => void
     location: TrialLocation | null
-    onBook: () => void
 }
 
-export default function TrialDetailModal({ isOpen, onClose, location, onBook }: TrialDetailModalProps) {
+export default function TrialDetailModal({ isOpen, onClose, location }: TrialDetailModalProps) {
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
 
     // Reset selection when location changes
@@ -43,14 +44,16 @@ export default function TrialDetailModal({ isOpen, onClose, location, onBook }: 
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="fixed inset-0 z-[60] bg-[#1a1816] text-[#fdfbf7] overflow-hidden flex flex-col"
+                    className="fixed inset-0 z-[100] bg-[#1a1816] text-[#fdfbf7] overflow-hidden flex flex-col"
                 >
                     {/* Close Button */}
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="fixed top-6 right-6 z-[70] p-3 group mix-blend-difference text-[#fdfbf7] hover:bg-[#fdfbf7]/10 rounded-full transition-all"
+                        aria-label="Close trial details"
+                        className="fixed top-4 left-4 lg:top-6 lg:left-6 z-[120] inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#fdfbf7] text-[#342e29] shadow-2xl transition-colors duration-300 hover:bg-[#ffc083]"
                     >
-                        <X className="w-6 h-6 opacity-70 group-hover:opacity-100" />
+                        <X className="h-5 w-5" />
                     </button>
 
                     <div className="flex flex-col lg:flex-row h-full w-full">
@@ -152,13 +155,13 @@ export default function TrialDetailModal({ isOpen, onClose, location, onBook }: 
 
                             {/* Action Footer - Compact */}
                             <div className="p-4 lg:p-6 border-t border-[#fdfbf7]/5 bg-[#342e29]">
-                                <button
-                                    onClick={onBook}
+                                <TypeformButton
+                                    formId={TYPEFORM_CONFIG.FORM_ID}
                                     className="w-full bg-[#fdfbf7] text-[#342e29] py-3 lg:py-4 uppercase tracking-[0.2em] text-[10px] lg:text-xs font-medium hover:bg-[#ffc083] transition-colors duration-500 flex items-center justify-center gap-3 group"
                                 >
                                     <span>Book my 10% Trial Here</span>
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </button>
+                                </TypeformButton>
                             </div>
                         </div>
                     </div>

@@ -76,6 +76,7 @@ export default function FoundingSilencePage() {
                   height={80}
                   className="h-12 w-auto"
                   priority
+                  unoptimized
                 />
               </Link>
               <span>March 7, 2026 • The First Gathering</span>
