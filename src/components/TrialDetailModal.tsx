@@ -3,9 +3,8 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowRight, MapPin, Wind, Mountain, Trees } from 'lucide-react'
-import TypeformButton from '@/components/TypeformButton'
-import { TYPEFORM_CONFIG } from '@/config/typeform'
+import { X, ArrowRight } from 'lucide-react'
+import TrialStayRequestForm from '@/components/TrialStayRequestForm'
 
 interface LocationImage {
     desktop: string
@@ -28,10 +27,14 @@ interface TrialDetailModalProps {
 
 export default function TrialDetailModal({ isOpen, onClose, location }: TrialDetailModalProps) {
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
+    const [showRequestForm, setShowRequestForm] = React.useState(false)
 
     // Reset selection when location changes
     React.useEffect(() => {
-        if (isOpen) setSelectedImageIndex(0)
+        if (isOpen) {
+            setSelectedImageIndex(0)
+            setShowRequestForm(false)
+        }
     }, [isOpen, location])
 
     if (!location) return null
@@ -114,57 +117,92 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                         {/* RIGHT: Compact Editorial Panel (40% Mobile / 35% Desktop) */}
                         <div className="w-full lg:w-[35%] h-[40vh] lg:h-full bg-[#342e29] border-l border-[#fdfbf7]/5 flex flex-col justify-between relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
 
-                            {/* Scrollable Content Wrapper */}
-                            <div className="flex-1 overflow-y-auto p-6 lg:p-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                                <motion.div
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                >
-                                    <div className="flex items-center gap-3 mb-3 lg:mb-6">
-                                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#ffc083]">The 10% Promise</span>
-                                        <div className="h-px w-8 bg-[#fdfbf7]/30" />
-                                        <span className="text-[10px] uppercase tracking-[0.2em] opacity-50">Trial Stay</span>
+                                    {/* Scrollable Content Wrapper */}
+                                    <div className="flex-1 overflow-y-auto p-6 lg:p-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                                        <motion.div
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.2 }}
+                                        >
+                                            <div className="flex items-center gap-3 mb-3 lg:mb-6">
+                                                <span className="text-[10px] uppercase tracking-[0.2em] text-[#ffc083]">The 10% Promise</span>
+                                                <div className="h-px w-8 bg-[#fdfbf7]/30" />
+                                                <span className="text-[10px] uppercase tracking-[0.2em] opacity-50">Trial Stay</span>
+                                            </div>
+
+                                            <h2 className="text-3xl lg:text-5xl xl:text-6xl font-light font-arizona mb-2 lg:mb-4 text-[#fdfbf7] leading-none">
+                                                {location.name}
+                                            </h2>
+
+                                            <p className="text-[10px] lg:text-sm uppercase tracking-widest font-medium text-[#fdfbf7]/60 mb-4 lg:mb-6 leading-relaxed">
+                                                {location.tagline}
+                                            </p>
+
+                                            {/* Mobile: Hide Description if screen is too small, or keep it short */}
+                                            <p className="text-sm lg:text-lg leading-relaxed font-light font-arizona text-[#fdfbf7]/80 mb-6 lg:mb-8 line-clamp-3 lg:line-clamp-none">
+                                                {location.description}
+                                            </p>
+
+                                            <div className="space-y-3 mb-4">
+                                                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                                                    {location.features.slice(0, 3).map((feature, i) => (
+                                                        <span key={i} className="text-xs lg:text-sm font-light opacity-70 flex items-center gap-2">
+                                                            <span className="w-1 h-1 rounded-full bg-[#ffc083]" />
+                                                            {feature}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </motion.div>
                                     </div>
 
-                                    <h2 className="text-3xl lg:text-5xl xl:text-6xl font-light font-arizona mb-2 lg:mb-4 text-[#fdfbf7] leading-none">
-                                        {location.name}
-                                    </h2>
-
-                                    <p className="text-[10px] lg:text-sm uppercase tracking-widest font-medium text-[#fdfbf7]/60 mb-4 lg:mb-6 leading-relaxed">
-                                        {location.tagline}
-                                    </p>
-
-                                    {/* Mobile: Hide Description if screen is too small, or keep it short */}
-                                    <p className="text-sm lg:text-lg leading-relaxed font-light font-arizona text-[#fdfbf7]/80 mb-6 lg:mb-8 line-clamp-3 lg:line-clamp-none">
-                                        {location.description}
-                                    </p>
-
-                                    <div className="space-y-3 mb-4">
-                                        <div className="flex flex-wrap gap-x-4 gap-y-2">
-                                            {location.features.slice(0, 3).map((feature, i) => (
-                                                <span key={i} className="text-xs lg:text-sm font-light opacity-70 flex items-center gap-2">
-                                                    <span className="w-1 h-1 rounded-full bg-[#ffc083]" />
-                                                    {feature}
-                                                </span>
-                                            ))}
-                                        </div>
+                                    {/* Action Footer - Compact */}
+                                    <div className="p-4 lg:p-6 border-t border-[#fdfbf7]/5 bg-[#342e29]">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowRequestForm(true)}
+                                            className="w-full bg-[#fdfbf7] text-[#342e29] py-3 lg:py-4 uppercase tracking-[0.2em] text-[10px] lg:text-xs font-medium hover:bg-[#ffc083] transition-colors duration-500 flex items-center justify-center gap-3 group"
+                                        >
+                                            <span>Book my 10% Trial Here</span>
+                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </button>
                                     </div>
-                                </motion.div>
-                            </div>
-
-                            {/* Action Footer - Compact */}
-                            <div className="p-4 lg:p-6 border-t border-[#fdfbf7]/5 bg-[#342e29]">
-                                <TypeformButton
-                                    formId={TYPEFORM_CONFIG.FORM_ID}
-                                    className="w-full bg-[#fdfbf7] text-[#342e29] py-3 lg:py-4 uppercase tracking-[0.2em] text-[10px] lg:text-xs font-medium hover:bg-[#ffc083] transition-colors duration-500 flex items-center justify-center gap-3 group"
-                                >
-                                    <span>Book my 10% Trial Here</span>
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </TypeformButton>
-                            </div>
                         </div>
                     </div>
+
+                    <AnimatePresence>
+                        {showRequestForm && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="fixed inset-0 z-[140] flex items-center justify-center bg-[#1a1816]/80 p-4 backdrop-blur-md"
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => setShowRequestForm(false)}
+                                    aria-label="Close stay request form"
+                                    className="absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#fdfbf7] text-[#342e29] shadow-xl transition-colors hover:bg-[#ffc083] lg:right-8 lg:top-8"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 16, scale: 0.98 }}
+                                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                                    className="relative h-[92vh] w-full max-w-5xl overflow-hidden bg-[#342e29] shadow-[0_30px_90px_rgba(0,0,0,0.55)]"
+                                >
+                                    <TrialStayRequestForm
+                                        locationName={location.name}
+                                        locationSlug="blyton_coorg"
+                                        onBack={() => setShowRequestForm(false)}
+                                    />
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             )}
         </AnimatePresence>

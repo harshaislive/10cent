@@ -1,6 +1,23 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 
+interface ITrialRequestPayload {
+  name?: string
+  email?: string
+  phone?: string
+  location?: string
+  locationSlug?: string
+  preferredDate?: string
+  checkInDate?: string
+  checkOutDate?: string
+  durationNights?: number
+  adults?: number
+  children?: number
+  guestCount?: number
+  estimatedCost?: number
+  specialRequests?: string | null
+}
+
 export async function POST(req: Request) {
   try {
     // Get Supabase config at request time
@@ -16,7 +33,7 @@ export async function POST(req: Request) {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    const body = await req.json()
+    const body = await req.json() as ITrialRequestPayload
     const {
       name,
       email,
@@ -24,13 +41,20 @@ export async function POST(req: Request) {
       location,
       locationSlug,
       preferredDate,
+      checkInDate,
+      checkOutDate,
       durationNights = 2,
+      adults = 2,
+      children = 0,
       guestCount,
+      estimatedCost,
       specialRequests,
     } = body
+    const selectedDate = checkInDate || preferredDate
+    const totalGuests = guestCount || adults + children
 
     // Validate required fields
-    if (!name || !email || !phone || !location || !preferredDate) {
+    if (!name || !email || !phone || !location || !selectedDate) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -39,15 +63,22 @@ export async function POST(req: Request) {
 
     // Check if availability was verified for this date
     const AVAILABILITY_API_URL = "https://blytonavailability.devsharsha.live/api/availability"
-    const availabilityUrl = `${AVAILABILITY_API_URL}?mode=check&startDate=${preferredDate}&months=2&offset=0`
+    const availabilityUrl = `${AVAILABILITY_API_URL}?mode=check&startDate=${selectedDate}&months=2&offset=0`
     const availabilityResponse = await fetch(availabilityUrl, {
       headers: { accept: "application/json" },
     })
 
-    let availabilityData: any = null
+    let availabilityData: unknown = null
     if (availabilityResponse.ok) {
       availabilityData = await availabilityResponse.json()
     }
+    const isAvailable =
+      typeof availabilityData === "object" &&
+      availabilityData !== null &&
+      "data" in availabilityData &&
+      typeof (availabilityData as { data?: { available?: unknown } }).data?.available === "boolean"
+        ? (availabilityData as { data: { available: boolean } }).data.available
+        : false
 
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
@@ -62,12 +93,17 @@ export async function POST(req: Request) {
         phone,
         location,
         location_slug: locationSlug,
-        preferred_date: preferredDate,
+        preferred_date: selectedDate,
+        check_in_date: selectedDate,
+        check_out_date: checkOutDate,
         duration_nights: durationNights,
-        guest_count: guestCount,
+        adults,
+        children,
+        guest_count: totalGuests,
+        estimated_cost: estimatedCost,
         special_requests: specialRequests,
         availability_data: availabilityData,
-        request_status: availabilityData?.data?.available ? "AVAILABLE" : "WAITLIST",
+        request_status: isAvailable ? "AVAILABLE" : "WAITLIST",
       })
       .select()
       .single()
@@ -84,14 +120,14 @@ export async function POST(req: Request) {
       success: true,
       requestId,
       status: requestData.request_status,
-      message: availabilityData?.data?.available
+      message: isAvailable
         ? "Your trial request has been received! We'll contact you shortly to confirm your booking."
         : "The selected date is fully booked. Your request has been added to our waitlist and we'll contact you if dates become available.",
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Trial request error:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to submit trial request" },
+      { error: error instanceof Error ? error.message : "Failed to submit trial request" },
       { status: 500 }
     )
   }
@@ -136,10 +172,10 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json(data)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Get trial request error:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch trial request" },
+      { error: error instanceof Error ? error.message : "Failed to fetch trial request" },
       { status: 500 }
     )
   }
