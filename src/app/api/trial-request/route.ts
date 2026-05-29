@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult } from "@/lib/ezee/availability"
+import { createEzeeBookingHold, isTrialBlockingEnabled, type IEzeeBookingResult } from "@/lib/ezee/bookings"
 
 interface ITrialRequestPayload {
   name?: string
@@ -15,6 +17,9 @@ interface ITrialRequestPayload {
   children?: number
   guestCount?: number
   estimatedCost?: number
+  roomTypeId?: string
+  ratePlanId?: string
+  rateTypeId?: string
   specialRequests?: string | null
 }
 
@@ -48,6 +53,9 @@ export async function POST(req: Request) {
       children = 0,
       guestCount,
       estimatedCost,
+      roomTypeId,
+      ratePlanId,
+      rateTypeId,
       specialRequests,
     } = body
     const selectedDate = checkInDate || preferredDate
@@ -61,24 +69,49 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check if availability was verified for this date
-    const AVAILABILITY_API_URL = "https://blytonavailability.devsharsha.live/api/availability"
-    const availabilityUrl = `${AVAILABILITY_API_URL}?mode=check&startDate=${selectedDate}&months=2&offset=0`
-    const availabilityResponse = await fetch(availabilityUrl, {
-      headers: { accept: "application/json" },
-    })
+    let availabilityData: IEzeeAvailabilityResult | null = null
+    let blockingData: IEzeeBookingResult | null = null
+    let isAvailable = false
 
-    let availabilityData: unknown = null
-    if (availabilityResponse.ok) {
-      availabilityData = await availabilityResponse.json()
+    try {
+      availabilityData = await getBookingEngineAvailability({
+        checkIn: selectedDate,
+        checkOut: checkOutDate || addDays(selectedDate, durationNights),
+        adults,
+        children,
+        rooms: 1,
+      })
+      isAvailable = availabilityData.available
+
+      if (isAvailable && isTrialBlockingEnabled()) {
+        const roomToBlock = availabilityData.rooms.find(room =>
+          room.availableRooms > 0 &&
+          !room.stopSell &&
+          (!roomTypeId || room.roomTypeId === roomTypeId) &&
+          (!ratePlanId || room.ratePlanId === ratePlanId) &&
+          (!rateTypeId || room.rateTypeId === rateTypeId)
+        ) || availabilityData.rooms.find(room => room.availableRooms > 0 && !room.stopSell)
+        if (!roomToBlock) {
+          throw new Error("No eZee room is available to block")
+        }
+
+        blockingData = await createEzeeBookingHold({
+          checkIn: selectedDate,
+          checkOut: checkOutDate || addDays(selectedDate, durationNights),
+          adults,
+          children,
+          room: roomToBlock,
+          guest: {
+            name,
+            email,
+            phone,
+          },
+          specialRequest: specialRequests,
+        })
+      }
+    } catch (availabilityError) {
+      console.error("eZee availability/blocking error:", availabilityError)
     }
-    const isAvailable =
-      typeof availabilityData === "object" &&
-      availabilityData !== null &&
-      "data" in availabilityData &&
-      typeof (availabilityData as { data?: { available?: unknown } }).data?.available === "boolean"
-        ? (availabilityData as { data: { available: boolean } }).data.available
-        : false
 
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
@@ -102,7 +135,18 @@ export async function POST(req: Request) {
         guest_count: totalGuests,
         estimated_cost: estimatedCost,
         special_requests: specialRequests,
-        availability_data: availabilityData,
+        availability_data: {
+          source: "ezee",
+          availability: availabilityData,
+          blocking: blockingData || {
+            enabled: isTrialBlockingEnabled(),
+            skipped: !isTrialBlockingEnabled(),
+          },
+        },
+        is_date_available: isAvailable,
+        available_rooms: availabilityData?.rooms || [],
+        ezee_reservation_no: blockingData?.reservationNo || null,
+        ezee_inventory_mode: blockingData?.inventoryMode || null,
         request_status: isAvailable ? "AVAILABLE" : "WAITLIST",
       })
       .select()

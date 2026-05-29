@@ -88,32 +88,39 @@ const TRIAL_LOCATION = {
   ],
   images: [
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp"
+      desktop: "/blyton-optimized/blyton-desktop.webp",
+      mobile: "/blyton-optimized/blyton-mobile.webp",
+      thumb: "/blyton-optimized/blyton-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
+      desktop: "/blyton-optimized/interior-desktop.webp",
+      mobile: "/blyton-optimized/interior-mobile.webp",
+      thumb: "/blyton-optimized/interior-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
+      desktop: "/blyton-optimized/verandah-desktop.webp",
+      mobile: "/blyton-optimized/verandah-mobile.webp",
+      thumb: "/blyton-optimized/verandah-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
+      desktop: "/blyton-optimized/bedroom-desktop.webp",
+      mobile: "/blyton-optimized/bedroom-mobile.webp",
+      thumb: "/blyton-optimized/bedroom-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
+      desktop: "/blyton-optimized/bungalow-desktop.webp",
+      mobile: "/blyton-optimized/bungalow-mobile.webp",
+      thumb: "/blyton-optimized/bungalow-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
+      desktop: "/blyton-optimized/night-desktop.webp",
+      mobile: "/blyton-optimized/night-mobile.webp",
+      thumb: "/blyton-optimized/night-thumb.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
+      desktop: "/blyton-optimized/window-desktop.webp",
+      mobile: "/blyton-optimized/window-mobile.webp",
+      thumb: "/blyton-optimized/window-thumb.webp"
     }
   ]
 }

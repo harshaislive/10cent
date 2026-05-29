@@ -32,8 +32,13 @@ CREATE TABLE IF NOT EXISTS public.trial_requests (
 
   -- Date Preferences
   preferred_date DATE NOT NULL, -- User's preferred check-in date
+  check_in_date DATE, -- Actual requested check-in date
+  check_out_date DATE, -- Actual requested check-out date
   duration_nights INTEGER DEFAULT 2, -- How many nights (default 2)
+  adults INTEGER DEFAULT 2,
+  children INTEGER DEFAULT 0,
   guest_count INTEGER, -- Number of guests
+  estimated_cost NUMERIC, -- Site-side estimate shown before submission
   flexible_dates BOOLEAN DEFAULT false, -- Is user flexible with dates?
 
   -- Availability Check (from external API)
@@ -44,6 +49,8 @@ CREATE TABLE IF NOT EXISTS public.trial_requests (
   -- Request Status
   request_status TEXT NOT NULL DEFAULT 'PENDING', -- PENDING, AVAILABLE, WAITLIST, CONFIRMED, CANCELLED
   status_notes TEXT, -- Notes about status changes
+  ezee_reservation_no TEXT, -- eZee reservation number if API blocking is enabled
+  ezee_inventory_mode TEXT, -- eZee inventory mode returned by InsertBooking
 
   -- Special Requests
   special_requests TEXT, -- Any special requirements from user

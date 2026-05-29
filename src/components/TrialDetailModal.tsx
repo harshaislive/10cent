@@ -4,11 +4,13 @@ import React from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowRight } from 'lucide-react'
-import TrialStayRequestForm from '@/components/TrialStayRequestForm'
+import TrialStayRequestForm from '@/components/TrialStayRequestFormEzeeV3'
+import { imagePresets } from '@/utils/supabaseImage'
 
 interface LocationImage {
     desktop: string
     mobile: string
+    thumb?: string
 }
 
 interface TrialLocation {
@@ -28,6 +30,12 @@ interface TrialDetailModalProps {
 export default function TrialDetailModal({ isOpen, onClose, location }: TrialDetailModalProps) {
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
     const [showRequestForm, setShowRequestForm] = React.useState(false)
+    const [requestFormSession, setRequestFormSession] = React.useState(0)
+    const preloadCacheRef = React.useRef<HTMLImageElement[]>([])
+
+    const selectedImage = location?.images[selectedImageIndex] ?? location?.images[0]
+    const selectedDesktopSrc = selectedImage ? imagePresets.heroDesktopFast(selectedImage.desktop) : ''
+    const selectedMobileSrc = selectedImage ? imagePresets.heroMobileFast(selectedImage.mobile) : ''
 
     // Reset selection when location changes
     React.useEffect(() => {
@@ -37,7 +45,37 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
         }
     }, [isOpen, location])
 
-    if (!location) return null
+    React.useEffect(() => {
+        if (!isOpen || !location) return
+
+        const nearbyImageIndexes = new Set([
+            selectedImageIndex,
+            (selectedImageIndex + 1) % location.images.length,
+            (selectedImageIndex - 1 + location.images.length) % location.images.length,
+        ])
+
+        const thumbnailPreloads = location.images.map((img) => {
+            const thumbnailPreload = new window.Image()
+            thumbnailPreload.src = img.thumb ?? imagePresets.thumbnail(img.desktop)
+            return thumbnailPreload
+        })
+
+        const nearbyDisplayPreloads = location.images.flatMap((img, index) => {
+            if (!nearbyImageIndexes.has(index)) return []
+
+            const desktopPreload = new window.Image()
+            desktopPreload.src = imagePresets.heroDesktopFast(img.desktop)
+
+            const mobilePreload = new window.Image()
+            mobilePreload.src = imagePresets.heroMobileFast(img.mobile)
+
+            return [desktopPreload, mobilePreload]
+        })
+
+        preloadCacheRef.current = [...thumbnailPreloads, ...nearbyDisplayPreloads]
+    }, [isOpen, location, selectedImageIndex])
+
+    if (!location || location.images.length === 0) return null
 
     return (
         <AnimatePresence>
@@ -65,30 +103,40 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                         <div className="w-full lg:w-[65%] h-[60vh] lg:h-full flex flex-col bg-black relative z-10">
                             {/* Main Display Frame */}
                             <div className="flex-1 relative w-full h-full overflow-hidden">
-                                {location.images.map((img, idx) => (
+                                <AnimatePresence initial={false} mode="popLayout">
                                     <motion.div
-                                        key={idx}
-                                        initial={false}
+                                        key={selectedImageIndex}
+                                        initial={{ opacity: 0 }}
                                         animate={{
-                                            opacity: selectedImageIndex === idx ? 1 : 0,
-                                            scale: selectedImageIndex === idx ? 1 : 1.05,
-                                            zIndex: selectedImageIndex === idx ? 10 : 0
+                                            opacity: 1
                                         }}
-                                        transition={{ duration: 0.7, ease: "easeInOut" }}
-                                        className="absolute inset-0 pointer-events-none"
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.18, ease: "easeOut" }}
+                                        className="absolute inset-0 pointer-events-none will-change-opacity"
                                     >
                                         <Image
-                                            src={img.desktop}
-                                            alt={`${location.name} - view ${idx + 1}`}
+                                            src={selectedDesktopSrc}
+                                            alt={`${location.name} - view ${selectedImageIndex + 1}`}
                                             fill
-                                            className="object-cover"
-                                            quality={95}
-                                            priority={idx === 0}
-                                            unoptimized={img.desktop.includes('supabase.co')}
+                                            className="hidden md:block object-cover"
+                                            sizes="(min-width: 1024px) 65vw, 100vw"
+                                            quality={78}
+                                            priority={selectedImageIndex === 0}
+                                            unoptimized={selectedDesktopSrc.includes('supabase.co')}
+                                        />
+                                        <Image
+                                            src={selectedMobileSrc}
+                                            alt={`${location.name} - view ${selectedImageIndex + 1}`}
+                                            fill
+                                            className="md:hidden object-cover"
+                                            sizes="100vw"
+                                            quality={72}
+                                            priority={selectedImageIndex === 0}
+                                            unoptimized={selectedMobileSrc.includes('supabase.co')}
                                         />
                                         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#1a1816] to-transparent opacity-60" />
                                     </motion.div>
-                                ))}
+                                </AnimatePresence>
                             </div>
 
                             {/* Thumbnail Strip */}
@@ -96,18 +144,26 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                                 {location.images.map((img, idx) => (
                                     <button
                                         key={idx}
-                                        onClick={() => setSelectedImageIndex(idx)}
+                                        type="button"
+                                        onClick={() => {
+                                            if (idx !== selectedImageIndex) {
+                                                setSelectedImageIndex(idx)
+                                            }
+                                        }}
+                                        aria-label={`Show ${location.name} image ${idx + 1}`}
                                         className={`relative w-14 h-12 lg:w-32 lg:h-20 shrink-0 border transition-all duration-300 shadow-lg ${selectedImageIndex === idx
                                             ? 'border-[#ffc083] opacity-100 scale-105'
                                             : 'border-white/20 opacity-60 hover:opacity-100'
                                             }`}
                                     >
                                         <Image
-                                            src={img.desktop}
+                                            src={img.thumb ?? imagePresets.thumbnail(img.desktop)}
                                             alt="thumbnails"
                                             fill
                                             className="object-cover"
-                                            unoptimized={img.desktop.includes('supabase.co')}
+                                            sizes="(min-width: 1024px) 128px, 56px"
+                                            quality={55}
+                                            unoptimized={(img.thumb ?? img.desktop).includes('supabase.co')}
                                         />
                                     </button>
                                 ))}
@@ -160,7 +216,10 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                                     <div className="p-4 lg:p-6 border-t border-[#fdfbf7]/5 bg-[#342e29]">
                                         <button
                                             type="button"
-                                            onClick={() => setShowRequestForm(true)}
+                                            onClick={() => {
+                                                setRequestFormSession(session => session + 1)
+                                                setShowRequestForm(true)
+                                            }}
                                             className="w-full bg-[#fdfbf7] text-[#342e29] py-3 lg:py-4 uppercase tracking-[0.2em] text-[10px] lg:text-xs font-medium hover:bg-[#ffc083] transition-colors duration-500 flex items-center justify-center gap-3 group"
                                         >
                                             <span>Book my 10% Trial Here</span>
@@ -195,6 +254,7 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                                     className="relative h-[92vh] w-full max-w-5xl overflow-hidden bg-[#342e29] shadow-[0_30px_90px_rgba(0,0,0,0.55)]"
                                 >
                                     <TrialStayRequestForm
+                                        key={`${location.name}-ezee-booking-v3-${requestFormSession}`}
                                         locationName={location.name}
                                         locationSlug="blyton_coorg"
                                         onBack={() => setShowRequestForm(false)}

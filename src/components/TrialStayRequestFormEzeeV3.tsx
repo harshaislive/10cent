@@ -12,17 +12,44 @@ interface ICalendarDay {
   state: AvailabilityState
 }
 
+interface IAvailableRoom {
+  roomTypeId?: string
+  ratePlanId?: string
+  rateTypeId?: string
+  name: string
+  roomTypeName?: string
+  availableRooms: number
+  currency: string
+  priceInclusiveTax: number | null
+  totalPriceInclusiveTax: number | null
+  maxAdults: number | null
+  maxChildren: number | null
+}
+
+interface IAvailabilityQuote {
+  available: boolean
+  currency: string
+  lowestRateInclusiveTax: number | null
+  lowestTotalInclusiveTax: number | null
+  rooms: IAvailableRoom[]
+}
+
 interface ITrialStayRequestFormProps {
   locationName: string
   locationSlug: string
   onBack: () => void
 }
 
-const ADULT_NIGHT_RATE = 12000
-const CHILD_NIGHT_RATE = 6000
 const MONTH_GRID_DAYS = 42
+const TRIAL_NIGHTS = 2
+const MIN_ADVANCE_DAYS = 2
 
-const formatDateValue = (date: Date) => date.toISOString().split('T')[0]
+const formatDateValue = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 const buildMonthDays = (monthDate: Date): ICalendarDay[] => {
   const firstOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1)
@@ -42,26 +69,53 @@ const buildMonthDays = (monthDate: Date): ICalendarDay[] => {
   })
 }
 
-const fallbackStateForDate = (dateValue: string): AvailabilityState => {
-  const date = new Date(dateValue)
-  const day = date.getDay()
-  const dateNumber = date.getDate()
-
-  if (date < new Date(new Date().toDateString())) return 'booked'
-  if (day === 0) return 'booked'
-  if (dateNumber % 9 === 0 || dateNumber % 13 === 0) return 'booked'
-  return 'available'
+const addDays = (dateValue: string, days: number) => {
+  const [year, month, day] = dateValue.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  date.setUTCDate(date.getUTCDate() + days)
+  return date.toISOString().split('T')[0]
 }
 
+const todayValue = () => formatDateValue(new Date())
+
+const isBeforeFirstBookableDate = (dateValue: string) => dateValue < addDays(todayValue(), MIN_ADVANCE_DAYS)
+
+const getInitialCalendarMonth = () => {
+  const firstBookableValue = addDays(todayValue(), MIN_ADVANCE_DAYS)
+  const [year, month, day] = firstBookableValue.split('-').map(Number)
+  const firstBookableDate = new Date(year, month - 1, day)
+
+  if (day >= 25) {
+    return new Date(year, month, 1)
+  }
+
+  return firstBookableDate
+}
+
+const formatCurrency = (amount: number | null | undefined, currency = 'INR') => {
+  if (typeof amount !== 'number') return 'Rate pending'
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
+
+const getRoomKey = (room: IAvailableRoom) =>
+  `${room.roomTypeId || room.name}-${room.ratePlanId || room.totalPriceInclusiveTax || 'rate'}`
+
 export default function TrialStayRequestForm({ locationName, locationSlug, onBack }: ITrialStayRequestFormProps) {
-  const [step, setStep] = React.useState<1 | 2 | 3>(1)
-  const [calendarMonth, setCalendarMonth] = React.useState(() => new Date())
+  const [step, setStep] = React.useState<1 | 2 | 3 | 4>(1)
+  const [calendarMonth, setCalendarMonth] = React.useState(getInitialCalendarMonth)
   const [days, setDays] = React.useState<ICalendarDay[]>([])
   const [usesFallbackAvailability, setUsesFallbackAvailability] = React.useState(false)
   const [checkInDate, setCheckInDate] = React.useState('')
   const [checkOutDate, setCheckOutDate] = React.useState('')
-  const [adults, setAdults] = React.useState(1)
+  const [adults, setAdults] = React.useState(2)
   const [children, setChildren] = React.useState(0)
+  const [selectedAvailability, setSelectedAvailability] = React.useState<IAvailabilityQuote | null>(null)
+  const [selectedRoomKey, setSelectedRoomKey] = React.useState('')
+  const [isQuoteLoading, setIsQuoteLoading] = React.useState(false)
   const [name, setName] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [phone, setPhone] = React.useState('')
@@ -72,7 +126,9 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const nights = checkInDate && checkOutDate
     ? Math.max(1, Math.round((new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / 86400000))
     : 1
-  const estimatedCost = (adults * ADULT_NIGHT_RATE + children * CHILD_NIGHT_RATE) * nights
+  const availableRooms = selectedAvailability?.rooms.filter(room => room.availableRooms > 0) ?? []
+  const selectedRoom = availableRooms.find(room => getRoomKey(room) === selectedRoomKey) ?? availableRooms[0] ?? null
+  const estimatedCost = selectedRoom?.totalPriceInclusiveTax ?? selectedAvailability?.lowestTotalInclusiveTax ?? null
   const checkInLabel = checkInDate
     ? new Date(checkInDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
     : 'Select a date'
@@ -80,6 +136,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     ? new Date(checkOutDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
     : 'Select checkout'
   const hasDateRange = Boolean(checkInDate && checkOutDate)
+
+  React.useEffect(() => {
+    setCalendarMonth(getInitialCalendarMonth())
+  }, [])
 
   const selectDate = (date: string) => {
     if (!checkInDate || checkOutDate || new Date(date) <= new Date(checkInDate)) {
@@ -96,16 +156,60 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
   React.useEffect(() => {
     let cancelled = false
+
+    if (!checkInDate || !checkOutDate) {
+      setSelectedAvailability(null)
+      setSelectedRoomKey('')
+      setIsQuoteLoading(false)
+      return
+    }
+
+    setIsQuoteLoading(true)
+
+    fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}`)
+      .then(async response => {
+        if (!response.ok) throw new Error('Availability unavailable')
+        const data: unknown = await response.json()
+        if (
+          typeof data === 'object' &&
+          data !== null &&
+          'data' in data &&
+          typeof (data as { data?: unknown }).data === 'object'
+        ) {
+          return (data as { data: IAvailabilityQuote }).data
+        }
+        throw new Error('Availability unavailable')
+      })
+      .then(availability => {
+        if (!cancelled) {
+          setSelectedAvailability(availability)
+          setSelectedRoomKey('')
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setSelectedAvailability(null)
+      })
+      .finally(() => {
+        if (!cancelled) setIsQuoteLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [adults, checkInDate, checkOutDate, children])
+
+  React.useEffect(() => {
+    let cancelled = false
     const initialDays = buildMonthDays(calendarMonth)
     setDays(initialDays)
     setUsesFallbackAvailability(false)
 
     Promise.all(
       initialDays.map(async day => {
-        if (!day.isCurrentMonth) return { date: day.date, state: 'booked' as AvailabilityState, fallback: false }
+        if (isBeforeFirstBookableDate(day.date)) return { date: day.date, state: 'booked' as AvailabilityState, fallback: false }
 
         try {
-          const response = await fetch(`/api/availability/check?startDate=${day.date}`)
+          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${TRIAL_NIGHTS}&adults=${adults}&children=${children}`)
           if (!response.ok) throw new Error('Availability unavailable')
 
           const data: unknown = await response.json()
@@ -121,7 +225,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
           return { date: day.date, state: available ? 'available' as AvailabilityState : 'booked' as AvailabilityState, fallback: false }
         } catch {
-          return { date: day.date, state: fallbackStateForDate(day.date), fallback: true }
+          return { date: day.date, state: 'booked' as AvailabilityState, fallback: true }
         }
       })
     ).then(results => {
@@ -131,15 +235,13 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         const matchingDay = initialDays.find(day => day.date === result.date)
         return matchingDay?.isCurrentMonth
       })
-      const allBooked = currentMonthResults.every(result => result.state === 'booked')
-      const normalizedResults = allBooked
-        ? results.map(result => ({ ...result, state: fallbackStateForDate(result.date), fallback: true }))
-        : results
 
-      setUsesFallbackAvailability(normalizedResults.some(result => result.fallback))
+      const liveCheckCount = currentMonthResults.filter(result => !isBeforeFirstBookableDate(result.date)).length
+      const fallbackCount = currentMonthResults.filter(result => result.fallback).length
+      setUsesFallbackAvailability(liveCheckCount > 0 && fallbackCount === liveCheckCount)
       setDays(currentDays =>
         currentDays.map(day => {
-          const result = normalizedResults.find(item => item.date === day.date)
+          const result = results.find(item => item.date === day.date)
           return result ? { ...day, state: result.state } : day
         })
       )
@@ -148,7 +250,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     return () => {
       cancelled = true
     }
-  }, [calendarMonth])
+  }, [adults, calendarMonth, children])
 
   const submitRequest = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -172,7 +274,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           adults,
           children,
           guestCount: adults + children,
-          estimatedCost,
+          estimatedCost: estimatedCost ?? undefined,
+          roomTypeId: selectedRoom?.roomTypeId,
+          ratePlanId: selectedRoom?.ratePlanId,
+          rateTypeId: selectedRoom?.rateTypeId,
         }),
       })
 
@@ -191,7 +296,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           : ''
 
       setRequestId(submittedRequestId)
-      setStep(3)
+      setStep(4)
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Failed to submit request. Please try again.')
     } finally {
@@ -204,14 +309,14 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
       <div className="flex items-center justify-between border-b border-[#342e29]/10 px-5 py-4 pr-24">
         <button
           type="button"
-          onClick={step === 1 ? onBack : () => setStep(step === 3 ? 2 : 1)}
+          onClick={step === 1 ? onBack : () => setStep(step === 4 ? 3 : step === 3 ? 2 : 1)}
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#342e29]/55 transition-colors hover:text-[#86312b]"
         >
           <ArrowLeft className="h-3 w-3" />
           {step === 1 ? 'Back' : 'Previous'}
         </button>
         <div className="flex gap-2">
-          {[1, 2, 3].map(item => (
+          {[1, 2, 3, 4].map(item => (
             <span
               key={item}
               className={`h-1.5 w-8 rounded-full ${item <= step ? 'bg-[#86312b]' : 'bg-[#342e29]/15'}`}
@@ -268,6 +373,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                     <button
                       key={day.date}
                       type="button"
+                      aria-label={`${day.date} ${day.state}`}
                       disabled={!isAvailable}
                       onClick={() => selectDate(day.date)}
                       className={`relative flex aspect-square items-center justify-center rounded-full border text-sm transition-colors ${
@@ -302,12 +408,12 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Blyton Bungalow</p>
                 <h4 className="font-arizona text-4xl font-light">Trial stay</h4>
               <p className="mt-4 text-sm leading-relaxed text-[#342e29]/65">
-                  Pick your arrival and departure dates for Blyton Bungalow. Your nights will be calculated automatically from the range you choose, with a minimum stay of one night.
+                  Pick your arrival and departure dates for Blyton Bungalow. Your nights will be calculated automatically from the range you choose, with a two-night trial stay as the default.
                 </p>
 
                 {usesFallbackAvailability && (
                   <p className="mt-4 border border-[#86312b]/15 bg-[#86312b]/5 p-3 text-xs leading-relaxed text-[#342e29]/65">
-                    Live availability is not responding right now, so these are open request dates. The team will verify before confirming.
+                    Live eZee availability is not responding right now, so dates are temporarily blocked until inventory can be checked.
                   </p>
                 )}
 
@@ -325,6 +431,22 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                     <span className="font-medium">{hasDateRange ? nights : '-'}</span>
                   </div>
                 </div>
+
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  {[
+                    { label: 'Adults', value: adults, setValue: setAdults, min: 1, max: 8 },
+                    { label: 'Children', value: children, setValue: setChildren, min: 0, max: 8 },
+                  ].map(item => (
+                    <div key={item.label} className="border border-[#342e29]/10 bg-white/35 p-3">
+                      <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{item.label}</span>
+                      <div className="mt-3 flex items-center justify-between gap-2">
+                        <button type="button" onClick={() => item.setValue(Math.max(item.min, item.value - 1))} className="h-7 w-7 border border-[#342e29]/15">-</button>
+                        <span className="font-arizona text-2xl">{item.value}</span>
+                        <button type="button" onClick={() => item.setValue(Math.min(item.max, item.value + 1))} className="h-7 w-7 border border-[#342e29]/15">+</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <button
@@ -333,7 +455,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 onClick={() => setStep(2)}
                 className="mt-8 inline-flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Continue
+                Check eZee rooms
                 <ArrowRight className="h-4 w-4" />
               </button>
             </aside>
@@ -341,47 +463,119 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         )}
 
         {step === 2 && (
-          <form onSubmit={submitRequest} className="grid min-h-full grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="grid min-h-full grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
             <aside className="border-b border-[#342e29]/10 p-5 lg:border-b-0 lg:border-r lg:p-7">
-              <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 2 · Stay details</p>
-              <h3 className="font-arizona text-4xl font-light">Your request</h3>
+              <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 2 · eZee rooms</p>
+              <h3 className="font-arizona text-4xl font-light">Choose a room type</h3>
               <p className="mt-4 text-sm text-[#342e29]/60">
-                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'}
+                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {adults} adults{children ? ` · ${children} children` : ''}
               </p>
-
               <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
-                <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Estimated cost</span>
-                <div className="mt-2 font-arizona text-4xl">₹{estimatedCost.toLocaleString('en-IN')}</div>
+                <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Live eZee total</span>
+                <div className="mt-2 flex min-h-12 items-center gap-3 font-arizona text-4xl">
+                  {isQuoteLoading && <Loader2 className="h-5 w-5 animate-spin" />}
+                  <span>{isQuoteLoading ? 'Checking' : formatCurrency(estimatedCost, selectedAvailability?.currency)}</span>
+                </div>
+                {selectedRoom && (
+                  <p className="mt-2 text-sm font-medium text-[#342e29]">
+                    Selected: {selectedRoom.name}
+                  </p>
+                )}
                 <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
-                  Based on ₹{ADULT_NIGHT_RATE.toLocaleString('en-IN')} per adult night and ₹{CHILD_NIGHT_RATE.toLocaleString('en-IN')} per child night.
+                  Rate and inventory are pulled from eZee for this exact stay window. The next step only collects guest details.
                 </p>
               </div>
             </aside>
 
             <div className="p-5 lg:p-7">
-              <div className="mb-6 grid grid-cols-3 gap-3">
-                <div className="border border-[#342e29]/10 bg-white/35 p-3">
-                  <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">Nights</span>
-                  <div className="mt-3 flex h-7 items-center justify-center">
-                    <span className="font-arizona text-2xl">{nights}</span>
-                  </div>
+              {isQuoteLoading && (
+                <div className="flex h-full min-h-80 items-center justify-center gap-3 text-sm text-[#342e29]/55">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Checking eZee room inventory
                 </div>
+              )}
 
-                {[
-                  { label: 'Adults', value: adults, setValue: setAdults, min: 1, max: 8 },
-                  { label: 'Children', value: children, setValue: setChildren, min: 0, max: 8 },
-                ].map(item => (
-                  <div key={item.label} className="border border-[#342e29]/10 bg-white/35 p-3">
-                    <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{item.label}</span>
-                    <div className="mt-3 flex items-center justify-between gap-2">
-                      <button type="button" onClick={() => item.setValue(Math.max(item.min, item.value - 1))} className="h-7 w-7 border border-[#342e29]/15">-</button>
-                      <span className="font-arizona text-2xl">{item.value}</span>
-                      <button type="button" onClick={() => item.setValue(Math.min(item.max, item.value + 1))} className="h-7 w-7 border border-[#342e29]/15">+</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {!isQuoteLoading && availableRooms.length === 0 && (
+                <div className="border border-[#86312b]/15 bg-[#86312b]/5 p-5 text-sm leading-relaxed text-[#342e29]/65">
+                  eZee is not showing rooms for this stay window. Please go back and choose another date range.
+                </div>
+              )}
 
+              {!isQuoteLoading && availableRooms.length > 0 && (
+                <div className="space-y-3">
+                  {availableRooms.map(room => {
+                    const roomKey = getRoomKey(room)
+                    const isSelected = getRoomKey(selectedRoom || room) === roomKey
+                    return (
+                      <button
+                        key={roomKey}
+                        type="button"
+                        onClick={() => setSelectedRoomKey(roomKey)}
+                        className={`w-full border p-5 text-left transition-colors ${isSelected ? 'border-[#86312b] bg-[#86312b]/5' : 'border-[#342e29]/10 bg-white/35 hover:border-[#86312b]/40'}`}
+                      >
+                        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                          <div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="text-[10px] uppercase tracking-[0.2em] text-[#342e29]/45">{room.roomTypeName || 'Blyton room'}</p>
+                              {isSelected && (
+                                <span className="border border-[#86312b]/25 bg-[#86312b]/10 px-2 py-1 text-[9px] uppercase tracking-widest text-[#86312b]">
+                                  Selected
+                                </span>
+                              )}
+                            </div>
+                            <h4 className="mt-2 font-arizona text-3xl font-light">{room.name}</h4>
+                            <p className="mt-2 text-xs text-[#342e29]/55">
+                              {room.availableRooms} available
+                              {room.maxAdults ? ` · up to ${room.maxAdults} adults` : ''}
+                              {room.maxChildren ? ` · ${room.maxChildren} children` : ''}
+                            </p>
+                          </div>
+                          <div className="md:text-right">
+                            <p className="font-arizona text-3xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
+                            <p className="mt-1 text-xs text-[#342e29]/50">
+                              {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive total from eZee'}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })}
+
+                  <button
+                    type="button"
+                    disabled={!selectedRoom}
+                    onClick={() => setStep(3)}
+                    className="mt-5 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-50"
+                  >
+                    Continue with selected room
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <form onSubmit={submitRequest} className="grid min-h-full grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
+            <aside className="border-b border-[#342e29]/10 p-5 lg:border-b-0 lg:border-r lg:p-7">
+              <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 3 · Guest details</p>
+              <h3 className="font-arizona text-4xl font-light">Your request</h3>
+              <p className="mt-4 text-sm text-[#342e29]/60">
+                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'}
+              </p>
+
+              {selectedRoom && (
+                <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
+                  <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Selected eZee room</span>
+                  <h4 className="mt-3 font-arizona text-3xl font-light">{selectedRoom.name}</h4>
+                  <p className="mt-2 text-sm text-[#342e29]/60">{formatCurrency(selectedRoom.totalPriceInclusiveTax, selectedRoom.currency)} total inclusive</p>
+                  <p className="mt-2 text-xs text-[#342e29]/50">{selectedRoom.availableRooms} rooms available at last check</p>
+                </div>
+              )}
+            </aside>
+
+            <div className="p-5 lg:p-7">
               <div className="space-y-4">
                 <label className="block">
                   <span className="text-[10px] uppercase tracking-widest text-[#342e29]/50">Name</span>
@@ -399,7 +593,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
               {error && <p className="mt-5 text-sm text-[#86312b]">{error}</p>}
 
-              <button type="submit" disabled={isSubmitting} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
+              <button type="submit" disabled={isSubmitting || !selectedRoom} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Submit stay request</span>}
                 {!isSubmitting && <ArrowRight className="h-4 w-4" />}
               </button>
@@ -407,7 +601,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           </form>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <div className="flex min-h-full flex-col justify-center p-8 text-center">
             <div className="mx-auto mb-7 flex h-16 w-16 items-center justify-center rounded-full border border-[#86312b] text-[#86312b]">
               <CheckCircle2 className="h-8 w-8" />
