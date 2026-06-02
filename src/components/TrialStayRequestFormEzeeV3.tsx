@@ -155,6 +155,11 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     ? formatDateLabel(checkOutDate)
     : 'Select checkout'
   const hasDateRange = Boolean(checkInDate && checkOutDate)
+  const dateSelectionHint = !checkInDate
+    ? 'Select your check-in date first.'
+    : !checkOutDate
+      ? `Now select your checkout date. Earliest checkout is ${formatDateLabel(addDays(checkInDate, 1))}.`
+      : `${checkInLabel} to ${checkOutLabel} · ${nights} ${nights === 1 ? 'night' : 'nights'} selected.`
 
   React.useEffect(() => {
     setCalendarMonth(getInitialCalendarMonth())
@@ -360,6 +365,19 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
               <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 1 · Select stay dates</p>
               <h3 className="mb-5 font-arizona text-3xl font-light">Choose your stay dates</h3>
 
+              <div className={`mb-5 border p-3 text-sm leading-relaxed ${
+                checkInDate && !checkOutDate
+                  ? 'border-[#86312b]/25 bg-[#86312b]/10 text-[#342e29]'
+                  : hasDateRange
+                    ? 'border-emerald-600/25 bg-emerald-100/60 text-emerald-950'
+                    : 'border-[#342e29]/10 bg-white/45 text-[#342e29]/65'
+              }`}>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#86312b]">
+                  {!checkInDate ? 'First tap' : !checkOutDate ? 'Second tap needed' : 'Date range selected'}
+                </p>
+                <p className="mt-1">{dateSelectionHint}</p>
+              </div>
+
               <div className="mb-5 flex items-center justify-between">
                 <button
                   type="button"
@@ -417,6 +435,16 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                       } ${day.isCurrentMonth ? '' : 'opacity-25'}`}
                     >
                       {day.state === 'loading' ? <Loader2 className="h-3 w-3 animate-spin" /> : day.day}
+                      {checkInDate === day.date && (
+                        <span className="absolute -bottom-4 left-1/2 hidden -translate-x-1/2 whitespace-nowrap text-[8px] uppercase tracking-widest text-[#86312b] sm:block">
+                          In
+                        </span>
+                      )}
+                      {checkOutDate === day.date && (
+                        <span className="absolute -bottom-4 left-1/2 hidden -translate-x-1/2 whitespace-nowrap text-[8px] uppercase tracking-widest text-[#86312b] sm:block">
+                          Out
+                        </span>
+                      )}
                       {day.state === 'booked' && day.isCurrentMonth && (
                         <XCircle className="absolute bottom-1 right-1 h-3 w-3 text-[#86312b]/45" />
                       )}
@@ -452,7 +480,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </div>
                   <div className="flex justify-between gap-4">
                     <span className="text-[#342e29]/50">Check-out</span>
-                    <span className="text-right font-medium">{checkOutLabel}</span>
+                    <span className={`text-right font-medium ${checkInDate && !checkOutDate ? 'text-[#86312b]' : ''}`}>{checkOutLabel}</span>
                   </div>
                   <div className="flex justify-between gap-4">
                     <span className="text-[#342e29]/50">Nights</span>
@@ -483,7 +511,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 onClick={() => setStep(2)}
                 className="mt-8 inline-flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {hasDateRange ? 'Continue to room options' : 'Select dates to continue'}
+                {hasDateRange ? 'Continue to room options' : checkInDate ? 'Select checkout date' : 'Select check-in date'}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </aside>
