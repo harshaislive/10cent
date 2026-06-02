@@ -41,7 +41,7 @@ interface ITrialStayRequestFormProps {
 }
 
 const MONTH_GRID_DAYS = 42
-const TRIAL_NIGHTS = 2
+const CALENDAR_AVAILABILITY_NIGHTS = 1
 const MIN_ADVANCE_DAYS = 2
 
 const formatDateValue = (date: Date) => {
@@ -74,6 +74,25 @@ const addDays = (dateValue: string, days: number) => {
   const date = new Date(Date.UTC(year, month - 1, day))
   date.setUTCDate(date.getUTCDate() + days)
   return date.toISOString().split('T')[0]
+}
+
+const compareDateValues = (left: string, right: string) => left.localeCompare(right)
+
+const nightsBetween = (checkIn: string, checkOut: string) => {
+  const [inYear, inMonth, inDay] = checkIn.split('-').map(Number)
+  const [outYear, outMonth, outDay] = checkOut.split('-').map(Number)
+  const checkInUtc = Date.UTC(inYear, inMonth - 1, inDay)
+  const checkOutUtc = Date.UTC(outYear, outMonth - 1, outDay)
+  return Math.max(1, Math.round((checkOutUtc - checkInUtc) / 86400000))
+}
+
+const formatDateLabel = (dateValue: string) => {
+  const [year, month, day] = dateValue.split('-').map(Number)
+  return new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(year, month - 1, day))
 }
 
 const todayValue = () => formatDateValue(new Date())
@@ -124,16 +143,16 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [requestId, setRequestId] = React.useState('')
 
   const nights = checkInDate && checkOutDate
-    ? Math.max(1, Math.round((new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / 86400000))
+    ? nightsBetween(checkInDate, checkOutDate)
     : 1
   const availableRooms = selectedAvailability?.rooms.filter(room => room.availableRooms > 0) ?? []
   const selectedRoom = availableRooms.find(room => getRoomKey(room) === selectedRoomKey) ?? availableRooms[0] ?? null
   const estimatedCost = selectedRoom?.totalPriceInclusiveTax ?? selectedAvailability?.lowestTotalInclusiveTax ?? null
   const checkInLabel = checkInDate
-    ? new Date(checkInDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    ? formatDateLabel(checkInDate)
     : 'Select a date'
   const checkOutLabel = checkOutDate
-    ? new Date(checkOutDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    ? formatDateLabel(checkOutDate)
     : 'Select checkout'
   const hasDateRange = Boolean(checkInDate && checkOutDate)
 
@@ -142,7 +161,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   }, [])
 
   const selectDate = (date: string) => {
-    if (!checkInDate || checkOutDate || new Date(date) <= new Date(checkInDate)) {
+    if (!checkInDate || checkOutDate || compareDateValues(date, checkInDate) <= 0) {
       setCheckInDate(date)
       setCheckOutDate('')
       return
@@ -152,7 +171,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   }
 
   const isWithinRange = (date: string) =>
-    Boolean(checkInDate && checkOutDate && new Date(date) > new Date(checkInDate) && new Date(date) < new Date(checkOutDate))
+    Boolean(checkInDate && checkOutDate && compareDateValues(date, checkInDate) > 0 && compareDateValues(date, checkOutDate) < 0)
 
   React.useEffect(() => {
     let cancelled = false
@@ -209,7 +228,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         if (isBeforeFirstBookableDate(day.date)) return { date: day.date, state: 'booked' as AvailabilityState, fallback: false }
 
         try {
-          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${TRIAL_NIGHTS}&adults=${adults}&children=${children}`)
+          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${CALENDAR_AVAILABILITY_NIGHTS}&adults=${adults}&children=${children}`)
           if (!response.ok) throw new Error('Availability unavailable')
 
           const data: unknown = await response.json()
@@ -417,7 +436,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Blyton Bungalow</p>
                 <h4 className="font-arizona text-4xl font-light">Trial stay</h4>
               <p className="mt-4 text-sm leading-relaxed text-[#342e29]/65">
-                  Pick your arrival and departure dates for Blyton Bungalow. Your nights will be calculated automatically from the range you choose, with a two-night trial stay as the default.
+                  Pick your arrival and departure dates for Blyton Bungalow. Your nights will be calculated automatically from the range you choose, with a minimum stay of one night.
                 </p>
 
                 {usesFallbackAvailability && (

@@ -46,6 +46,10 @@ export async function fetchEzeeJson(url: string, userAgent: string): Promise<unk
 
   try {
     const data: unknown = JSON.parse(text)
+    if (hasEzeeNoDataResponse(data)) {
+      return data
+    }
+
     if (hasEzeeError(data)) {
       throw new Error(`eZee API error: ${JSON.stringify(data)}`)
     }
@@ -56,6 +60,30 @@ export async function fetchEzeeJson(url: string, userAgent: string): Promise<unk
     }
     throw error
   }
+}
+
+function hasEzeeNoDataResponse(data: unknown): boolean {
+  if (Array.isArray(data)) {
+    return data.some(hasEzeeNoDataResponse)
+  }
+
+  if (!data || typeof data !== "object") {
+    return false
+  }
+
+  const record = data as Record<string, unknown>
+  const details = record["Error Details"]
+
+  if (!details || typeof details !== "object" || Array.isArray(details)) {
+    return false
+  }
+
+  const errorDetails = details as Record<string, unknown>
+  return (
+    Number(errorDetails.Error_Code) === -1 &&
+    typeof errorDetails.Error_Message === "string" &&
+    errorDetails.Error_Message.toLowerCase().includes("no data")
+  )
 }
 
 function hasEzeeError(data: unknown): boolean {
