@@ -288,12 +288,30 @@ function getString(record: Record<string, unknown>, keys: string[]): string {
 function getNumber(record: Record<string, unknown>, keys: string[]): number | null {
   for (const key of keys) {
     const value = getCaseInsensitiveValue(record, key)
-    if (typeof value === "number" && Number.isFinite(value)) return value
-    if (typeof value === "string") {
-      const parsed = Number(value.replace(/[^\d.-]/g, ""))
-      if (Number.isFinite(parsed)) return parsed
+    const parsed = parseNumberValue(value)
+    if (parsed !== null) return parsed
+  }
+  return null
+}
+
+function parseNumberValue(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value
+
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(/[^\d.-]/g, ""))
+    if (Number.isFinite(parsed)) return parsed
+  }
+
+  if (isRecord(value)) {
+    const numericValues = Object.values(value)
+      .map(parseNumberValue)
+      .filter((item): item is number => item !== null)
+
+    if (numericValues.length > 0) {
+      return Math.min(...numericValues)
     }
   }
+
   return null
 }
 

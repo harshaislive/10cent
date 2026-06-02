@@ -59,7 +59,8 @@ function buildBookingData(input: ICreateEzeeBookingInput) {
   const roomCount = Number.isFinite(requestedRoomCount) && requestedRoomCount > 0
     ? Math.min(Math.round(requestedRoomCount), availableRoomCount)
     : 1
-  const roomDetails = buildRoomDetails(input, roomCount, baseRate, firstName, lastName)
+  const perRoomBaseRate = roomCount > 1 ? baseRate / roomCount : baseRate
+  const roomDetails = buildRoomDetails(input, roomCount, perRoomBaseRate, firstName, lastName)
 
   return {
     Room_Details: roomDetails,
