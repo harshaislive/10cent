@@ -1118,20 +1118,20 @@ export default function EditorialPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-[#fdfbf7]/10 border border-[#fdfbf7]/10 mb-14 text-left">
               {[
                 {
-                  title: "Request",
-                  desc: "Select Blyton, Coorg and share your preferred trial dates."
+                  title: "Choose",
+                  desc: "Select Blyton, Coorg, your dates, guests, and an available eZee room."
                 },
                 {
-                  title: "Verify",
-                  desc: "Our community team contacts you to understand fit and availability."
+                  title: "Review",
+                  desc: "See the live eZee amount for the room and stay before checkout."
                 },
                 {
-                  title: "Secure",
-                  desc: "A small adjustable token confirms your dates once they are available."
+                  title: "Pay",
+                  desc: "Complete payment through the secure experiences checkout."
                 },
                 {
-                  title: "Arrive",
-                  desc: "Receive your guide and step into the wilderness rhythm we have built."
+                  title: "Confirm",
+                  desc: "After payment, your eZee booking is created and the team shares arrival details."
                 }
               ].map((item, i) => (
                 <div key={item.title} className="bg-[#342e29] p-8 md:p-10">
