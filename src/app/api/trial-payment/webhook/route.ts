@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { getBookingEngineAvailability, type IEzeeAvailableRoom } from "@/lib/ezee/availability"
 import { createEzeeBookingHold } from "@/lib/ezee/bookings"
+import { isEzeePaymentPostingEnabled, postEzeePayment } from "@/lib/ezee/payments"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
 
 export const dynamic = "force-dynamic"
@@ -36,9 +37,11 @@ interface ITrialRequestRecord {
   selected_room_id: string | null
   selected_rate_plan_id: string | null
   selected_room_payload: Record<string, unknown> | null
+  payment_amount: number | null
   ezee_booking_status: string | null
   ezee_reservation_no: string | null
   special_requests: string | null
+  ezee_payment_status?: string | null
 }
 
 export async function POST(req: Request) {
@@ -143,6 +146,7 @@ export async function POST(req: Request) {
       paymentStatus: "completed",
       ezeeBookingStatus: "created",
       reservationNo: requestRecord.ezee_reservation_no,
+      ezeePaymentStatus: requestRecord.ezee_payment_status || "not_started",
     })
   }
 
@@ -167,12 +171,20 @@ export async function POST(req: Request) {
       inventoryMode: booking.inventoryMode,
     })
 
+    const ezeePaymentStatus = await postPaymentToEzeeIfEnabled(
+      supabase,
+      requestRecord,
+      payload,
+      booking.reservationNo
+    )
+
     return NextResponse.json({
       success: true,
       requestId: payload.externalRequestId,
       paymentStatus: "completed",
       ezeeBookingStatus: "created",
       reservationNo: booking.reservationNo,
+      ezeePaymentStatus,
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to create eZee booking"
@@ -198,6 +210,99 @@ export async function POST(req: Request) {
       paymentStatus: "completed",
       ezeeBookingStatus: "failed",
       error: message,
+    })
+  }
+}
+
+async function postPaymentToEzeeIfEnabled(
+  supabase: SupabaseClient,
+  requestRecord: ITrialRequestRecord,
+  payload: ITrialPaymentWebhookPayload,
+  reservationNo: string
+): Promise<string> {
+  if (!isEzeePaymentPostingEnabled()) {
+    return "disabled"
+  }
+
+  if (requestRecord.ezee_payment_status === "POSTED") {
+    return "posted"
+  }
+
+  const amount = payload.amount ?? requestRecord.payment_amount
+  if (!amount || amount <= 0) {
+    const message = "Paid webhook did not include a positive amount for eZee payment posting"
+    await updateEzeePaymentStatus(supabase, requestRecord.id, {
+      ezee_payment_status: "FAILED",
+      ezee_payment_error: message,
+    })
+    await insertPaymentEvent(supabase, requestRecord.id, "ezee_payment_failed", "ezee", {
+      error: message,
+      reservationNo,
+    })
+    return "failed"
+  }
+
+  await updateEzeePaymentStatus(supabase, requestRecord.id, {
+    ezee_payment_status: "PENDING",
+    ezee_payment_attempted_at: new Date().toISOString(),
+    ezee_payment_amount: amount,
+  })
+
+  try {
+    const result = await postEzeePayment({
+      reservationNo,
+      amount,
+      paymentReference: payload.phonepeTransactionId || requestRecord.request_id,
+    })
+
+    await updateEzeePaymentStatus(supabase, requestRecord.id, {
+      ezee_payment_status: "POSTED",
+      ezee_payment_posted_at: new Date().toISOString(),
+      ezee_payment_error: null,
+      ezee_payment_id: result.paymentId,
+      ezee_currency_id: result.currencyId,
+      ezee_payment_payload: result.raw,
+    })
+    await insertPaymentEvent(supabase, requestRecord.id, "ezee_payment_posted", "ezee", {
+      reservationNo,
+      paymentId: result.paymentId,
+      currencyId: result.currencyId,
+      amount,
+      raw: result.raw,
+    })
+    return "posted"
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to post payment to eZee"
+    await updateEzeePaymentStatus(supabase, requestRecord.id, {
+      ezee_payment_status: "FAILED",
+      ezee_payment_error: message,
+    })
+    await insertPaymentEvent(supabase, requestRecord.id, "ezee_payment_failed", "ezee", {
+      reservationNo,
+      amount,
+      error: message,
+    })
+    return "failed"
+  }
+}
+
+async function updateEzeePaymentStatus(
+  supabase: SupabaseClient,
+  trialRequestId: string,
+  values: Record<string, unknown>
+): Promise<void> {
+  const { error } = await supabase
+    .schema("tencent")
+    .from("trial_requests")
+    .update(values)
+    .eq("id", trialRequestId)
+
+  if (error) {
+    console.error("Trial eZee payment status update error:", {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code,
     })
   }
 }

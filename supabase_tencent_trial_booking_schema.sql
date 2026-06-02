@@ -98,6 +98,16 @@ CREATE TABLE IF NOT EXISTS tencent.trial_requests (
   ezee_reservation_no TEXT,
   ezee_inventory_mode TEXT,
 
+  -- eZee PMS payment posting after reservation creation
+  ezee_payment_status TEXT NOT NULL DEFAULT 'NOT_STARTED',
+  ezee_payment_attempted_at TIMESTAMP WITH TIME ZONE,
+  ezee_payment_posted_at TIMESTAMP WITH TIME ZONE,
+  ezee_payment_error TEXT,
+  ezee_payment_id TEXT,
+  ezee_currency_id TEXT,
+  ezee_payment_amount NUMERIC,
+  ezee_payment_payload JSONB,
+
   -- Internal follow-up/admin
   contacted_at TIMESTAMP WITH TIME ZONE,
   confirmed_booking_id UUID,
@@ -141,6 +151,14 @@ CREATE TABLE IF NOT EXISTS tencent.trial_requests (
       'CREATED',
       'FAILED',
       'CANCELLED'
+    )
+  ),
+  CONSTRAINT valid_ezee_payment_status CHECK (
+    ezee_payment_status IN (
+      'NOT_STARTED',
+      'PENDING',
+      'POSTED',
+      'FAILED'
     )
   )
 );
@@ -215,6 +233,9 @@ CREATE INDEX IF NOT EXISTS idx_tencent_trial_requests_transaction_id
 
 CREATE INDEX IF NOT EXISTS idx_tencent_trial_requests_ezee_booking_status
   ON tencent.trial_requests(ezee_booking_status);
+
+CREATE INDEX IF NOT EXISTS idx_tencent_trial_requests_ezee_payment_status
+  ON tencent.trial_requests(ezee_payment_status);
 
 CREATE INDEX IF NOT EXISTS idx_tencent_trial_request_notes_request_id
   ON tencent.trial_request_notes(trial_request_id);
@@ -297,6 +318,8 @@ SELECT
   COUNT(*) FILTER (WHERE payment_status IN ('FAILED', 'EXPIRED')) as payment_failed_requests,
   COUNT(*) FILTER (WHERE ezee_booking_status = 'CREATED') as ezee_booking_created_requests,
   COUNT(*) FILTER (WHERE ezee_booking_status = 'FAILED') as ezee_booking_failed_requests,
+  COUNT(*) FILTER (WHERE ezee_payment_status = 'POSTED') as ezee_payment_posted_requests,
+  COUNT(*) FILTER (WHERE ezee_payment_status = 'FAILED') as ezee_payment_failed_requests,
   COUNT(*) FILTER (WHERE request_status = 'CONFIRMED') as confirmed_requests,
   COUNT(*) FILTER (WHERE is_date_available = true) as dates_available_count
 FROM tencent.trial_requests

@@ -25,6 +25,9 @@ interface ITrialRequestConfirmationRow {
   ezee_booking_status: string
   ezee_reservation_no: string | null
   ezee_inventory_mode: string | null
+  ezee_payment_status: string | null
+  ezee_payment_posted_at: string | null
+  ezee_payment_error: string | null
   paid_at: string | null
   checkout_expires_at: string | null
   experiences_checkout_id: string | null
@@ -79,6 +82,9 @@ export async function GET(req: Request) {
       ezee_booking_status,
       ezee_reservation_no,
       ezee_inventory_mode,
+      ezee_payment_status,
+      ezee_payment_posted_at,
+      ezee_payment_error,
       paid_at,
       checkout_expires_at,
       experiences_checkout_id
@@ -128,6 +134,9 @@ export async function GET(req: Request) {
         ezeeStatus: data.ezee_booking_status,
         ezeeReservationNo: data.ezee_reservation_no,
         ezeeInventoryMode: data.ezee_inventory_mode,
+        ezeePaymentStatus: data.ezee_payment_status || "NOT_STARTED",
+        ezeePaymentPostedAt: data.ezee_payment_posted_at,
+        ezeePaymentError: data.ezee_payment_error,
       },
       customer: {
         name: data.name,

@@ -40,6 +40,9 @@ interface IConfirmationResponse {
       ezeeStatus: string
       ezeeReservationNo: string | null
       ezeeInventoryMode: string | null
+      ezeePaymentStatus: string
+      ezeePaymentPostedAt: string | null
+      ezeePaymentError: string | null
     }
     customer: {
       name: string
@@ -159,6 +162,11 @@ export default function TrialBookingConfirmationClient() {
               <div className="mt-10 space-y-4">
                 <StatusLine label="Payment" value={formatStatus(request.payment.status)} tone={status.paymentTone} />
                 <StatusLine label="eZee booking" value={formatStatus(request.booking.ezeeStatus)} tone={status.bookingTone} />
+                <StatusLine
+                  label="PMS payment"
+                  value={formatStatus(request.booking.ezeePaymentStatus)}
+                  tone={getEzeePaymentTone(request.booking.ezeePaymentStatus)}
+                />
                 {request.booking.ezeeReservationNo && (
                   <StatusLine label="Reservation" value={request.booking.ezeeReservationNo} tone="good" />
                 )}
@@ -202,6 +210,9 @@ export default function TrialBookingConfirmationClient() {
                   ["Payment status", formatStatus(request.payment.status)],
                   ["Paid at", formatDateTime(request.payment.paidAt)],
                   ["Experiences checkout", request.payment.experiencesCheckoutId || "-"],
+                  ["PMS payment", formatStatus(request.booking.ezeePaymentStatus)],
+                  ["PMS posted at", formatDateTime(request.booking.ezeePaymentPostedAt)],
+                  ["PMS payment error", request.booking.ezeePaymentError || "-"],
                 ]}
               />
 
@@ -302,6 +313,12 @@ function getDisplayStatus(request: IConfirmationResponse["request"], redirectPay
     paymentTone: "pending" as const,
     bookingTone: "pending" as const,
   }
+}
+
+function getEzeePaymentTone(status: string): "good" | "pending" | "failed" {
+  if (status === "POSTED") return "good"
+  if (status === "FAILED") return "failed"
+  return "pending"
 }
 
 function formatStatus(status: string | null): string {
