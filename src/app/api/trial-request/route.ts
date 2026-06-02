@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { createSupabaseServiceClient } from "@/lib/supabase/server"
 import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult } from "@/lib/ezee/availability"
 import { createEzeeBookingHold, isTrialBlockingEnabled, type IEzeeBookingResult } from "@/lib/ezee/bookings"
 
@@ -25,18 +25,14 @@ interface ITrialRequestPayload {
 
 export async function POST(req: Request) {
   try {
-    // Get Supabase config at request time
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const supabase = createSupabaseServiceClient()
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabase) {
       return NextResponse.json(
         { error: "Database not configured" },
         { status: 503 }
       )
     }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const body = await req.json() as ITrialRequestPayload
     const {
@@ -181,17 +177,14 @@ export async function POST(req: Request) {
 // GET endpoint to check request status
 export async function GET(req: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const supabase = createSupabaseServiceClient()
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabase) {
       return NextResponse.json(
         { error: "Database not configured" },
         { status: 503 }
       )
     }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { searchParams } = new URL(req.url)
     const requestId = searchParams.get("requestId")

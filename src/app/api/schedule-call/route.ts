@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { createSupabaseServiceClient } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    const supabase = createSupabaseServiceClient()
 
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabase) {
       return NextResponse.json(
         { error: "Database not configured" },
         { status: 503 }
       )
     }
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const body = await req.json()
     const {
@@ -34,6 +31,7 @@ export async function POST(req: Request) {
 
     // Insert into onboarding_calls table
     const { data, error } = await supabase
+      .schema("tencent")
       .from("onboarding_calls")
       .insert({
         name,
