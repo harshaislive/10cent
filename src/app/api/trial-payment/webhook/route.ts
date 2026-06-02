@@ -147,7 +147,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const booking = await createPostPaymentEzeeBooking(requestRecord)
+    const booking = await createPostPaymentEzeeBooking(requestRecord, payload)
 
     await supabase
       .schema("tencent")
@@ -232,7 +232,10 @@ function safeCompareHex(actual: string, expected: string): boolean {
   )
 }
 
-async function createPostPaymentEzeeBooking(requestRecord: ITrialRequestRecord) {
+async function createPostPaymentEzeeBooking(
+  requestRecord: ITrialRequestRecord,
+  payload: ITrialPaymentWebhookPayload
+) {
   if (!requestRecord.check_in_date || !requestRecord.check_out_date) {
     throw new Error("Trial request is missing stay dates")
   }
@@ -269,8 +272,30 @@ async function createPostPaymentEzeeBooking(requestRecord: ITrialRequestRecord) 
       email: requestRecord.email,
       phone: requestRecord.phone,
     },
-    specialRequest: requestRecord.special_requests,
+    specialRequest: buildEzeeSpecialRequest(requestRecord, payload),
   })
+}
+
+function buildEzeeSpecialRequest(
+  requestRecord: ITrialRequestRecord,
+  payload: ITrialPaymentWebhookPayload
+): string {
+  const paymentReference = payload.phonepeTransactionId || "not provided"
+  const amount = typeof payload.amount === "number"
+    ? `${payload.currency || "INR"} ${payload.amount}`
+    : payload.currency || "INR"
+  const paidAt = payload.paidAt || new Date().toISOString()
+  const note = [
+    `Paid via experiences PhonePe.`,
+    `10cent request: ${requestRecord.request_id}.`,
+    `Payment ref: ${paymentReference}.`,
+    `Amount: ${amount}.`,
+    `Paid at: ${paidAt}.`,
+  ].join(" ")
+
+  return [requestRecord.special_requests, note]
+    .filter((value): value is string => Boolean(value && value.trim()))
+    .join(" | ")
 }
 
 async function insertPaymentEvent(
