@@ -551,6 +551,17 @@ export default function EditorialPage() {
     setWebinarDateTime(getNextSaturdayWithTime())
   }, [])
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const trialIntent = params.get('trial')
+
+    if (trialIntent === 'booking') {
+      setIsTrialDetailOpen(true)
+      document.getElementById('trial')?.scrollIntoView({ behavior: 'smooth' })
+      window.history.replaceState(null, '', '#trial')
+    }
+  }, [])
+
   // Avoid competing with the initial hero request during first paint.
   useEffect(() => {
     if (heroImageIndex === 0) {
