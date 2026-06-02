@@ -62,6 +62,46 @@ export async function fetchEzeeJson(url: string, userAgent: string): Promise<unk
   }
 }
 
+export async function postEzeeFormJson(
+  path: string,
+  params: Record<string, string>,
+  userAgent: string
+): Promise<unknown> {
+  const url = new URL(path, EZEE_BASE_URL)
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "User-Agent": userAgent,
+      accept: "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams(params),
+    cache: "no-store",
+  })
+
+  const text = await response.text()
+  if (!response.ok) {
+    throw new Error(`eZee API returned ${response.status}`)
+  }
+
+  try {
+    const data: unknown = JSON.parse(text)
+    if (hasEzeeNoDataResponse(data)) {
+      return data
+    }
+
+    if (hasEzeeError(data)) {
+      throw new Error(`eZee API error: ${JSON.stringify(data)}`)
+    }
+    return data
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new Error(`eZee API returned non-JSON response: ${text.slice(0, 160)}`)
+    }
+    throw error
+  }
+}
+
 function hasEzeeNoDataResponse(data: unknown): boolean {
   if (Array.isArray(data)) {
     return data.some(hasEzeeNoDataResponse)

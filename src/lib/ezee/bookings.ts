@@ -1,4 +1,4 @@
-import { buildEzeeUrl, fetchEzeeJson, getEzeeConfig } from "./client"
+import { getEzeeConfig, postEzeeFormJson } from "./client"
 import type { IEzeeAvailableRoom } from "./availability"
 
 export interface IEzeeBookingGuest {
@@ -32,15 +32,13 @@ export function isTrialBlockingEnabled(): boolean {
 export async function createEzeeBookingHold(input: ICreateEzeeBookingInput): Promise<IEzeeBookingResult> {
   const { hotelCode, authCode, userAgent } = getEzeeConfig()
   const bookingData = buildBookingData(input)
-  const url = buildEzeeUrl("/booking/reservation_api/listing.php", {
+  const raw = await postEzeeFormJson("/booking/reservation_api/listing.php", {
     request_type: "InsertBooking",
     HotelCode: hotelCode,
     APIKey: authCode,
     BookingData: JSON.stringify(bookingData),
     language: "en",
-  })
-
-  const raw = await fetchEzeeJson(url, userAgent)
+  }, userAgent)
   const record = raw && typeof raw === "object" && !Array.isArray(raw)
     ? raw as Record<string, unknown>
     : {}
