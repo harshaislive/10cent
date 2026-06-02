@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js"
 import { createExperiencesTrialCheckout } from "@/lib/experiences/trialCheckout"
+import { getPublicBaseUrl } from "@/lib/site/url"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
 import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult } from "@/lib/ezee/availability"
 
@@ -260,7 +261,7 @@ export async function POST(req: Request) {
 }
 
 function getBaseUrl(): string {
-  return (process.env.NEXT_PUBLIC_BASE_URL || "https://10percent.beforest.co").replace(/\/$/, "")
+  return getPublicBaseUrl()
 }
 
 function getCheckoutAmount(liveAmount: number | null): number | null {

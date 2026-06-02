@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
+import { getPublicBaseUrl } from "@/lib/site/url"
 
-export function GET(req: Request) {
-  const url = new URL(req.url)
-  const redirectUrl = new URL("/", url.origin)
+export function GET() {
+  const redirectUrl = new URL("/", getPublicBaseUrl())
   redirectUrl.searchParams.set("trial", "booking")
 
   const response = NextResponse.redirect(redirectUrl)
