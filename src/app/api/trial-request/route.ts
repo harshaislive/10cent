@@ -4,7 +4,7 @@ import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js"
 import { createExperiencesTrialCheckout } from "@/lib/experiences/trialCheckout"
 import { getPublicBaseUrl } from "@/lib/site/url"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
-import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult } from "@/lib/ezee/availability"
+import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult, type IEzeeAvailableRoom } from "@/lib/ezee/availability"
 
 interface ITrialRequestPayload {
   name?: string
@@ -24,7 +24,24 @@ interface ITrialRequestPayload {
   roomTypeId?: string
   ratePlanId?: string
   rateTypeId?: string
+  roomSelections?: ITrialRoomSelectionPayload[]
   specialRequests?: string | null
+}
+
+interface ITrialRoomSelectionPayload {
+  roomIndex?: number
+  adults?: number
+  children?: number
+  roomTypeId?: string
+  ratePlanId?: string
+  rateTypeId?: string
+}
+
+interface ISelectedTrialRoom {
+  roomIndex: number
+  adults: number
+  children: number
+  room: IEzeeAvailableRoom
 }
 
 export async function POST(req: Request) {
@@ -60,7 +77,6 @@ export async function POST(req: Request) {
       specialRequests,
     } = body
     const selectedDate = checkInDate || preferredDate
-    const totalGuests = guestCount || adults + children
     const requestedRooms = Number.isFinite(roomCount) && roomCount > 0 ? Math.min(Math.round(roomCount), 4) : 1
 
     // Validate required fields
@@ -71,46 +87,44 @@ export async function POST(req: Request) {
       )
     }
 
+    const finalCheckOutDate = checkOutDate || addDays(selectedDate, durationNights)
+    const requestedRoomSelections = normalizeRoomSelectionPayload(body, requestedRooms, adults, children, roomTypeId, ratePlanId, rateTypeId)
     let availabilityData: IEzeeAvailabilityResult | null = null
-    let isAvailable = false
+    let selectedRooms: ISelectedTrialRoom[] = []
 
     try {
-      availabilityData = await getBookingEngineAvailability({
+      const arrangement = await resolveSelectedRooms({
         checkIn: selectedDate,
-        checkOut: checkOutDate || addDays(selectedDate, durationNights),
-        adults,
-        children,
-        rooms: requestedRooms,
+        checkOut: finalCheckOutDate,
+        selections: requestedRoomSelections,
       })
-      isAvailable = availabilityData.available
+      availabilityData = arrangement.availabilityData
+      selectedRooms = arrangement.selectedRooms
     } catch (availabilityError) {
       console.error("eZee availability error:", availabilityError)
     }
 
-    const selectedRoom = availabilityData?.rooms.find(room =>
-      room.availableRooms > 0 &&
-      room.availableRooms >= requestedRooms &&
-      !room.stopSell &&
-      (!roomTypeId || room.roomTypeId === roomTypeId) &&
-      (!ratePlanId || room.ratePlanId === ratePlanId) &&
-      (!rateTypeId || room.rateTypeId === rateTypeId)
-    ) || availabilityData?.rooms.find(room => room.availableRooms >= requestedRooms && !room.stopSell) || null
-
-    const canCreateCheckout = Boolean(isAvailable && selectedRoom)
+    const selectedRoom = selectedRooms[0]?.room || null
+    const totalAdults = selectedRooms.reduce((total, selection) => total + selection.adults, 0) || adults
+    const totalChildren = selectedRooms.reduce((total, selection) => total + selection.children, 0) || children
+    const totalGuests = guestCount || totalAdults + totalChildren
+    const selectedRoomPayload = buildSelectedRoomPayload(selectedRooms)
+    const canCreateCheckout = selectedRooms.length === requestedRoomSelections.length && selectedRooms.length > 0
 
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
-    const finalCheckOutDate = checkOutDate || addDays(selectedDate, durationNights)
-    const liveCheckoutAmount =
-      selectedRoom?.totalPriceInclusiveTax ||
-      selectedRoom?.priceInclusiveTax ||
-      estimatedCost ||
-      availabilityData?.lowestTotalInclusiveTax ||
-      availabilityData?.lowestRateInclusiveTax ||
-      null
+    const liveCheckoutAmount = selectedRooms.length
+      ? selectedRooms.reduce((total, selection) => total + getRoomAmount(selection.room), 0)
+      : estimatedCost || availabilityData?.lowestTotalInclusiveTax || availabilityData?.lowestRateInclusiveTax || null
     const checkoutAmount = getCheckoutAmount(liveCheckoutAmount)
     const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
     const returnUrl = `${getBaseUrl()}/trial-booking/confirmation`
+    const selectedRoomName = selectedRooms.length > 1
+      ? `${selectedRooms.length} rooms arranged`
+      : selectedRoom?.name || null
+    const selectedRatePlanName = selectedRooms.length > 1
+      ? "Mixed room arrangement"
+      : selectedRoom?.roomTypeName || selectedRoom?.name || null
 
     // Insert into trial_requests table
     const { data: requestData, error: insertError } = await supabase
@@ -127,15 +141,16 @@ export async function POST(req: Request) {
         check_in_date: selectedDate,
         check_out_date: finalCheckOutDate,
         duration_nights: durationNights,
-        adults,
-        children,
+        adults: totalAdults,
+        children: totalChildren,
         guest_count: totalGuests,
         estimated_cost: estimatedCost,
         special_requests: specialRequests,
         availability_data: {
           source: "ezee",
           availability: availabilityData,
-          requestedRooms,
+          requestedRooms: selectedRooms.length || requestedRooms,
+          roomSelections: selectedRoomPayload.roomSelections,
           checkout: {
             enabled: canCreateCheckout,
             expiresAt: checkoutExpiresAt,
@@ -143,13 +158,13 @@ export async function POST(req: Request) {
             amountOverride: checkoutAmount !== liveCheckoutAmount ? checkoutAmount : null,
           },
         },
-        is_date_available: isAvailable,
+        is_date_available: canCreateCheckout,
         available_rooms: availabilityData?.rooms || [],
         selected_room_id: selectedRoom?.roomTypeId || roomTypeId || null,
-        selected_room_name: selectedRoom?.name || null,
+        selected_room_name: selectedRoomName,
         selected_rate_plan_id: selectedRoom?.ratePlanId || ratePlanId || null,
-        selected_rate_plan_name: selectedRoom?.roomTypeName || selectedRoom?.name || null,
-        selected_room_payload: selectedRoom ? { ...selectedRoom, requestedRooms } : null,
+        selected_rate_plan_name: selectedRatePlanName,
+        selected_room_payload: selectedRooms.length ? selectedRoomPayload : null,
         payment_amount: checkoutAmount,
         payment_currency: selectedRoom?.currency || availabilityData?.currency || "INR",
         checkout_expires_at: checkoutExpiresAt,
@@ -185,14 +200,14 @@ export async function POST(req: Request) {
         checkInDate: selectedDate,
         checkOutDate: finalCheckOutDate,
         durationNights,
-        adults,
-        children,
-        roomCount: requestedRooms,
+        adults: totalAdults,
+        children: totalChildren,
+        roomCount: selectedRooms.length,
         guestCount: totalGuests,
         roomTypeId: selectedRoom?.roomTypeId,
-        roomTypeName: selectedRoom?.name || selectedRoom?.roomTypeName,
+        roomTypeName: selectedRoomName || selectedRoom?.roomTypeName,
         ratePlanId: selectedRoom?.ratePlanId,
-        ratePlanName: selectedRoom?.roomTypeName || selectedRoom?.name,
+        ratePlanName: selectedRatePlanName || selectedRoom?.roomTypeName || selectedRoom?.name,
         amount: checkoutAmount,
         currency: selectedRoom?.currency || availabilityData?.currency || "INR",
         customer: {
@@ -204,7 +219,8 @@ export async function POST(req: Request) {
           source: "10cent",
           trialRequestRowId: requestData.id,
           selectedRoom,
-          requestedRooms,
+          roomSelections: selectedRoomPayload.roomSelections,
+          requestedRooms: selectedRooms.length,
         },
         expiresAt: checkoutExpiresAt,
         returnUrl,
@@ -269,6 +285,159 @@ export async function POST(req: Request) {
 
 function getBaseUrl(): string {
   return getPublicBaseUrl()
+}
+
+function normalizeRoomSelectionPayload(
+  body: ITrialRequestPayload,
+  requestedRooms: number,
+  adults: number,
+  children: number,
+  roomTypeId?: string,
+  ratePlanId?: string,
+  rateTypeId?: string
+): Required<ITrialRoomSelectionPayload>[] {
+  const adultDistribution = distributeIntegerAcrossRooms(adults, requestedRooms, 1)
+  const childDistribution = distributeIntegerAcrossRooms(children, requestedRooms, 0)
+  const incomingSelections = Array.isArray(body.roomSelections) && body.roomSelections.length > 0
+    ? body.roomSelections.slice(0, 4)
+    : Array.from({ length: requestedRooms }, (_, index) => ({
+      roomIndex: index + 1,
+      adults: adultDistribution[index],
+      children: childDistribution[index],
+      roomTypeId,
+      ratePlanId,
+      rateTypeId,
+    }))
+
+  return incomingSelections.map((selection, index) => ({
+    roomIndex: Number.isFinite(selection.roomIndex) && selection.roomIndex && selection.roomIndex > 0
+      ? Math.round(selection.roomIndex)
+      : index + 1,
+    adults: Number.isFinite(selection.adults) && selection.adults && selection.adults > 0
+      ? Math.round(selection.adults)
+      : 1,
+    children: Number.isFinite(selection.children) && selection.children && selection.children > 0
+      ? Math.round(selection.children)
+      : 0,
+    roomTypeId: selection.roomTypeId || "",
+    ratePlanId: selection.ratePlanId || "",
+    rateTypeId: selection.rateTypeId || "",
+  }))
+}
+
+function distributeIntegerAcrossRooms(total: number, roomCount: number, minimumPerRoom: number): number[] {
+  if (roomCount <= 1) return [Math.max(total, minimumPerRoom)]
+
+  const distribution = Array.from({ length: roomCount }, () => minimumPerRoom)
+  let remaining = Math.max(total - minimumPerRoom * roomCount, 0)
+  let index = 0
+
+  while (remaining > 0) {
+    distribution[index % roomCount] += 1
+    remaining -= 1
+    index += 1
+  }
+
+  return distribution
+}
+
+async function resolveSelectedRooms({
+  checkIn,
+  checkOut,
+  selections,
+}: {
+  checkIn: string
+  checkOut: string
+  selections: Required<ITrialRoomSelectionPayload>[]
+}): Promise<{
+  availabilityData: IEzeeAvailabilityResult | null
+  selectedRooms: ISelectedTrialRoom[]
+}> {
+  const resolvedRooms: ISelectedTrialRoom[] = []
+  let primaryAvailability: IEzeeAvailabilityResult | null = null
+
+  for (const selection of selections) {
+    const availability = await getBookingEngineAvailability({
+      checkIn,
+      checkOut,
+      adults: selection.adults,
+      children: selection.children,
+      rooms: 1,
+    })
+    primaryAvailability = primaryAvailability || availability
+
+    const room = availability.rooms.find(candidate =>
+      candidate.availableRooms > 0 &&
+      !candidate.stopSell &&
+      (!selection.roomTypeId || candidate.roomTypeId === selection.roomTypeId) &&
+      (!selection.ratePlanId || candidate.ratePlanId === selection.ratePlanId) &&
+      (!selection.rateTypeId || candidate.rateTypeId === selection.rateTypeId)
+    ) || availability.rooms.find(candidate => candidate.availableRooms > 0 && !candidate.stopSell)
+
+    if (!room) {
+      throw new Error(`No room is available for room ${selection.roomIndex}`)
+    }
+
+    resolvedRooms.push({
+      roomIndex: selection.roomIndex,
+      adults: selection.adults,
+      children: selection.children,
+      room,
+    })
+  }
+
+  assertSelectedRoomInventory(resolvedRooms)
+
+  return {
+    availabilityData: primaryAvailability,
+    selectedRooms: resolvedRooms,
+  }
+}
+
+function assertSelectedRoomInventory(selectedRooms: ISelectedTrialRoom[]) {
+  const roomCounts = new Map<string, { count: number; availableRooms: number; name: string }>()
+
+  selectedRooms.forEach(selection => {
+    const key = getSelectedRoomKey(selection.room)
+    const current = roomCounts.get(key) || {
+      count: 0,
+      availableRooms: selection.room.availableRooms,
+      name: selection.room.name,
+    }
+
+    roomCounts.set(key, {
+      ...current,
+      count: current.count + 1,
+      availableRooms: Math.min(current.availableRooms, selection.room.availableRooms),
+    })
+  })
+
+  roomCounts.forEach(value => {
+    if (value.count > value.availableRooms) {
+      throw new Error(`${value.name} has only ${value.availableRooms} room${value.availableRooms === 1 ? "" : "s"} available for this stay.`)
+    }
+  })
+}
+
+function buildSelectedRoomPayload(selectedRooms: ISelectedTrialRoom[]) {
+  return {
+    requestedRooms: selectedRooms.length,
+    roomSelections: selectedRooms.map(selection => ({
+      roomIndex: selection.roomIndex,
+      adults: selection.adults,
+      children: selection.children,
+      amount: getRoomAmount(selection.room),
+      room: selection.room,
+    })),
+  }
+}
+
+function getRoomAmount(room: IEzeeAvailableRoom): number {
+  return room.totalPriceInclusiveTax || room.priceInclusiveTax || 0
+}
+
+function getSelectedRoomKey(room: IEzeeAvailableRoom): string {
+  return `${room.roomTypeId || room.name}-${room.ratePlanId || ""}-${room.rateTypeId || ""}`
 }
 
 function getCheckoutAmount(liveAmount: number | null): number | null {

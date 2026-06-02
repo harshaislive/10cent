@@ -2,7 +2,7 @@ import crypto from "crypto"
 import { NextResponse } from "next/server"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { getBookingEngineAvailability, type IEzeeAvailableRoom } from "@/lib/ezee/availability"
-import { createEzeeBookingHold } from "@/lib/ezee/bookings"
+import { createEzeeBookingHold, type IEzeeBookingRoomSelection } from "@/lib/ezee/bookings"
 import { isEzeePaymentPostingEnabled, postEzeePayment } from "@/lib/ezee/payments"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
 
@@ -347,6 +347,32 @@ async function createPostPaymentEzeeBooking(
 
   const adults = requestRecord.adults ?? 1
   const children = requestRecord.children ?? 0
+  const selectedRoomArrangement = getSelectedRoomArrangement(requestRecord)
+  if (selectedRoomArrangement.length > 0) {
+    const roomSelections = await resolvePaidRoomSelections(requestRecord, selectedRoomArrangement)
+    const firstRoom = roomSelections[0]?.room
+
+    if (!firstRoom) {
+      throw new Error("Selected room arrangement is no longer available")
+    }
+
+    return createEzeeBookingHold({
+      checkIn: requestRecord.check_in_date,
+      checkOut: requestRecord.check_out_date,
+      adults: roomSelections.reduce((total, selection) => total + selection.adults, 0),
+      children: roomSelections.reduce((total, selection) => total + selection.children, 0),
+      roomCount: roomSelections.length,
+      room: firstRoom,
+      roomSelections,
+      guest: {
+        name: requestRecord.name,
+        email: requestRecord.email,
+        phone: requestRecord.phone,
+      },
+      specialRequest: buildEzeeSpecialRequest(requestRecord, payload),
+    })
+  }
+
   const requestedRooms = getRequestedRooms(requestRecord)
   const availability = await getBookingEngineAvailability({
     checkIn: requestRecord.check_in_date,
@@ -381,6 +407,130 @@ async function createPostPaymentEzeeBooking(
     },
     specialRequest: buildEzeeSpecialRequest(requestRecord, payload),
   })
+}
+
+async function resolvePaidRoomSelections(
+  requestRecord: ITrialRequestRecord,
+  arrangement: IStoredRoomSelection[]
+): Promise<IEzeeBookingRoomSelection[]> {
+  if (!requestRecord.check_in_date || !requestRecord.check_out_date) {
+    throw new Error("Trial request is missing stay dates")
+  }
+
+  const selections: IEzeeBookingRoomSelection[] = []
+
+  for (const item of arrangement) {
+    const availability = await getBookingEngineAvailability({
+      checkIn: requestRecord.check_in_date,
+      checkOut: requestRecord.check_out_date,
+      adults: item.adults,
+      children: item.children,
+      rooms: 1,
+    })
+
+    const room = availability.rooms.find(candidate =>
+      candidate.availableRooms > 0 &&
+      !candidate.stopSell &&
+      (!item.roomTypeId || candidate.roomTypeId === item.roomTypeId) &&
+      (!item.ratePlanId || candidate.ratePlanId === item.ratePlanId) &&
+      (!item.rateTypeId || candidate.rateTypeId === item.rateTypeId)
+    )
+
+    if (!room) {
+      throw new Error(`Room ${item.roomIndex} is no longer available`)
+    }
+
+    selections.push({
+      room,
+      adults: item.adults,
+      children: item.children,
+    })
+  }
+
+  assertSelectedRoomInventory(selections)
+  return selections
+}
+
+interface IStoredRoomSelection {
+  roomIndex: number
+  adults: number
+  children: number
+  roomTypeId: string
+  ratePlanId: string
+  rateTypeId: string
+}
+
+function getSelectedRoomArrangement(requestRecord: ITrialRequestRecord): IStoredRoomSelection[] {
+  const payload = requestRecord.selected_room_payload
+  const rawSelections = payload && typeof payload === "object" && Array.isArray(payload.roomSelections)
+    ? payload.roomSelections
+    : []
+
+  return rawSelections
+    .map((item, index): IStoredRoomSelection | null => {
+      if (!item || typeof item !== "object") return null
+      const record = item as Record<string, unknown>
+      const room = record.room && typeof record.room === "object"
+        ? record.room as Record<string, unknown>
+        : {}
+
+      const adults = parseIntegerAtLeast(record.adults, 1, 1)
+      const children = parseIntegerAtLeast(record.children, 0, 0)
+      const roomTypeId = getStringValue(room.roomTypeId)
+      const ratePlanId = getStringValue(room.ratePlanId)
+      const rateTypeId = getStringValue(room.rateTypeId)
+
+      if (!roomTypeId && !ratePlanId && !rateTypeId) return null
+
+      return {
+        roomIndex: parseIntegerAtLeast(record.roomIndex, index + 1, 1),
+        adults,
+        children,
+        roomTypeId,
+        ratePlanId,
+        rateTypeId,
+      }
+    })
+    .filter((item): item is IStoredRoomSelection => Boolean(item))
+}
+
+function assertSelectedRoomInventory(selections: IEzeeBookingRoomSelection[]) {
+  const roomCounts = new Map<string, { count: number; availableRooms: number; name: string }>()
+
+  selections.forEach(selection => {
+    const key = `${selection.room.roomTypeId || selection.room.name}-${selection.room.ratePlanId || ""}-${selection.room.rateTypeId || ""}`
+    const current = roomCounts.get(key) || {
+      count: 0,
+      availableRooms: selection.room.availableRooms,
+      name: selection.room.name,
+    }
+
+    roomCounts.set(key, {
+      ...current,
+      count: current.count + 1,
+      availableRooms: Math.min(current.availableRooms, selection.room.availableRooms),
+    })
+  })
+
+  roomCounts.forEach(value => {
+    if (value.count > value.availableRooms) {
+      throw new Error(`${value.name} has only ${value.availableRooms} room${value.availableRooms === 1 ? "" : "s"} available now`)
+    }
+  })
+}
+
+function parseIntegerAtLeast(value: unknown, fallback: number, minimum: number): number {
+  const parsed = typeof value === "number"
+    ? value
+    : typeof value === "string"
+      ? Number(value)
+      : fallback
+
+  return Number.isFinite(parsed) && parsed >= minimum ? Math.round(parsed) : fallback
+}
+
+function getStringValue(value: unknown): string {
+  return typeof value === "string" ? value : ""
 }
 
 function getRequestedRooms(requestRecord: ITrialRequestRecord): number {

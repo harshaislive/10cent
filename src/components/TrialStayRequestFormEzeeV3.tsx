@@ -34,6 +34,13 @@ interface IAvailabilityQuote {
   rooms: IAvailableRoom[]
 }
 
+interface IRoomArrangement {
+  id: number
+  adults: number
+  children: number
+  selectedRoomKey: string
+}
+
 interface ITrialStayRequestFormProps {
   locationName: string
   locationSlug: string
@@ -130,11 +137,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [usesFallbackAvailability, setUsesFallbackAvailability] = React.useState(false)
   const [checkInDate, setCheckInDate] = React.useState('')
   const [checkOutDate, setCheckOutDate] = React.useState('')
-  const [adults, setAdults] = React.useState(1)
-  const [children, setChildren] = React.useState(0)
-  const [roomCount, setRoomCount] = React.useState(1)
-  const [selectedAvailability, setSelectedAvailability] = React.useState<IAvailabilityQuote | null>(null)
-  const [selectedRoomKey, setSelectedRoomKey] = React.useState('')
+  const [roomArrangements, setRoomArrangements] = React.useState<IRoomArrangement[]>([
+    { id: 1, adults: 1, children: 0, selectedRoomKey: '' },
+  ])
+  const [roomQuotes, setRoomQuotes] = React.useState<Record<number, IAvailabilityQuote | null>>({})
   const [isQuoteLoading, setIsQuoteLoading] = React.useState(false)
   const [name, setName] = React.useState('')
   const [email, setEmail] = React.useState('')
@@ -146,9 +152,35 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const nights = checkInDate && checkOutDate
     ? nightsBetween(checkInDate, checkOutDate)
     : 1
-  const availableRooms = selectedAvailability?.rooms.filter(room => room.availableRooms >= roomCount) ?? []
-  const selectedRoom = availableRooms.find(room => getRoomKey(room) === selectedRoomKey) ?? availableRooms[0] ?? null
-  const estimatedCost = selectedRoom?.totalPriceInclusiveTax ?? selectedAvailability?.lowestTotalInclusiveTax ?? null
+  const roomCount = roomArrangements.length
+  const adults = roomArrangements.reduce((total, room) => total + room.adults, 0)
+  const children = roomArrangements.reduce((total, room) => total + room.children, 0)
+  const selectedRoomKeyCounts = roomArrangements.reduce((counts, arrangement) => {
+    if (!arrangement.selectedRoomKey) return counts
+    counts.set(arrangement.selectedRoomKey, (counts.get(arrangement.selectedRoomKey) || 0) + 1)
+    return counts
+  }, new Map<string, number>())
+  const arrangedRooms = roomArrangements.map(arrangement => {
+    const quote = roomQuotes[arrangement.id] || null
+    const availableRooms = quote?.rooms.filter(room => {
+      const key = getRoomKey(room)
+      const selectedElsewhere = (selectedRoomKeyCounts.get(key) || 0) - (arrangement.selectedRoomKey === key ? 1 : 0)
+      return room.availableRooms > selectedElsewhere
+    }) ?? []
+    const selectedRoom = availableRooms.find(room => getRoomKey(room) === arrangement.selectedRoomKey) ?? null
+    return {
+      arrangement,
+      quote,
+      availableRooms,
+      selectedRoom,
+    }
+  })
+  const estimatedCost = arrangedRooms.length > 0
+    ? arrangedRooms.reduce((total, item) => total + (item.selectedRoom?.totalPriceInclusiveTax ?? item.selectedRoom?.priceInclusiveTax ?? 0), 0)
+    : null
+  const selectedRoom = arrangedRooms[0]?.selectedRoom ?? null
+  const quoteCurrency = selectedRoom?.currency || arrangedRooms.find(item => item.quote?.currency)?.quote?.currency || 'INR'
+  const allRoomsSelected = arrangedRooms.length > 0 && arrangedRooms.every(item => Boolean(item.selectedRoom))
   const checkInLabel = checkInDate
     ? formatDateLabel(checkInDate)
     : 'Select a date'
@@ -166,9 +198,26 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     setCalendarMonth(getInitialCalendarMonth())
   }, [])
 
-  React.useEffect(() => {
-    setAdults(currentAdults => Math.max(currentAdults, roomCount))
-  }, [roomCount])
+  const setRoomArrangementCount = (count: number) => {
+    setRoomArrangements(current => {
+      const nextCount = Math.min(Math.max(count, 1), 4)
+      if (nextCount === current.length) return current
+      if (nextCount < current.length) return current.slice(0, nextCount)
+
+      const next = [...current]
+      while (next.length < nextCount) {
+        const id = Math.max(...next.map(room => room.id), 0) + 1
+        next.push({ id, adults: 1, children: 0, selectedRoomKey: '' })
+      }
+      return next
+    })
+  }
+
+  const updateRoomArrangement = (id: number, updates: Partial<IRoomArrangement>) => {
+    setRoomArrangements(current =>
+      current.map(room => room.id === id ? { ...room, ...updates } : room)
+    )
+  }
 
   const selectDate = (date: string) => {
     if (!checkInDate || checkOutDate || compareDateValues(date, checkInDate) <= 0) {
@@ -187,16 +236,16 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     let cancelled = false
 
     if (!checkInDate || !checkOutDate) {
-      setSelectedAvailability(null)
-      setSelectedRoomKey('')
+      setRoomQuotes({})
       setIsQuoteLoading(false)
       return
     }
 
     setIsQuoteLoading(true)
 
-    fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}&rooms=${roomCount}`)
-      .then(async response => {
+    Promise.all(
+      roomArrangements.map(async arrangement => {
+        const response = await fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${arrangement.adults}&children=${arrangement.children}&rooms=1`)
         if (!response.ok) throw new Error('Availability unavailable')
         const data: unknown = await response.json()
         if (
@@ -205,18 +254,18 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           'data' in data &&
           typeof (data as { data?: unknown }).data === 'object'
         ) {
-          return (data as { data: IAvailabilityQuote }).data
+          return [arrangement.id, (data as { data: IAvailabilityQuote }).data] as const
         }
         throw new Error('Availability unavailable')
       })
-      .then(availability => {
+    )
+      .then(quotes => {
         if (!cancelled) {
-          setSelectedAvailability(availability)
-          setSelectedRoomKey('')
+          setRoomQuotes(Object.fromEntries(quotes))
         }
       })
       .catch(() => {
-        if (!cancelled) setSelectedAvailability(null)
+        if (!cancelled) setRoomQuotes({})
       })
       .finally(() => {
         if (!cancelled) setIsQuoteLoading(false)
@@ -225,7 +274,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     return () => {
       cancelled = true
     }
-  }, [adults, checkInDate, checkOutDate, children, roomCount])
+  }, [checkInDate, checkOutDate, roomArrangements])
 
   React.useEffect(() => {
     let cancelled = false
@@ -308,6 +357,14 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           roomTypeId: selectedRoom?.roomTypeId,
           ratePlanId: selectedRoom?.ratePlanId,
           rateTypeId: selectedRoom?.rateTypeId,
+          roomSelections: arrangedRooms.map(item => ({
+            roomIndex: roomArrangements.findIndex(room => room.id === item.arrangement.id) + 1,
+            adults: item.arrangement.adults,
+            children: item.arrangement.children,
+            roomTypeId: item.selectedRoom?.roomTypeId,
+            ratePlanId: item.selectedRoom?.ratePlanId,
+            rateTypeId: item.selectedRoom?.rateTypeId,
+          })),
         }),
       })
 
@@ -494,11 +551,9 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="mt-5 grid grid-cols-1 gap-3">
                   {[
-                    { label: 'Rooms', value: roomCount, setValue: setRoomCount, min: 1, max: 4 },
-                    { label: 'Adults', value: adults, setValue: setAdults, min: roomCount, max: 8 },
-                    { label: 'Children', value: children, setValue: setChildren, min: 0, max: 8 },
+                    { label: 'Rooms to arrange', value: roomCount, setValue: setRoomArrangementCount, min: 1, max: 4 },
                   ].map(item => (
                     <div key={item.label} className="border border-[#342e29]/10 bg-white/35 p-3">
                       <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{item.label}</span>
@@ -537,7 +592,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Stay total</span>
                 <div className="mt-2 flex min-h-12 items-center gap-3 font-arizona text-4xl">
                   {isQuoteLoading && <Loader2 className="h-5 w-5 animate-spin" />}
-                  <span>{isQuoteLoading ? 'Checking' : formatCurrency(estimatedCost, selectedAvailability?.currency)}</span>
+                  <span>{isQuoteLoading ? 'Checking' : formatCurrency(estimatedCost, quoteCurrency)}</span>
                 </div>
                 {selectedRoom && (
                   <p className="mt-2 text-sm font-medium text-[#342e29]">
@@ -558,59 +613,101 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 </div>
               )}
 
-              {!isQuoteLoading && availableRooms.length === 0 && (
-                <div className="border border-[#86312b]/15 bg-[#86312b]/5 p-5 text-sm leading-relaxed text-[#342e29]/65">
-                  No rooms are showing for this stay window. Please go back and choose another date range.
-                </div>
-              )}
-
-              {!isQuoteLoading && availableRooms.length > 0 && (
-                <div className="space-y-3">
-                  {availableRooms.map(room => {
-                    const roomKey = getRoomKey(room)
-                    const isSelected = getRoomKey(selectedRoom || room) === roomKey
-                    return (
-                      <button
-                        key={roomKey}
-                        type="button"
-                        onClick={() => setSelectedRoomKey(roomKey)}
-                        className={`w-full border p-5 text-left transition-colors ${isSelected ? 'border-[#86312b] bg-[#86312b]/5' : 'border-[#342e29]/10 bg-white/35 hover:border-[#86312b]/40'}`}
-                      >
-                        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                          <div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <p className="text-[10px] uppercase tracking-[0.2em] text-[#342e29]/45">{room.roomTypeName || 'Blyton room'}</p>
-                              {isSelected && (
-                                <span className="border border-[#86312b]/25 bg-[#86312b]/10 px-2 py-1 text-[9px] uppercase tracking-widest text-[#86312b]">
-                                  Selected
-                                </span>
-                              )}
-                            </div>
-                            <h4 className="mt-2 font-arizona text-3xl font-light">{room.name}</h4>
-                            <p className="mt-2 text-xs text-[#342e29]/55">
-                              {room.availableRooms} available · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} requested
-                              {room.maxAdults ? ` · up to ${room.maxAdults} adults` : ''}
-                              {room.maxChildren ? ` · ${room.maxChildren} children` : ''}
-                            </p>
-                          </div>
-                          <div className="md:text-right">
-                            <p className="font-arizona text-3xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
-                            <p className="mt-1 text-xs text-[#342e29]/50">
-                              {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive stay total'}
-                            </p>
-                          </div>
+              {!isQuoteLoading && (
+                <div className="space-y-6">
+                  {arrangedRooms.map((item, index) => (
+                    <section key={item.arrangement.id} className="border border-[#342e29]/10 bg-white/30 p-4">
+                      <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-[0.22em] text-[#86312b]">Room {index + 1}</p>
+                          <h4 className="mt-2 font-arizona text-3xl font-light">Arrange this room</h4>
                         </div>
-                      </button>
-                    )
-                  })}
+                        <div className="grid grid-cols-2 gap-3">
+                          {[
+                            { label: 'Adults', value: item.arrangement.adults, min: 1, max: 6, key: 'adults' as const },
+                            { label: 'Children', value: item.arrangement.children, min: 0, max: 6, key: 'children' as const },
+                          ].map(control => (
+                            <div key={control.label} className="min-w-28 border border-[#342e29]/10 bg-[#f7f4ee]/65 p-3">
+                              <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{control.label}</span>
+                              <div className="mt-3 flex items-center justify-between gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => updateRoomArrangement(item.arrangement.id, { [control.key]: Math.max(control.min, control.value - 1), selectedRoomKey: '' })}
+                                  className="h-7 w-7 border border-[#342e29]/15"
+                                >
+                                  -
+                                </button>
+                                <span className="font-arizona text-2xl">{control.value}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => updateRoomArrangement(item.arrangement.id, { [control.key]: Math.min(control.max, control.value + 1), selectedRoomKey: '' })}
+                                  className="h-7 w-7 border border-[#342e29]/15"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {item.availableRooms.length === 0 && (
+                        <div className="border border-[#86312b]/15 bg-[#86312b]/5 p-4 text-sm leading-relaxed text-[#342e29]/65">
+                          No room type is showing for this room. Adjust guests or choose another date range.
+                        </div>
+                      )}
+
+                      {item.availableRooms.length > 0 && (
+                        <div className="space-y-3">
+                          {item.availableRooms.map(room => {
+                            const roomKey = getRoomKey(room)
+                            const isSelected = item.arrangement.selectedRoomKey === roomKey
+                            return (
+                              <button
+                                key={roomKey}
+                                type="button"
+                                onClick={() => updateRoomArrangement(item.arrangement.id, { selectedRoomKey: roomKey })}
+                                className={`w-full border p-4 text-left transition-colors ${isSelected ? 'border-[#86312b] bg-[#86312b]/5' : 'border-[#342e29]/10 bg-white/45 hover:border-[#86312b]/40'}`}
+                              >
+                                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                                  <div>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <p className="text-[10px] uppercase tracking-[0.2em] text-[#342e29]/45">{room.roomTypeName || 'Blyton room'}</p>
+                                      {isSelected && (
+                                        <span className="border border-[#86312b]/25 bg-[#86312b]/10 px-2 py-1 text-[9px] uppercase tracking-widest text-[#86312b]">
+                                          Selected
+                                        </span>
+                                      )}
+                                    </div>
+                                    <h5 className="mt-2 font-arizona text-2xl font-light">{room.name}</h5>
+                                    <p className="mt-2 text-xs text-[#342e29]/55">
+                                      {room.availableRooms} available
+                                      {room.maxAdults ? ` · up to ${room.maxAdults} adults` : ''}
+                                      {room.maxChildren ? ` · ${room.maxChildren} children` : ''}
+                                    </p>
+                                  </div>
+                                  <div className="md:text-right">
+                                    <p className="font-arizona text-2xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
+                                    <p className="mt-1 text-xs text-[#342e29]/50">
+                                      {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive stay total'}
+                                    </p>
+                                  </div>
+                                </div>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </section>
+                  ))}
 
                   <button
                     type="button"
-                    disabled={!selectedRoom}
+                    disabled={!allRoomsSelected}
                     onClick={() => setStep(3)}
                     className="mt-5 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-50"
                   >
-                    Continue with selected room
+                    Continue with arranged rooms
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
@@ -628,12 +725,23 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} · {adults} adults{children ? ` · ${children} children` : ''}
               </p>
 
-              {selectedRoom && (
+              {allRoomsSelected && (
                 <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
-                  <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Selected room</span>
-                  <h4 className="mt-3 font-arizona text-3xl font-light">{selectedRoom.name}</h4>
-                  <p className="mt-2 text-sm text-[#342e29]/60">{formatCurrency(selectedRoom.totalPriceInclusiveTax, selectedRoom.currency)} total inclusive</p>
-                  <p className="mt-2 text-xs text-[#342e29]/50">{roomCount} {roomCount === 1 ? 'room' : 'rooms'} requested · {selectedRoom.availableRooms} rooms available at last check</p>
+                  <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Arranged rooms</span>
+                  <div className="mt-4 space-y-3">
+                    {arrangedRooms.map((item, index) => (
+                      <div key={item.arrangement.id} className="border-b border-[#342e29]/10 pb-3 last:border-b-0 last:pb-0">
+                        <h4 className="font-arizona text-2xl font-light">Room {index + 1}: {item.selectedRoom?.name}</h4>
+                        <p className="mt-1 text-xs text-[#342e29]/50">
+                          {item.arrangement.adults} adult{item.arrangement.adults === 1 ? '' : 's'}
+                          {item.arrangement.children ? ` · ${item.arrangement.children} child${item.arrangement.children === 1 ? '' : 'ren'}` : ''}
+                          {' · '}
+                          {formatCurrency(item.selectedRoom?.totalPriceInclusiveTax ?? item.selectedRoom?.priceInclusiveTax, item.selectedRoom?.currency)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-sm text-[#342e29]/60">{formatCurrency(estimatedCost, quoteCurrency)} total inclusive</p>
                 </div>
               )}
             </aside>
@@ -656,7 +764,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
               {error && <p className="mt-5 text-sm text-[#86312b]">{error}</p>}
 
-              <button type="submit" disabled={isSubmitting || !selectedRoom} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
+              <button type="submit" disabled={isSubmitting || !allRoomsSelected} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Submit stay request</span>}
                 {!isSubmitting && <ArrowRight className="h-4 w-4" />}
               </button>

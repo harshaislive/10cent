@@ -123,6 +123,7 @@ export async function GET(req: Request) {
         roomTypeName: data.selected_room_name,
         ratePlanId: data.selected_rate_plan_id,
         ratePlanName: data.selected_rate_plan_name,
+        roomSelections: getRoomSelections(data.selected_room_payload),
       },
       payment: {
         amount: data.payment_amount,
@@ -159,4 +160,51 @@ function getRequestedRooms(payload: Record<string, unknown> | null): number {
       : 1
 
   return Number.isFinite(parsedValue) && parsedValue > 0 ? Math.round(parsedValue) : 1
+}
+
+function getRoomSelections(payload: Record<string, unknown> | null) {
+  const rawSelections = Array.isArray(payload?.roomSelections) ? payload.roomSelections : []
+
+  return rawSelections
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null
+      const record = item as Record<string, unknown>
+      const room = record.room && typeof record.room === "object"
+        ? record.room as Record<string, unknown>
+        : {}
+
+      return {
+        roomIndex: parseInteger(record.roomIndex, index + 1),
+        adults: parseInteger(record.adults, 1),
+        children: parseInteger(record.children, 0),
+        amount: parseNullableNumber(record.amount),
+        roomTypeName: getString(room.name) || getString(room.roomTypeName) || "Selected room",
+        ratePlanName: getString(room.roomTypeName) || getString(room.name) || "-",
+      }
+    })
+    .filter(Boolean)
+}
+
+function parseInteger(value: unknown, fallback: number): number {
+  const parsed = typeof value === "number"
+    ? value
+    : typeof value === "string"
+      ? Number(value)
+      : fallback
+
+  return Number.isFinite(parsed) ? Math.round(parsed) : fallback
+}
+
+function parseNullableNumber(value: unknown): number | null {
+  const parsed = typeof value === "number"
+    ? value
+    : typeof value === "string"
+      ? Number(value)
+      : null
+
+  return typeof parsed === "number" && Number.isFinite(parsed) ? parsed : null
+}
+
+function getString(value: unknown): string {
+  return typeof value === "string" ? value : ""
 }

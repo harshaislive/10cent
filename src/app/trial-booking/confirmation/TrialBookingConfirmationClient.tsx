@@ -27,6 +27,14 @@ interface IConfirmationResponse {
       roomTypeName: string | null
       ratePlanId: string | null
       ratePlanName: string | null
+      roomSelections: Array<{
+        roomIndex: number
+        adults: number
+        children: number
+        amount: number | null
+        roomTypeName: string
+        ratePlanName: string
+      }>
     }
     payment: {
       amount: number | null
@@ -195,7 +203,15 @@ export default function TrialBookingConfirmationClient() {
               <DetailBand
                 title="Room And Guests"
                 icon={<Users className="h-5 w-5" />}
-                rows={[
+                rows={request.room.roomSelections.length > 0 ? [
+                  ...request.room.roomSelections.map(selection => [
+                    `Room ${selection.roomIndex}`,
+                    `${selection.roomTypeName} · ${selection.adults} adult${selection.adults === 1 ? "" : "s"}${selection.children ? ` · ${selection.children} child${selection.children === 1 ? "" : "ren"}` : ""} · ${formatCurrency(selection.amount, request.payment.currency)}`,
+                  ] as [string, string]),
+                  ["Adults", String(request.stay.adults ?? 0)],
+                  ["Children", String(request.stay.children ?? 0)],
+                  ["Guest count", String(request.stay.guestCount ?? 0)],
+                ] : [
                   ["Room", request.room.roomTypeName || "Selected room"],
                   ["Rate plan", request.room.ratePlanName || "-"],
                   ["Adults", String(request.stay.adults ?? 0)],
