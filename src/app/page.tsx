@@ -1119,11 +1119,11 @@ export default function EditorialPage() {
               {[
                 {
                   title: "Choose",
-                  desc: "Select Blyton, Coorg, your dates, guests, and an available eZee room."
+                  desc: "Select Blyton, Coorg, your dates, guests, and an available room."
                 },
                 {
                   title: "Review",
-                  desc: "See the live eZee amount for the room and stay before checkout."
+                  desc: "See the current stay amount for the room and dates before checkout."
                 },
                 {
                   title: "Pay",
@@ -1131,7 +1131,7 @@ export default function EditorialPage() {
                 },
                 {
                   title: "Confirm",
-                  desc: "After payment, your eZee booking is created and the team shares arrival details."
+                  desc: "After payment, your booking is created and the team shares arrival details."
                 }
               ].map((item, i) => (
                 <div key={item.title} className="bg-[#342e29] p-8 md:p-10">

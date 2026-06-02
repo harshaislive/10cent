@@ -7,6 +7,7 @@ export interface ICreateTrialCheckoutInput {
   durationNights: number
   adults: number
   children: number
+  roomCount?: number
   guestCount: number
   roomTypeId?: string
   roomTypeName?: string

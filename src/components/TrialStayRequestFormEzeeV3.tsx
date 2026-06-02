@@ -132,6 +132,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [checkOutDate, setCheckOutDate] = React.useState('')
   const [adults, setAdults] = React.useState(1)
   const [children, setChildren] = React.useState(0)
+  const [roomCount, setRoomCount] = React.useState(1)
   const [selectedAvailability, setSelectedAvailability] = React.useState<IAvailabilityQuote | null>(null)
   const [selectedRoomKey, setSelectedRoomKey] = React.useState('')
   const [isQuoteLoading, setIsQuoteLoading] = React.useState(false)
@@ -145,7 +146,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const nights = checkInDate && checkOutDate
     ? nightsBetween(checkInDate, checkOutDate)
     : 1
-  const availableRooms = selectedAvailability?.rooms.filter(room => room.availableRooms > 0) ?? []
+  const availableRooms = selectedAvailability?.rooms.filter(room => room.availableRooms >= roomCount) ?? []
   const selectedRoom = availableRooms.find(room => getRoomKey(room) === selectedRoomKey) ?? availableRooms[0] ?? null
   const estimatedCost = selectedRoom?.totalPriceInclusiveTax ?? selectedAvailability?.lowestTotalInclusiveTax ?? null
   const checkInLabel = checkInDate
@@ -164,6 +165,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   React.useEffect(() => {
     setCalendarMonth(getInitialCalendarMonth())
   }, [])
+
+  React.useEffect(() => {
+    setAdults(currentAdults => Math.max(currentAdults, roomCount))
+  }, [roomCount])
 
   const selectDate = (date: string) => {
     if (!checkInDate || checkOutDate || compareDateValues(date, checkInDate) <= 0) {
@@ -190,7 +195,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
     setIsQuoteLoading(true)
 
-    fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}`)
+    fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}&rooms=${roomCount}`)
       .then(async response => {
         if (!response.ok) throw new Error('Availability unavailable')
         const data: unknown = await response.json()
@@ -220,7 +225,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     return () => {
       cancelled = true
     }
-  }, [adults, checkInDate, checkOutDate, children])
+  }, [adults, checkInDate, checkOutDate, children, roomCount])
 
   React.useEffect(() => {
     let cancelled = false
@@ -233,7 +238,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         if (isBeforeFirstBookableDate(day.date)) return { date: day.date, state: 'booked' as AvailabilityState, fallback: false }
 
         try {
-          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${CALENDAR_AVAILABILITY_NIGHTS}&adults=${adults}&children=${children}`)
+          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${CALENDAR_AVAILABILITY_NIGHTS}&adults=${adults}&children=${children}&rooms=${roomCount}`)
           if (!response.ok) throw new Error('Availability unavailable')
 
           const data: unknown = await response.json()
@@ -274,7 +279,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     return () => {
       cancelled = true
     }
-  }, [adults, calendarMonth, children])
+  }, [adults, calendarMonth, children, roomCount])
 
   const submitRequest = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -297,6 +302,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           durationNights: nights,
           adults,
           children,
+          roomCount,
           guestCount: adults + children,
           estimatedCost: estimatedCost ?? undefined,
           roomTypeId: selectedRoom?.roomTypeId,
@@ -469,7 +475,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
                 {usesFallbackAvailability && (
                   <p className="mt-4 border border-[#86312b]/15 bg-[#86312b]/5 p-3 text-xs leading-relaxed text-[#342e29]/65">
-                    Live eZee availability is not responding right now, so dates are temporarily blocked until inventory can be checked.
+                    Live room availability is not responding right now, so dates are temporarily blocked until inventory can be checked.
                   </p>
                 )}
 
@@ -488,9 +494,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                   {[
-                    { label: 'Adults', value: adults, setValue: setAdults, min: 1, max: 8 },
+                    { label: 'Rooms', value: roomCount, setValue: setRoomCount, min: 1, max: 4 },
+                    { label: 'Adults', value: adults, setValue: setAdults, min: roomCount, max: 8 },
                     { label: 'Children', value: children, setValue: setChildren, min: 0, max: 8 },
                   ].map(item => (
                     <div key={item.label} className="border border-[#342e29]/10 bg-white/35 p-3">
@@ -521,13 +528,13 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         {step === 2 && (
           <div className="grid min-h-full grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
             <aside className="border-b border-[#342e29]/10 p-5 lg:border-b-0 lg:border-r lg:p-7">
-              <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 2 · eZee rooms</p>
+              <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 2 · Room options</p>
               <h3 className="font-arizona text-4xl font-light">Choose a room type</h3>
               <p className="mt-4 text-sm text-[#342e29]/60">
-                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {adults} adults{children ? ` · ${children} children` : ''}
+                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} · {adults} adults{children ? ` · ${children} children` : ''}
               </p>
               <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
-                <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Live eZee total</span>
+                <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Stay total</span>
                 <div className="mt-2 flex min-h-12 items-center gap-3 font-arizona text-4xl">
                   {isQuoteLoading && <Loader2 className="h-5 w-5 animate-spin" />}
                   <span>{isQuoteLoading ? 'Checking' : formatCurrency(estimatedCost, selectedAvailability?.currency)}</span>
@@ -538,7 +545,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </p>
                 )}
                 <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
-                  Rate and inventory are pulled from eZee for this exact stay window. The next step only collects guest details.
+                  This is the current stay total for your selected dates, guests, and room count. The next step only collects guest details.
                 </p>
               </div>
             </aside>
@@ -547,13 +554,13 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
               {isQuoteLoading && (
                 <div className="flex h-full min-h-80 items-center justify-center gap-3 text-sm text-[#342e29]/55">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Checking eZee room inventory
+                  Checking room availability
                 </div>
               )}
 
               {!isQuoteLoading && availableRooms.length === 0 && (
                 <div className="border border-[#86312b]/15 bg-[#86312b]/5 p-5 text-sm leading-relaxed text-[#342e29]/65">
-                  eZee is not showing rooms for this stay window. Please go back and choose another date range.
+                  No rooms are showing for this stay window. Please go back and choose another date range.
                 </div>
               )}
 
@@ -581,7 +588,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                             </div>
                             <h4 className="mt-2 font-arizona text-3xl font-light">{room.name}</h4>
                             <p className="mt-2 text-xs text-[#342e29]/55">
-                              {room.availableRooms} available
+                              {room.availableRooms} available · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} requested
                               {room.maxAdults ? ` · up to ${room.maxAdults} adults` : ''}
                               {room.maxChildren ? ` · ${room.maxChildren} children` : ''}
                             </p>
@@ -589,7 +596,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                           <div className="md:text-right">
                             <p className="font-arizona text-3xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
                             <p className="mt-1 text-xs text-[#342e29]/50">
-                              {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive total from eZee'}
+                              {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive stay total'}
                             </p>
                           </div>
                         </div>
@@ -623,10 +630,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
               {selectedRoom && (
                 <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
-                  <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Selected eZee room</span>
+                  <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Selected room</span>
                   <h4 className="mt-3 font-arizona text-3xl font-light">{selectedRoom.name}</h4>
                   <p className="mt-2 text-sm text-[#342e29]/60">{formatCurrency(selectedRoom.totalPriceInclusiveTax, selectedRoom.currency)} total inclusive</p>
-                  <p className="mt-2 text-xs text-[#342e29]/50">{selectedRoom.availableRooms} rooms available at last check</p>
+                  <p className="mt-2 text-xs text-[#342e29]/50">{roomCount} {roomCount === 1 ? 'room' : 'rooms'} requested · {selectedRoom.availableRooms} rooms available at last check</p>
                 </div>
               )}
             </aside>

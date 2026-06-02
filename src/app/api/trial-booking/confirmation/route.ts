@@ -18,6 +18,7 @@ interface ITrialRequestConfirmationRow {
   selected_room_name: string | null
   selected_rate_plan_id: string | null
   selected_rate_plan_name: string | null
+  selected_room_payload: Record<string, unknown> | null
   payment_amount: number | null
   payment_currency: string | null
   payment_status: string
@@ -75,6 +76,7 @@ export async function GET(req: Request) {
       selected_room_name,
       selected_rate_plan_id,
       selected_rate_plan_name,
+      selected_room_payload,
       payment_amount,
       payment_currency,
       payment_status,
@@ -111,6 +113,7 @@ export async function GET(req: Request) {
         checkInDate: data.check_in_date,
         checkOutDate: data.check_out_date,
         durationNights: data.duration_nights,
+        roomCount: getRequestedRooms(data.selected_room_payload),
         adults: data.adults,
         children: data.children,
         guestCount: data.guest_count,
@@ -145,4 +148,15 @@ export async function GET(req: Request) {
       },
     },
   })
+}
+
+function getRequestedRooms(payload: Record<string, unknown> | null): number {
+  const rawValue = payload?.requestedRooms
+  const parsedValue = typeof rawValue === "number"
+    ? rawValue
+    : typeof rawValue === "string"
+      ? Number(rawValue)
+      : 1
+
+  return Number.isFinite(parsedValue) && parsedValue > 0 ? Math.round(parsedValue) : 1
 }

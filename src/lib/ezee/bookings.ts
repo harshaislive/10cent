@@ -12,6 +12,7 @@ export interface ICreateEzeeBookingInput {
   checkOut: string
   adults: number
   children: number
+  roomCount?: number
   room: IEzeeAvailableRoom
   guest: IEzeeBookingGuest
   specialRequest?: string | null
@@ -53,25 +54,15 @@ export async function createEzeeBookingHold(input: ICreateEzeeBookingInput): Pro
 function buildBookingData(input: ICreateEzeeBookingInput) {
   const { firstName, lastName } = splitName(input.guest.name)
   const baseRate = input.room.priceExclusiveTax ?? input.room.priceInclusiveTax ?? 0
+  const requestedRoomCount = input.roomCount ?? 1
+  const availableRoomCount = input.room.availableRooms || requestedRoomCount
+  const roomCount = Number.isFinite(requestedRoomCount) && requestedRoomCount > 0
+    ? Math.min(Math.round(requestedRoomCount), availableRoomCount)
+    : 1
+  const roomDetails = buildRoomDetails(input, roomCount, baseRate, firstName, lastName)
 
   return {
-    Room_Details: {
-      Room_1: {
-        Rateplan_Id: input.room.ratePlanId,
-        Ratetype_Id: input.room.rateTypeId,
-        Roomtype_Id: input.room.roomTypeId,
-        baserate: String(Math.round(baseRate)),
-        extradultrate: "0",
-        extrachildrate: "0",
-        number_adults: String(input.adults),
-        number_children: String(input.children),
-        Title: "",
-        First_Name: firstName,
-        Last_Name: lastName,
-        Gender: "",
-        SpecialRequest: input.specialRequest || "",
-      },
-    },
+    Room_Details: roomDetails,
     check_in_date: input.checkIn,
     check_out_date: input.checkOut,
     Booking_Payment_Mode: "",
@@ -88,6 +79,57 @@ function buildBookingData(input: ICreateEzeeBookingInput) {
     Languagekey: "en",
     paymenttypeunkid: process.env.EZEE_PAYMENT_TYPE_UNKID || DEFAULT_PAYMENT_GATEWAY_ID,
   }
+}
+
+function buildRoomDetails(
+  input: ICreateEzeeBookingInput,
+  roomCount: number,
+  baseRate: number,
+  firstName: string,
+  lastName: string
+) {
+  const adultDistribution = distributeGuests(input.adults, roomCount, 1)
+  const childDistribution = distributeGuests(input.children, roomCount, 0)
+
+  return Object.fromEntries(
+    Array.from({ length: roomCount }, (_, index) => {
+      const roomNumber = index + 1
+      return [
+        `Room_${roomNumber}`,
+        {
+          Rateplan_Id: input.room.ratePlanId,
+          Ratetype_Id: input.room.rateTypeId,
+          Roomtype_Id: input.room.roomTypeId,
+          baserate: String(Math.round(baseRate)),
+          extradultrate: "0",
+          extrachildrate: "0",
+          number_adults: String(adultDistribution[index]),
+          number_children: String(childDistribution[index]),
+          Title: "",
+          First_Name: roomNumber === 1 ? firstName : `${firstName} Room ${roomNumber}`,
+          Last_Name: lastName,
+          Gender: "",
+          SpecialRequest: input.specialRequest || "",
+        },
+      ]
+    })
+  )
+}
+
+function distributeGuests(totalGuests: number, roomCount: number, minimumPerRoom: number): number[] {
+  if (roomCount <= 1) return [Math.max(totalGuests, minimumPerRoom)]
+
+  const distribution = Array.from({ length: roomCount }, () => minimumPerRoom)
+  let remaining = Math.max(totalGuests - minimumPerRoom * roomCount, 0)
+  let index = 0
+
+  while (remaining > 0) {
+    distribution[index % roomCount] += 1
+    remaining -= 1
+    index += 1
+  }
+
+  return distribution
 }
 
 function splitName(name: string): { firstName: string; lastName: string } {

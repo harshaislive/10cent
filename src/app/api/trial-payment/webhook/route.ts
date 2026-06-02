@@ -347,20 +347,21 @@ async function createPostPaymentEzeeBooking(
 
   const adults = requestRecord.adults ?? 1
   const children = requestRecord.children ?? 0
+  const requestedRooms = getRequestedRooms(requestRecord)
   const availability = await getBookingEngineAvailability({
     checkIn: requestRecord.check_in_date,
     checkOut: requestRecord.check_out_date,
     adults,
     children,
-    rooms: 1,
+    rooms: requestedRooms,
   })
 
   const selectedRoom = availability.rooms.find(room =>
-    room.availableRooms > 0 &&
+    room.availableRooms >= requestedRooms &&
     !room.stopSell &&
     (!requestRecord.selected_room_id || room.roomTypeId === requestRecord.selected_room_id) &&
     (!requestRecord.selected_rate_plan_id || room.ratePlanId === requestRecord.selected_rate_plan_id)
-  ) || availability.rooms.find(room => room.availableRooms > 0 && !room.stopSell)
+  ) || availability.rooms.find(room => room.availableRooms >= requestedRooms && !room.stopSell)
 
   if (!selectedRoom) {
     throw new Error("Selected eZee room is no longer available")
@@ -371,6 +372,7 @@ async function createPostPaymentEzeeBooking(
     checkOut: requestRecord.check_out_date,
     adults,
     children,
+    roomCount: requestedRooms,
     room: selectedRoom,
     guest: {
       name: requestRecord.name,
@@ -379,6 +381,22 @@ async function createPostPaymentEzeeBooking(
     },
     specialRequest: buildEzeeSpecialRequest(requestRecord, payload),
   })
+}
+
+function getRequestedRooms(requestRecord: ITrialRequestRecord): number {
+  const payload = requestRecord.selected_room_payload
+  const rawValue = payload && typeof payload === "object"
+    ? payload.requestedRooms
+    : null
+  const parsedValue = typeof rawValue === "number"
+    ? rawValue
+    : typeof rawValue === "string"
+      ? Number(rawValue)
+      : 1
+
+  return Number.isFinite(parsedValue) && parsedValue > 0
+    ? Math.min(Math.round(parsedValue), 4)
+    : 1
 }
 
 function buildEzeeSpecialRequest(

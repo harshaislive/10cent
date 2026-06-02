@@ -17,6 +17,7 @@ interface IConfirmationResponse {
       checkInDate: string | null
       checkOutDate: string | null
       durationNights: number | null
+      roomCount: number
       adults: number | null
       children: number | null
       guestCount: number | null
@@ -161,9 +162,9 @@ export default function TrialBookingConfirmationClient() {
 
               <div className="mt-10 space-y-4">
                 <StatusLine label="Payment" value={formatStatus(request.payment.status)} tone={status.paymentTone} />
-                <StatusLine label="eZee booking" value={formatStatus(request.booking.ezeeStatus)} tone={status.bookingTone} />
+                <StatusLine label="Booking" value={formatStatus(request.booking.ezeeStatus)} tone={status.bookingTone} />
                 <StatusLine
-                  label="PMS payment"
+                  label="Payment record"
                   value={formatStatus(request.booking.ezeePaymentStatus)}
                   tone={getEzeePaymentTone(request.booking.ezeePaymentStatus)}
                 />
@@ -187,6 +188,7 @@ export default function TrialBookingConfirmationClient() {
                   ["Check-in", formatDate(request.stay.checkInDate)],
                   ["Check-out", formatDate(request.stay.checkOutDate)],
                   ["Duration", `${request.stay.durationNights || 0} ${request.stay.durationNights === 1 ? "night" : "nights"}`],
+                  ["Rooms", `${request.stay.roomCount || 1} ${request.stay.roomCount === 1 ? "room" : "rooms"}`],
                 ]}
               />
 
@@ -194,7 +196,7 @@ export default function TrialBookingConfirmationClient() {
                 title="Room And Guests"
                 icon={<Users className="h-5 w-5" />}
                 rows={[
-                  ["Room", request.room.roomTypeName || "Selected eZee room"],
+                  ["Room", request.room.roomTypeName || "Selected room"],
                   ["Rate plan", request.room.ratePlanName || "-"],
                   ["Adults", String(request.stay.adults ?? 0)],
                   ["Children", String(request.stay.children ?? 0)],
@@ -210,9 +212,9 @@ export default function TrialBookingConfirmationClient() {
                   ["Payment status", formatStatus(request.payment.status)],
                   ["Paid at", formatDateTime(request.payment.paidAt)],
                   ["Experiences checkout", request.payment.experiencesCheckoutId || "-"],
-                  ["PMS payment", formatStatus(request.booking.ezeePaymentStatus)],
-                  ["PMS posted at", formatDateTime(request.booking.ezeePaymentPostedAt)],
-                  ["PMS payment error", request.booking.ezeePaymentError || "-"],
+                  ["Payment record", formatStatus(request.booking.ezeePaymentStatus)],
+                  ["Recorded at", formatDateTime(request.booking.ezeePaymentPostedAt)],
+                  ["Payment record note", request.booking.ezeePaymentError || "-"],
                 ]}
               />
 
@@ -274,7 +276,7 @@ function getDisplayStatus(request: IConfirmationResponse["request"], redirectPay
   if (paymentStatus === "PAID" && ezeeStatus === "CREATED") {
     return {
       heading: "Booking confirmed.",
-      message: "Your payment is received and the eZee booking has been created. Our team will share final arrival details shortly.",
+      message: "Your payment is received and your booking has been created. Our team will share final arrival details shortly.",
       paymentTone: "good" as const,
       bookingTone: "good" as const,
     }
@@ -283,7 +285,7 @@ function getDisplayStatus(request: IConfirmationResponse["request"], redirectPay
   if (paymentStatus === "PAID") {
     return {
       heading: "Payment received.",
-      message: "Your payment has been recorded. We are completing the eZee booking confirmation now, and the team will follow up once it is locked.",
+      message: "Your payment has been recorded. We are completing the booking confirmation now, and the team will follow up once it is locked.",
       paymentTone: "good" as const,
       bookingTone: ezeeStatus === "FAILED" ? "failed" as const : "pending" as const,
     }

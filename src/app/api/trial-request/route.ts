@@ -18,6 +18,7 @@ interface ITrialRequestPayload {
   durationNights?: number
   adults?: number
   children?: number
+  roomCount?: number
   guestCount?: number
   estimatedCost?: number
   roomTypeId?: string
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
       durationNights = 2,
       adults = 1,
       children = 0,
+      roomCount = 1,
       guestCount,
       estimatedCost,
       roomTypeId,
@@ -59,6 +61,7 @@ export async function POST(req: Request) {
     } = body
     const selectedDate = checkInDate || preferredDate
     const totalGuests = guestCount || adults + children
+    const requestedRooms = Number.isFinite(roomCount) && roomCount > 0 ? Math.min(Math.round(roomCount), 4) : 1
 
     // Validate required fields
     if (!name || !email || !phone || !location || !selectedDate) {
@@ -77,7 +80,7 @@ export async function POST(req: Request) {
         checkOut: checkOutDate || addDays(selectedDate, durationNights),
         adults,
         children,
-        rooms: 1,
+        rooms: requestedRooms,
       })
       isAvailable = availabilityData.available
     } catch (availabilityError) {
@@ -86,11 +89,12 @@ export async function POST(req: Request) {
 
     const selectedRoom = availabilityData?.rooms.find(room =>
       room.availableRooms > 0 &&
+      room.availableRooms >= requestedRooms &&
       !room.stopSell &&
       (!roomTypeId || room.roomTypeId === roomTypeId) &&
       (!ratePlanId || room.ratePlanId === ratePlanId) &&
       (!rateTypeId || room.rateTypeId === rateTypeId)
-    ) || availabilityData?.rooms.find(room => room.availableRooms > 0 && !room.stopSell) || null
+    ) || availabilityData?.rooms.find(room => room.availableRooms >= requestedRooms && !room.stopSell) || null
 
     const canCreateCheckout = Boolean(isAvailable && selectedRoom)
 
@@ -131,6 +135,7 @@ export async function POST(req: Request) {
         availability_data: {
           source: "ezee",
           availability: availabilityData,
+          requestedRooms,
           checkout: {
             enabled: canCreateCheckout,
             expiresAt: checkoutExpiresAt,
@@ -144,7 +149,7 @@ export async function POST(req: Request) {
         selected_room_name: selectedRoom?.name || null,
         selected_rate_plan_id: selectedRoom?.ratePlanId || ratePlanId || null,
         selected_rate_plan_name: selectedRoom?.roomTypeName || selectedRoom?.name || null,
-        selected_room_payload: selectedRoom || null,
+        selected_room_payload: selectedRoom ? { ...selectedRoom, requestedRooms } : null,
         payment_amount: checkoutAmount,
         payment_currency: selectedRoom?.currency || availabilityData?.currency || "INR",
         checkout_expires_at: checkoutExpiresAt,
@@ -182,6 +187,7 @@ export async function POST(req: Request) {
         durationNights,
         adults,
         children,
+        roomCount: requestedRooms,
         guestCount: totalGuests,
         roomTypeId: selectedRoom?.roomTypeId,
         roomTypeName: selectedRoom?.name || selectedRoom?.roomTypeName,
@@ -198,6 +204,7 @@ export async function POST(req: Request) {
           source: "10cent",
           trialRequestRowId: requestData.id,
           selectedRoom,
+          requestedRooms,
         },
         expiresAt: checkoutExpiresAt,
         returnUrl,
