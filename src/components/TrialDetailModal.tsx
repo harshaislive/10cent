@@ -29,10 +29,12 @@ interface TrialDetailModalProps {
 
 export default function TrialDetailModal({ isOpen, onClose, location }: TrialDetailModalProps) {
     const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
+    const [pendingImageIndex, setPendingImageIndex] = React.useState<number | null>(null)
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = React.useState(false)
     const [showRequestForm, setShowRequestForm] = React.useState(false)
     const [requestFormSession, setRequestFormSession] = React.useState(0)
     const preloadCacheRef = React.useRef<HTMLImageElement[]>([])
-
+    const imageSelectionTokenRef = React.useRef(0)
     const selectedImage = location?.images[selectedImageIndex] ?? location?.images[0]
     const selectedDesktopSrc = selectedImage ? imagePresets.heroDesktopFast(selectedImage.desktop) : ''
     const selectedMobileSrc = selectedImage ? imagePresets.heroMobileFast(selectedImage.mobile) : ''
@@ -41,6 +43,8 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
     React.useEffect(() => {
         if (isOpen) {
             setSelectedImageIndex(0)
+            setPendingImageIndex(null)
+            setIsDescriptionExpanded(false)
             setShowRequestForm(false)
         }
     }, [isOpen, location])
@@ -77,6 +81,24 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
 
     if (!location || location.images.length === 0) return null
 
+    const selectImage = (idx: number) => {
+        if (idx === selectedImageIndex || pendingImageIndex !== null) return
+
+        const nextImage = location.images[idx]
+        const selectionToken = imageSelectionTokenRef.current + 1
+        imageSelectionTokenRef.current = selectionToken
+        setPendingImageIndex(idx)
+
+        Promise.allSettled([
+            preloadDisplayImage(imagePresets.heroDesktopFast(nextImage.desktop)),
+            preloadDisplayImage(imagePresets.heroMobileFast(nextImage.mobile)),
+        ]).finally(() => {
+            if (imageSelectionTokenRef.current !== selectionToken) return
+            setSelectedImageIndex(idx)
+            setPendingImageIndex(null)
+        })
+    }
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -103,13 +125,11 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                         <div className="w-full lg:w-[65%] h-[60vh] lg:h-full flex flex-col bg-black relative z-10">
                             {/* Main Display Frame */}
                             <div className="flex-1 relative w-full h-full overflow-hidden">
-                                <AnimatePresence initial={false} mode="popLayout">
+                                <AnimatePresence initial={false} mode="wait">
                                     <motion.div
                                         key={selectedImageIndex}
-                                        initial={{ opacity: 0 }}
-                                        animate={{
-                                            opacity: 1
-                                        }}
+                                        initial={{ opacity: 0.92 }}
+                                        animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.18, ease: "easeOut" }}
                                         className="absolute inset-0 pointer-events-none will-change-opacity"
@@ -145,15 +165,14 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                                     <button
                                         key={idx}
                                         type="button"
-                                        onClick={() => {
-                                            if (idx !== selectedImageIndex) {
-                                                setSelectedImageIndex(idx)
-                                            }
-                                        }}
+                                        onClick={() => selectImage(idx)}
                                         aria-label={`Show ${location.name} image ${idx + 1}`}
+                                        aria-busy={pendingImageIndex === idx}
                                         className={`relative w-14 h-12 lg:w-32 lg:h-20 shrink-0 border transition-all duration-300 shadow-lg ${selectedImageIndex === idx
                                             ? 'border-[#ffc083] opacity-100 scale-105'
-                                            : 'border-white/20 opacity-60 hover:opacity-100'
+                                            : pendingImageIndex === idx
+                                                ? 'border-[#ffc083]/70 opacity-80'
+                                                : 'border-white/20 opacity-60 hover:opacity-100'
                                             }`}
                                     >
                                         <Image
@@ -194,10 +213,17 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                                                 {location.tagline}
                                             </p>
 
-                                            {/* Mobile: Hide Description if screen is too small, or keep it short */}
-                                            <p className="text-sm lg:text-lg leading-relaxed font-light font-arizona text-[#fdfbf7]/80 mb-6 lg:mb-8 line-clamp-3 lg:line-clamp-none">
+                                            <p className={`text-sm lg:text-lg leading-relaxed font-light font-arizona text-[#fdfbf7]/80 ${isDescriptionExpanded ? 'mb-3' : 'mb-2'} lg:mb-8 ${isDescriptionExpanded ? '' : 'line-clamp-3'} lg:line-clamp-none`}>
                                                 {location.description}
                                             </p>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsDescriptionExpanded(value => !value)}
+                                                className="mb-5 inline-flex text-[10px] uppercase tracking-[0.2em] text-[#ffc083] md:hidden"
+                                                aria-expanded={isDescriptionExpanded}
+                                            >
+                                                {isDescriptionExpanded ? 'Read less' : 'Read more'}
+                                            </button>
 
                                             <div className="space-y-3 mb-4">
                                                 <div className="flex flex-wrap gap-x-4 gap-y-2">
@@ -267,4 +293,13 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
             )}
         </AnimatePresence>
     )
+}
+
+function preloadDisplayImage(src: string): Promise<void> {
+    return new Promise((resolve) => {
+        const img = new window.Image()
+        img.onload = () => resolve()
+        img.onerror = () => resolve()
+        img.src = src
+    })
 }
