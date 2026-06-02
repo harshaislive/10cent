@@ -625,7 +625,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
               <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 3 · Guest details</p>
               <h3 className="font-arizona text-4xl font-light">Your request</h3>
               <p className="mt-4 text-sm text-[#342e29]/60">
-                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'}
+                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} · {adults} adults{children ? ` · ${children} children` : ''}
               </p>
 
               {selectedRoom && (
