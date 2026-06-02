@@ -111,7 +111,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [usesFallbackAvailability, setUsesFallbackAvailability] = React.useState(false)
   const [checkInDate, setCheckInDate] = React.useState('')
   const [checkOutDate, setCheckOutDate] = React.useState('')
-  const [adults, setAdults] = React.useState(2)
+  const [adults, setAdults] = React.useState(1)
   const [children, setChildren] = React.useState(0)
   const [selectedAvailability, setSelectedAvailability] = React.useState<IAvailabilityQuote | null>(null)
   const [selectedRoomKey, setSelectedRoomKey] = React.useState('')
@@ -455,7 +455,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 onClick={() => setStep(2)}
                 className="mt-8 inline-flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Check eZee rooms
+                {hasDateRange ? 'Continue to room options' : 'Select dates to continue'}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </aside>

@@ -118,6 +118,7 @@ export async function POST(req: Request) {
 
     // Insert into trial_requests table
     const { data: requestData, error: insertError } = await supabase
+      .schema("tencent")
       .from("trial_requests")
       .insert({
         request_id: requestId,
@@ -203,6 +204,7 @@ export async function GET(req: Request) {
     }
 
     const { data, error } = await supabase
+      .schema("tencent")
       .from("trial_requests")
       .select("*")
       .eq("request_id", requestId)
