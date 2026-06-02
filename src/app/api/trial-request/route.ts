@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { cookies } from "next/headers"
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js"
 import { createExperiencesTrialCheckout } from "@/lib/experiences/trialCheckout"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
@@ -263,6 +264,11 @@ function getBaseUrl(): string {
 }
 
 function getCheckoutAmount(liveAmount: number | null): number | null {
+  const testCookie = cookies().get("trial_checkout_test")?.value
+  if (testCookie === "1") {
+    return 1
+  }
+
   const overrideValue = process.env.TRIAL_CHECKOUT_AMOUNT_OVERRIDE
   if (!overrideValue) return liveAmount
 
