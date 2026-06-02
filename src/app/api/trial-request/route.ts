@@ -95,13 +95,14 @@ export async function POST(req: Request) {
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
     const finalCheckOutDate = checkOutDate || addDays(selectedDate, durationNights)
-    const checkoutAmount =
+    const liveCheckoutAmount =
       selectedRoom?.totalPriceInclusiveTax ||
       selectedRoom?.priceInclusiveTax ||
       estimatedCost ||
       availabilityData?.lowestTotalInclusiveTax ||
       availabilityData?.lowestRateInclusiveTax ||
       null
+    const checkoutAmount = getCheckoutAmount(liveCheckoutAmount)
     const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
     const returnUrl = `${getBaseUrl()}/trial-booking/confirmation`
 
@@ -131,6 +132,8 @@ export async function POST(req: Request) {
           checkout: {
             enabled: canCreateCheckout,
             expiresAt: checkoutExpiresAt,
+            liveAmount: liveCheckoutAmount,
+            amountOverride: checkoutAmount !== liveCheckoutAmount ? checkoutAmount : null,
           },
         },
         is_date_available: isAvailable,
@@ -257,6 +260,21 @@ export async function POST(req: Request) {
 
 function getBaseUrl(): string {
   return (process.env.NEXT_PUBLIC_BASE_URL || "https://10percent.beforest.co").replace(/\/$/, "")
+}
+
+function getCheckoutAmount(liveAmount: number | null): number | null {
+  const overrideValue = process.env.TRIAL_CHECKOUT_AMOUNT_OVERRIDE
+  if (!overrideValue) return liveAmount
+
+  const overrideAmount = Number(overrideValue)
+  if (!Number.isFinite(overrideAmount) || overrideAmount <= 0) {
+    console.error("Ignoring invalid TRIAL_CHECKOUT_AMOUNT_OVERRIDE", {
+      overrideValue,
+    })
+    return liveAmount
+  }
+
+  return overrideAmount
 }
 
 async function insertPaymentEvent(
