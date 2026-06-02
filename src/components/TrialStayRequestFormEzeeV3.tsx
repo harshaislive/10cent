@@ -294,8 +294,17 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         typeof data === 'object' && data !== null && 'requestId' in data
           ? String((data as { requestId: unknown }).requestId)
           : ''
+      const checkoutUrl =
+        typeof data === 'object' && data !== null && 'checkoutUrl' in data
+          ? String((data as { checkoutUrl: unknown }).checkoutUrl)
+          : ''
 
       setRequestId(submittedRequestId)
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+        return
+      }
+
       setStep(4)
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Failed to submit request. Please try again.')

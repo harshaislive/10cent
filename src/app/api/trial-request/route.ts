@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
+import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js"
+import { createExperiencesTrialCheckout } from "@/lib/experiences/trialCheckout"
 import { createSupabaseServiceClient } from "@/lib/supabase/server"
 import { addDays, getBookingEngineAvailability, type IEzeeAvailabilityResult } from "@/lib/ezee/availability"
-import { createEzeeBookingHold, isTrialBlockingEnabled, type IEzeeBookingResult } from "@/lib/ezee/bookings"
 
 interface ITrialRequestPayload {
   name?: string
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
       checkInDate,
       checkOutDate,
       durationNights = 2,
-      adults = 2,
+      adults = 1,
       children = 0,
       guestCount,
       estimatedCost,
@@ -66,7 +67,6 @@ export async function POST(req: Request) {
     }
 
     let availabilityData: IEzeeAvailabilityResult | null = null
-    let blockingData: IEzeeBookingResult | null = null
     let isAvailable = false
 
     try {
@@ -78,39 +78,31 @@ export async function POST(req: Request) {
         rooms: 1,
       })
       isAvailable = availabilityData.available
-
-      if (isAvailable && isTrialBlockingEnabled()) {
-        const roomToBlock = availabilityData.rooms.find(room =>
-          room.availableRooms > 0 &&
-          !room.stopSell &&
-          (!roomTypeId || room.roomTypeId === roomTypeId) &&
-          (!ratePlanId || room.ratePlanId === ratePlanId) &&
-          (!rateTypeId || room.rateTypeId === rateTypeId)
-        ) || availabilityData.rooms.find(room => room.availableRooms > 0 && !room.stopSell)
-        if (!roomToBlock) {
-          throw new Error("No eZee room is available to block")
-        }
-
-        blockingData = await createEzeeBookingHold({
-          checkIn: selectedDate,
-          checkOut: checkOutDate || addDays(selectedDate, durationNights),
-          adults,
-          children,
-          room: roomToBlock,
-          guest: {
-            name,
-            email,
-            phone,
-          },
-          specialRequest: specialRequests,
-        })
-      }
     } catch (availabilityError) {
-      console.error("eZee availability/blocking error:", availabilityError)
+      console.error("eZee availability error:", availabilityError)
     }
+
+    const selectedRoom = availabilityData?.rooms.find(room =>
+      room.availableRooms > 0 &&
+      !room.stopSell &&
+      (!roomTypeId || room.roomTypeId === roomTypeId) &&
+      (!ratePlanId || room.ratePlanId === ratePlanId) &&
+      (!rateTypeId || room.rateTypeId === rateTypeId)
+    ) || availabilityData?.rooms.find(room => room.availableRooms > 0 && !room.stopSell) || null
+
+    const canCreateCheckout = Boolean(isAvailable && selectedRoom)
 
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
+    const finalCheckOutDate = checkOutDate || addDays(selectedDate, durationNights)
+    const checkoutAmount =
+      selectedRoom?.totalPriceInclusiveTax ||
+      selectedRoom?.priceInclusiveTax ||
+      estimatedCost ||
+      availabilityData?.lowestTotalInclusiveTax ||
+      availabilityData?.lowestRateInclusiveTax ||
+      null
+    const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
 
     // Insert into trial_requests table
     const { data: requestData, error: insertError } = await supabase
@@ -125,7 +117,7 @@ export async function POST(req: Request) {
         location_slug: locationSlug,
         preferred_date: selectedDate,
         check_in_date: selectedDate,
-        check_out_date: checkOutDate,
+        check_out_date: finalCheckOutDate,
         duration_nights: durationNights,
         adults,
         children,
@@ -135,16 +127,24 @@ export async function POST(req: Request) {
         availability_data: {
           source: "ezee",
           availability: availabilityData,
-          blocking: blockingData || {
-            enabled: isTrialBlockingEnabled(),
-            skipped: !isTrialBlockingEnabled(),
+          checkout: {
+            enabled: canCreateCheckout,
+            expiresAt: checkoutExpiresAt,
           },
         },
         is_date_available: isAvailable,
         available_rooms: availabilityData?.rooms || [],
-        ezee_reservation_no: blockingData?.reservationNo || null,
-        ezee_inventory_mode: blockingData?.inventoryMode || null,
-        request_status: isAvailable ? "AVAILABLE" : "WAITLIST",
+        selected_room_id: selectedRoom?.roomTypeId || roomTypeId || null,
+        selected_room_name: selectedRoom?.name || null,
+        selected_rate_plan_id: selectedRoom?.ratePlanId || ratePlanId || null,
+        selected_rate_plan_name: selectedRoom?.roomTypeName || selectedRoom?.name || null,
+        selected_room_payload: selectedRoom || null,
+        payment_amount: checkoutAmount,
+        payment_currency: selectedRoom?.currency || availabilityData?.currency || "INR",
+        checkout_expires_at: checkoutExpiresAt,
+        request_status: canCreateCheckout ? "PENDING_PAYMENT" : "WAITLIST",
+        payment_status: canCreateCheckout ? "PENDING_PAYMENT" : "NOT_STARTED",
+        ezee_booking_status: "NOT_STARTED",
       })
       .select()
       .single()
@@ -157,14 +157,93 @@ export async function POST(req: Request) {
       )
     }
 
-    return NextResponse.json({
-      success: true,
-      requestId,
-      status: requestData.request_status,
-      message: isAvailable
-        ? "Your trial request has been received! We'll contact you shortly to confirm your booking."
-        : "The selected date is fully booked. Your request has been added to our waitlist and we'll contact you if dates become available.",
-    })
+    if (!canCreateCheckout || !checkoutAmount) {
+      return NextResponse.json({
+        success: true,
+        requestId,
+        status: requestData.request_status,
+        message: "The selected date is fully booked. Your request has been added to our waitlist and we'll contact you if dates become available.",
+      })
+    }
+
+    try {
+      const checkout = await createExperiencesTrialCheckout({
+        externalRequestId: requestId,
+        locationName: location,
+        locationSlug: locationSlug || "blyton_coorg",
+        checkInDate: selectedDate,
+        checkOutDate: finalCheckOutDate,
+        durationNights,
+        adults,
+        children,
+        guestCount: totalGuests,
+        roomTypeId: selectedRoom?.roomTypeId,
+        roomTypeName: selectedRoom?.name || selectedRoom?.roomTypeName,
+        ratePlanId: selectedRoom?.ratePlanId,
+        ratePlanName: selectedRoom?.roomTypeName || selectedRoom?.name,
+        amount: checkoutAmount,
+        currency: selectedRoom?.currency || availabilityData?.currency || "INR",
+        customer: {
+          name,
+          email,
+          phone,
+        },
+        payload: {
+          source: "10cent",
+          trialRequestRowId: requestData.id,
+          selectedRoom,
+        },
+        expiresAt: checkoutExpiresAt,
+      })
+
+      const { error: checkoutUpdateError } = await supabase
+        .schema("tencent")
+        .from("trial_requests")
+        .update({
+          request_status: "PAYMENT_LINK_SENT",
+          payment_status: "PAYMENT_LINK_SENT",
+          experiences_checkout_id: checkout.requestId || null,
+          experiences_checkout_url: checkout.checkoutUrl,
+          checkout_expires_at: checkout.expiresAt || checkoutExpiresAt,
+          payment_link_sent_at: new Date().toISOString(),
+        })
+        .eq("id", requestData.id)
+
+      if (checkoutUpdateError) {
+        console.error("Supabase checkout update error:", checkoutUpdateError)
+      }
+
+      await insertPaymentEvent(supabase, requestData.id, "checkout_created", "experiences", {
+        experiencesRequestId: checkout.requestId,
+        checkoutUrlCreated: Boolean(checkout.checkoutUrl),
+        expiresAt: checkout.expiresAt || checkoutExpiresAt,
+      })
+
+      return NextResponse.json({
+        success: true,
+        requestId,
+        status: "PAYMENT_LINK_SENT",
+        checkoutUrl: checkout.checkoutUrl,
+        message: "Redirecting you to secure payment.",
+      })
+    } catch (checkoutError) {
+      console.error("Experiences checkout error:", checkoutError)
+
+      await supabase
+        .schema("tencent")
+        .from("trial_requests")
+        .update({
+          request_status: "PAYMENT_FAILED",
+          payment_status: "FAILED",
+          status_notes: checkoutError instanceof Error ? checkoutError.message : "Failed to create checkout link",
+        })
+        .eq("id", requestData.id)
+
+      return NextResponse.json(
+        { error: checkoutError instanceof Error ? checkoutError.message : "Failed to create checkout link" },
+        { status: 502 }
+      )
+    }
   } catch (error: unknown) {
     console.error("Trial request error:", error)
     return NextResponse.json(
@@ -172,6 +251,39 @@ export async function POST(req: Request) {
       { status: 500 }
     )
   }
+}
+
+async function insertPaymentEvent(
+  supabase: SupabaseClient | null,
+  trialRequestId: string,
+  eventType: string,
+  source: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  if (!supabase) return
+
+  const { error } = await supabase
+    .schema("tencent")
+    .from("trial_request_payment_events")
+    .insert({
+      trial_request_id: trialRequestId,
+      event_type: eventType,
+      source,
+      payload,
+    })
+
+  if (error) {
+    logSupabaseError("Supabase payment event insert error", error)
+  }
+}
+
+function logSupabaseError(label: string, error: PostgrestError): void {
+  console.error(label, {
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+    code: error.code,
+  })
 }
 
 // GET endpoint to check request status
