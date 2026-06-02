@@ -21,6 +21,7 @@ export interface ICreateTrialCheckoutInput {
   }
   payload: Record<string, unknown>
   expiresAt: string
+  returnUrl: string
 }
 
 export interface ICreateTrialCheckoutResult {

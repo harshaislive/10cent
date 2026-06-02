@@ -103,6 +103,7 @@ export async function POST(req: Request) {
       availabilityData?.lowestRateInclusiveTax ||
       null
     const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
+    const returnUrl = `${getBaseUrl()}/trial-booking/confirmation`
 
     // Insert into trial_requests table
     const { data: requestData, error: insertError } = await supabase
@@ -194,6 +195,7 @@ export async function POST(req: Request) {
           selectedRoom,
         },
         expiresAt: checkoutExpiresAt,
+        returnUrl,
       })
 
       const { error: checkoutUpdateError } = await supabase
@@ -251,6 +253,10 @@ export async function POST(req: Request) {
       { status: 500 }
     )
   }
+}
+
+function getBaseUrl(): string {
+  return (process.env.NEXT_PUBLIC_BASE_URL || "https://10percent.beforest.co").replace(/\/$/, "")
 }
 
 async function insertPaymentEvent(
