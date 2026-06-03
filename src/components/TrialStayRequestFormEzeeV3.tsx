@@ -36,8 +36,6 @@ interface IAvailabilityQuote {
 
 interface IRoomArrangement {
   id: number
-  adults: number
-  children: number
   selectedRoomKey: string
 }
 
@@ -50,6 +48,8 @@ interface ITrialStayRequestFormProps {
 const MONTH_GRID_DAYS = 42
 const CALENDAR_AVAILABILITY_NIGHTS = 1
 const MIN_ADVANCE_DAYS = 2
+const ROOM_RATE_ADULTS = 2
+const ROOM_RATE_CHILDREN = 0
 
 const formatDateValue = (date: Date) => {
   const year = date.getFullYear()
@@ -130,6 +130,13 @@ const formatCurrency = (amount: number | null | undefined, currency = 'INR') => 
 const getRoomKey = (room: IAvailableRoom) =>
   `${room.roomTypeId || room.name}-${room.ratePlanId || room.totalPriceInclusiveTax || 'rate'}`
 
+const formatCapacity = (room: IAvailableRoom) => {
+  const parts: string[] = []
+  if (room.maxAdults) parts.push(`up to ${room.maxAdults} adult${room.maxAdults === 1 ? '' : 's'}`)
+  if (room.maxChildren) parts.push(`${room.maxChildren} child${room.maxChildren === 1 ? '' : 'ren'}`)
+  return parts.length ? ` · accommodates ${parts.join(' and ')}` : ''
+}
+
 export default function TrialStayRequestForm({ locationName, locationSlug, onBack }: ITrialStayRequestFormProps) {
   const [step, setStep] = React.useState<1 | 2 | 3 | 4>(1)
   const [calendarMonth, setCalendarMonth] = React.useState(getInitialCalendarMonth)
@@ -138,8 +145,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [checkInDate, setCheckInDate] = React.useState('')
   const [checkOutDate, setCheckOutDate] = React.useState('')
   const [roomArrangements, setRoomArrangements] = React.useState<IRoomArrangement[]>([
-    { id: 1, adults: 2, children: 0, selectedRoomKey: '' },
+    { id: 1, selectedRoomKey: '' },
   ])
+  const [guestAdults, setGuestAdults] = React.useState(2)
+  const [guestChildren, setGuestChildren] = React.useState(0)
   const [roomQuotes, setRoomQuotes] = React.useState<Record<number, IAvailabilityQuote | null>>({})
   const [isQuoteLoading, setIsQuoteLoading] = React.useState(false)
   const [name, setName] = React.useState('')
@@ -153,8 +162,8 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     ? nightsBetween(checkInDate, checkOutDate)
     : 1
   const roomCount = roomArrangements.length
-  const adults = roomArrangements.reduce((total, room) => total + room.adults, 0)
-  const children = roomArrangements.reduce((total, room) => total + room.children, 0)
+  const adults = guestAdults
+  const children = guestChildren
   const selectedRoomKeyCounts = roomArrangements.reduce((counts, arrangement) => {
     if (!arrangement.selectedRoomKey) return counts
     counts.set(arrangement.selectedRoomKey, (counts.get(arrangement.selectedRoomKey) || 0) + 1)
@@ -181,6 +190,13 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const selectedRoom = arrangedRooms[0]?.selectedRoom ?? null
   const quoteCurrency = selectedRoom?.currency || arrangedRooms.find(item => item.quote?.currency)?.quote?.currency || 'INR'
   const allRoomsSelected = arrangedRooms.length > 0 && arrangedRooms.every(item => Boolean(item.selectedRoom))
+  const adultCapacity = arrangedRooms.reduce((total, item) => total + (item.selectedRoom?.maxAdults || 0), 0)
+  const childCapacity = arrangedRooms.reduce((total, item) => total + (item.selectedRoom?.maxChildren || 0), 0)
+  const hasKnownAdultCapacity = adultCapacity > 0
+  const hasKnownChildCapacity = childCapacity > 0
+  const exceedsAdultCapacity = hasKnownAdultCapacity && guestAdults > adultCapacity
+  const exceedsChildCapacity = hasKnownChildCapacity && guestChildren > childCapacity
+  const isGuestCountWithinCapacity = !exceedsAdultCapacity && !exceedsChildCapacity
   const checkInLabel = checkInDate
     ? formatDateLabel(checkInDate)
     : 'Select a date'
@@ -207,7 +223,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
       const next = [...current]
       while (next.length < nextCount) {
         const id = Math.max(...next.map(room => room.id), 0) + 1
-        next.push({ id, adults: 1, children: 0, selectedRoomKey: '' })
+        next.push({ id, selectedRoomKey: '' })
       }
       return next
     })
@@ -218,6 +234,10 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
       current.map(room => room.id === id ? { ...room, ...updates } : room)
     )
   }
+
+  React.useEffect(() => {
+    setGuestAdults(currentAdults => Math.max(currentAdults, roomCount))
+  }, [roomCount])
 
   const selectDate = (date: string) => {
     if (!checkInDate || checkOutDate || compareDateValues(date, checkInDate) <= 0) {
@@ -245,7 +265,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
     Promise.all(
       roomArrangements.map(async arrangement => {
-        const response = await fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${arrangement.adults}&children=${arrangement.children}&rooms=1`)
+        const response = await fetch(`/api/availability/check?startDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${ROOM_RATE_ADULTS}&children=${ROOM_RATE_CHILDREN}&rooms=1`)
         if (!response.ok) throw new Error('Availability unavailable')
         const data: unknown = await response.json()
         if (
@@ -287,7 +307,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
         if (isBeforeFirstBookableDate(day.date)) return { date: day.date, state: 'booked' as AvailabilityState, fallback: false }
 
         try {
-          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${CALENDAR_AVAILABILITY_NIGHTS}&adults=${adults}&children=${children}&rooms=${roomCount}`)
+          const response = await fetch(`/api/availability/check?startDate=${day.date}&durationNights=${CALENDAR_AVAILABILITY_NIGHTS}&adults=${ROOM_RATE_ADULTS}&children=${ROOM_RATE_CHILDREN}&rooms=${roomCount}`)
           if (!response.ok) throw new Error('Availability unavailable')
 
           const data: unknown = await response.json()
@@ -328,7 +348,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     return () => {
       cancelled = true
     }
-  }, [adults, calendarMonth, children, roomCount])
+  }, [calendarMonth, roomCount])
 
   const submitRequest = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -359,8 +379,6 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           rateTypeId: selectedRoom?.rateTypeId,
           roomSelections: arrangedRooms.map(item => ({
             roomIndex: roomArrangements.findIndex(room => room.id === item.arrangement.id) + 1,
-            adults: item.arrangement.adults,
-            children: item.arrangement.children,
             roomTypeId: item.selectedRoom?.roomTypeId,
             ratePlanId: item.selectedRoom?.ratePlanId,
             rateTypeId: item.selectedRoom?.rateTypeId,
@@ -586,7 +604,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
               <p className="mb-2 text-[10px] uppercase tracking-[0.25em] text-[#86312b]">Step 2 · Room options</p>
               <h3 className="font-arizona text-4xl font-light">Choose a room type</h3>
               <p className="mt-4 text-sm text-[#342e29]/60">
-                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {roomCount} {roomCount === 1 ? 'room' : 'rooms'} · {adults} adults{children ? ` · ${children} children` : ''}
+                {checkInLabel} to {checkOutLabel} · {nights} {nights === 1 ? 'night' : 'nights'} · {roomCount} {roomCount === 1 ? 'room' : 'rooms'}
               </p>
               <div className="mt-6 border border-[#342e29]/10 bg-white/45 p-5">
                 <span className="text-[10px] uppercase tracking-widest text-[#86312b]">Stay total</span>
@@ -600,7 +618,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </p>
                 )}
                 <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
-                  This total follows the guests assigned to each room below. Adjust adults or children in a room and the stay total will update.
+                  This total is based on the rooms you arrange. Guest count is collected next so the stay can be prepared properly.
                 </p>
               </div>
             </aside>
@@ -622,44 +640,14 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                           <p className="text-[10px] uppercase tracking-[0.22em] text-[#86312b]">Room {index + 1}</p>
                           <h4 className="mt-2 font-arizona text-3xl font-light">Arrange this room</h4>
                           <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
-                            Prices below are for {item.arrangement.adults} adult{item.arrangement.adults === 1 ? '' : 's'}
-                            {item.arrangement.children ? ` and ${item.arrangement.children} child${item.arrangement.children === 1 ? '' : 'ren'}` : ''}
-                            {' '}in this room.
-                            {index === 0 && item.arrangement.adults === 1 ? ' The public starting rate is usually shown for 2 adults.' : ''}
+                            Choose the room. Each card shows how many guests it can accommodate and the room rate for this stay.
                           </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          {[
-                            { label: 'Adults', value: item.arrangement.adults, min: 1, max: 6, key: 'adults' as const },
-                            { label: 'Children', value: item.arrangement.children, min: 0, max: 6, key: 'children' as const },
-                          ].map(control => (
-                            <div key={control.label} className="min-w-28 border border-[#342e29]/10 bg-[#f7f4ee]/65 p-3">
-                              <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{control.label}</span>
-                              <div className="mt-3 flex items-center justify-between gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => updateRoomArrangement(item.arrangement.id, { [control.key]: Math.max(control.min, control.value - 1), selectedRoomKey: '' })}
-                                  className="h-7 w-7 border border-[#342e29]/15"
-                                >
-                                  -
-                                </button>
-                                <span className="font-arizona text-2xl">{control.value}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => updateRoomArrangement(item.arrangement.id, { [control.key]: Math.min(control.max, control.value + 1), selectedRoomKey: '' })}
-                                  className="h-7 w-7 border border-[#342e29]/15"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </div>
-                          ))}
                         </div>
                       </div>
 
                       {item.availableRooms.length === 0 && (
                         <div className="border border-[#86312b]/15 bg-[#86312b]/5 p-4 text-sm leading-relaxed text-[#342e29]/65">
-                          No room type is showing for this room. Adjust guests or choose another date range.
+                          No room type is showing for this room. Choose another date range or reduce the number of rooms.
                         </div>
                       )}
 
@@ -688,16 +676,15 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                                     <h5 className="mt-2 font-arizona text-2xl font-light">{room.name}</h5>
                                     <p className="mt-2 text-xs text-[#342e29]/55">
                                       {room.availableRooms} available
-                                      {room.maxAdults ? ` · up to ${room.maxAdults} adults` : ''}
-                                      {room.maxChildren ? ` · ${room.maxChildren} children` : ''}
+                                      {formatCapacity(room)}
                                     </p>
                                   </div>
                                   <div className="md:text-right">
                                     <p className="font-arizona text-2xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
                                     <p className="mt-1 text-xs text-[#342e29]/50">
                                       {room.priceInclusiveTax
-                                        ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night for this room`
-                                        : 'Inclusive stay total for this room'}
+                                        ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night room rate`
+                                        : 'Inclusive room rate for this stay'}
                                     </p>
                                   </div>
                                 </div>
@@ -741,9 +728,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                       <div key={item.arrangement.id} className="border-b border-[#342e29]/10 pb-3 last:border-b-0 last:pb-0">
                         <h4 className="font-arizona text-2xl font-light">Room {index + 1}: {item.selectedRoom?.name}</h4>
                         <p className="mt-1 text-xs text-[#342e29]/50">
-                          {item.arrangement.adults} adult{item.arrangement.adults === 1 ? '' : 's'}
-                          {item.arrangement.children ? ` · ${item.arrangement.children} child${item.arrangement.children === 1 ? '' : 'ren'}` : ''}
-                          {' · '}
+                          {item.selectedRoom ? `${formatCapacity(item.selectedRoom).replace(/^ · /, '')} · ` : ''}
                           {formatCurrency(item.selectedRoom?.totalPriceInclusiveTax ?? item.selectedRoom?.priceInclusiveTax, item.selectedRoom?.currency)}
                         </p>
                       </div>
@@ -756,6 +741,33 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
             <div className="p-5 lg:p-7">
               <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { label: 'Adults coming', value: guestAdults, setValue: setGuestAdults, min: roomCount, max: 12 },
+                    { label: 'Children coming', value: guestChildren, setValue: setGuestChildren, min: 0, max: 12 },
+                  ].map(item => (
+                    <div key={item.label} className="border border-[#342e29]/10 bg-white/35 p-3">
+                      <span className="block text-[10px] uppercase tracking-widest text-[#342e29]/45">{item.label}</span>
+                      <div className="mt-3 flex items-center justify-between gap-2">
+                        <button type="button" onClick={() => item.setValue(Math.max(item.min, item.value - 1))} className="h-7 w-7 border border-[#342e29]/15">-</button>
+                        <span className="font-arizona text-2xl">{item.value}</span>
+                        <button type="button" onClick={() => item.setValue(Math.min(item.max, item.value + 1))} className="h-7 w-7 border border-[#342e29]/15">+</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs leading-relaxed text-[#342e29]/55">
+                  Guest count helps the team prepare the stay. The amount above is based on the rooms selected.
+                  {hasKnownAdultCapacity ? ` These rooms can accommodate up to ${adultCapacity} adult${adultCapacity === 1 ? '' : 's'}` : ''}
+                  {hasKnownChildCapacity ? ` and ${childCapacity} child${childCapacity === 1 ? '' : 'ren'}` : ''}
+                  {hasKnownAdultCapacity || hasKnownChildCapacity ? '.' : ''}
+                </p>
+                {(exceedsAdultCapacity || exceedsChildCapacity) && (
+                  <p className="border border-[#86312b]/20 bg-[#86312b]/5 p-3 text-sm leading-relaxed text-[#86312b]">
+                    The selected rooms cannot accommodate this many guests. Please add another room or adjust the guest count.
+                  </p>
+                )}
+
                 <label className="block">
                   <span className="text-[10px] uppercase tracking-widest text-[#342e29]/50">Name</span>
                   <input required value={name} onChange={event => setName(event.target.value)} className="mt-1 w-full border-b border-[#342e29]/20 bg-transparent py-3 text-base outline-none focus:border-[#86312b]" placeholder="Your full name" />
@@ -772,7 +784,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
               {error && <p className="mt-5 text-sm text-[#86312b]">{error}</p>}
 
-              <button type="submit" disabled={isSubmitting || !allRoomsSelected} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
+              <button type="submit" disabled={isSubmitting || !allRoomsSelected || !isGuestCountWithinCapacity} className="mt-7 flex w-full items-center justify-center gap-3 bg-[#342e29] px-6 py-4 text-xs font-medium uppercase tracking-[0.2em] text-[#fdfbf7] transition-colors hover:bg-[#86312b] disabled:opacity-60">
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Submit stay request</span>}
                 {!isSubmitting && <ArrowRight className="h-4 w-4" />}
               </button>

@@ -44,6 +44,9 @@ interface ITrialRequestRecord {
   ezee_payment_status?: string | null
 }
 
+const ROOM_RATE_ADULTS = 2
+const ROOM_RATE_CHILDREN = 0
+
 export async function POST(req: Request) {
   const rawBody = await req.text()
 
@@ -423,8 +426,8 @@ async function resolvePaidRoomSelections(
     const availability = await getBookingEngineAvailability({
       checkIn: requestRecord.check_in_date,
       checkOut: requestRecord.check_out_date,
-      adults: item.adults,
-      children: item.children,
+      adults: ROOM_RATE_ADULTS,
+      children: ROOM_RATE_CHILDREN,
       rooms: 1,
     })
 

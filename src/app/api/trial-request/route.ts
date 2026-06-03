@@ -44,6 +44,9 @@ interface ISelectedTrialRoom {
   room: IEzeeAvailableRoom
 }
 
+const ROOM_RATE_ADULTS = 2
+const ROOM_RATE_CHILDREN = 0
+
 export async function POST(req: Request) {
   try {
     const supabase = createSupabaseServiceClient()
@@ -110,6 +113,15 @@ export async function POST(req: Request) {
     const totalGuests = guestCount || totalAdults + totalChildren
     const selectedRoomPayload = buildSelectedRoomPayload(selectedRooms)
     const canCreateCheckout = selectedRooms.length === requestedRoomSelections.length && selectedRooms.length > 0
+    const adultCapacity = getTotalCapacity(selectedRooms, "maxAdults")
+    const childCapacity = getTotalCapacity(selectedRooms, "maxChildren")
+
+    if ((adultCapacity > 0 && totalAdults > adultCapacity) || (childCapacity > 0 && totalChildren > childCapacity)) {
+      return NextResponse.json(
+        { error: "The selected rooms cannot accommodate this many guests. Please add another room or adjust the guest count." },
+        { status: 400 }
+      )
+    }
 
     // Generate unique request ID
     const requestId = `TR${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase()
@@ -315,10 +327,10 @@ function normalizeRoomSelectionPayload(
       : index + 1,
     adults: Number.isFinite(selection.adults) && selection.adults && selection.adults > 0
       ? Math.round(selection.adults)
-      : 1,
+      : adultDistribution[index] || 1,
     children: Number.isFinite(selection.children) && selection.children && selection.children > 0
       ? Math.round(selection.children)
-      : 0,
+      : childDistribution[index] || 0,
     roomTypeId: selection.roomTypeId || "",
     ratePlanId: selection.ratePlanId || "",
     rateTypeId: selection.rateTypeId || "",
@@ -360,8 +372,8 @@ async function resolveSelectedRooms({
     const availability = await getBookingEngineAvailability({
       checkIn,
       checkOut,
-      adults: selection.adults,
-      children: selection.children,
+      adults: ROOM_RATE_ADULTS,
+      children: ROOM_RATE_CHILDREN,
       rooms: 1,
     })
     primaryAvailability = primaryAvailability || availability
@@ -430,6 +442,10 @@ function buildSelectedRoomPayload(selectedRooms: ISelectedTrialRoom[]) {
       room: selection.room,
     })),
   }
+}
+
+function getTotalCapacity(selectedRooms: ISelectedTrialRoom[], key: "maxAdults" | "maxChildren"): number {
+  return selectedRooms.reduce((total, selection) => total + (selection.room[key] || 0), 0)
 }
 
 function getRoomAmount(room: IEzeeAvailableRoom): number {
