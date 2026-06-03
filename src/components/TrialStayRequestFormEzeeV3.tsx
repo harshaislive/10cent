@@ -138,7 +138,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
   const [checkInDate, setCheckInDate] = React.useState('')
   const [checkOutDate, setCheckOutDate] = React.useState('')
   const [roomArrangements, setRoomArrangements] = React.useState<IRoomArrangement[]>([
-    { id: 1, adults: 1, children: 0, selectedRoomKey: '' },
+    { id: 1, adults: 2, children: 0, selectedRoomKey: '' },
   ])
   const [roomQuotes, setRoomQuotes] = React.useState<Record<number, IAvailabilityQuote | null>>({})
   const [isQuoteLoading, setIsQuoteLoading] = React.useState(false)
@@ -600,7 +600,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                   </p>
                 )}
                 <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
-                  This is the current stay total for your selected dates, guests, and room count. The next step only collects guest details.
+                  This total follows the guests assigned to each room below. Adjust adults or children in a room and the stay total will update.
                 </p>
               </div>
             </aside>
@@ -621,6 +621,11 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                         <div>
                           <p className="text-[10px] uppercase tracking-[0.22em] text-[#86312b]">Room {index + 1}</p>
                           <h4 className="mt-2 font-arizona text-3xl font-light">Arrange this room</h4>
+                          <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
+                            Prices below are for {item.arrangement.adults} adult{item.arrangement.adults === 1 ? '' : 's'}
+                            {item.arrangement.children ? ` and ${item.arrangement.children} child${item.arrangement.children === 1 ? '' : 'ren'}` : ''}
+                            {' '}in this room.
+                          </p>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           {[
@@ -689,7 +694,9 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                                   <div className="md:text-right">
                                     <p className="font-arizona text-2xl">{formatCurrency(room.totalPriceInclusiveTax, room.currency)}</p>
                                     <p className="mt-1 text-xs text-[#342e29]/50">
-                                      {room.priceInclusiveTax ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night` : 'Inclusive stay total'}
+                                      {room.priceInclusiveTax
+                                        ? `${formatCurrency(room.priceInclusiveTax, room.currency)} avg/night for this room`
+                                        : 'Inclusive stay total for this room'}
                                     </p>
                                   </div>
                                 </div>
