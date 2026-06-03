@@ -625,6 +625,7 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                             Prices below are for {item.arrangement.adults} adult{item.arrangement.adults === 1 ? '' : 's'}
                             {item.arrangement.children ? ` and ${item.arrangement.children} child${item.arrangement.children === 1 ? '' : 'ren'}` : ''}
                             {' '}in this room.
+                            {index === 0 && item.arrangement.adults === 1 ? ' The public starting rate is usually shown for 2 adults.' : ''}
                           </p>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
