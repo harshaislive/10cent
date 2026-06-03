@@ -70,7 +70,7 @@ function buildBookingData(input: ICreateEzeeBookingInput) {
     check_out_date: input.checkOut,
     Booking_Payment_Mode: "",
     Email_Address: input.guest.email || "",
-    Source_Id: "",
+    Source_Id: process.env.EZEE_SOURCE_ID || "",
     MobileNo: input.guest.phone || "",
     Address: "",
     State: "",
