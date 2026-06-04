@@ -1112,7 +1112,7 @@ export default function EditorialPage() {
               One sanctuary. Two nights. Three days. Long enough to forget the city, short enough to return with clarity.
             </p>
             <p className="text-lg md:text-xl font-light opacity-90 mb-14 max-w-3xl mx-auto leading-relaxed">
-              The trial is a firsthand glimpse of the 10% life: farm-to-table meals, guided walks, unfiltered wilderness, and enough silence to understand whether this commitment belongs in your rhythm.
+              The trial is a quiet first encounter with the 10% life: time on the land, meals from the farm, walks through wilderness, and enough stillness to notice what your current rhythm no longer makes room for.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-[#fdfbf7]/10 border border-[#fdfbf7]/10 mb-14 text-left">

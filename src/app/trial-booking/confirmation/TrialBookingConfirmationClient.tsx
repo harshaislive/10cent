@@ -4,6 +4,7 @@ import React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { ArrowRight, CalendarDays, CheckCircle2, Clock, CreditCard, Home, MapPin, Users } from "lucide-react"
+import { trackTrialFunnelEvent } from "@/utils/trialFunnel"
 
 interface IConfirmationResponse {
   success: boolean
@@ -114,6 +115,37 @@ export default function TrialBookingConfirmationClient() {
       cancelled = true
     }
   }, [requestId])
+
+  React.useEffect(() => {
+    if (!request) return
+
+    trackTrialFunnelEvent("trial_confirmation_viewed", {
+      requestId: request.requestId,
+      eventStage: "confirmation",
+      name: request.customer.name,
+      email: request.customer.email,
+      phone: request.customer.phone,
+      locationName: request.location.name,
+      locationSlug: request.location.slug,
+      checkInDate: request.stay.checkInDate,
+      checkOutDate: request.stay.checkOutDate,
+      durationNights: request.stay.durationNights,
+      roomCount: request.stay.roomCount,
+      adults: request.stay.adults,
+      children: request.stay.children,
+      guestCount: request.stay.guestCount,
+      amount: request.payment.amount,
+      currency: request.payment.currency,
+      payload: {
+        paymentStatus: request.payment.status,
+        ezeeBookingStatus: request.booking.ezeeStatus,
+        ezeeReservationNo: request.booking.ezeeReservationNo,
+        ezeePaymentStatus: request.booking.ezeePaymentStatus,
+        redirectPaymentStatus,
+        redirectStatus,
+      },
+    })
+  }, [redirectPaymentStatus, redirectStatus, request])
 
   const status = request ? getDisplayStatus(request, redirectPaymentStatus) : null
 

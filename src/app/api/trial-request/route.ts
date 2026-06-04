@@ -26,6 +26,15 @@ interface ITrialRequestPayload {
   rateTypeId?: string
   roomSelections?: ITrialRoomSelectionPayload[]
   specialRequests?: string | null
+  sessionId?: string | null
+  pageUrl?: string | null
+  referrer?: string | null
+  utmSource?: string | null
+  utmMedium?: string | null
+  utmCampaign?: string | null
+  utmContent?: string | null
+  utmTerm?: string | null
+  attributionPayload?: Record<string, unknown> | null
 }
 
 interface ITrialRoomSelectionPayload {
@@ -78,6 +87,15 @@ export async function POST(req: Request) {
       ratePlanId,
       rateTypeId,
       specialRequests,
+      sessionId,
+      pageUrl,
+      referrer,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+      utmContent,
+      utmTerm,
+      attributionPayload,
     } = body
     const selectedDate = checkInDate || preferredDate
     const requestedRooms = Number.isFinite(roomCount) && roomCount > 0 ? Math.min(Math.round(roomCount), 4) : 1
@@ -183,6 +201,15 @@ export async function POST(req: Request) {
         request_status: canCreateCheckout ? "PENDING_PAYMENT" : "WAITLIST",
         payment_status: canCreateCheckout ? "PENDING_PAYMENT" : "NOT_STARTED",
         ezee_booking_status: "NOT_STARTED",
+        session_id: normalizeOptionalText(sessionId),
+        landing_url: normalizeOptionalText(pageUrl),
+        referrer: normalizeOptionalText(referrer),
+        utm_source: normalizeOptionalText(utmSource),
+        utm_medium: normalizeOptionalText(utmMedium),
+        utm_campaign: normalizeOptionalText(utmCampaign),
+        utm_content: normalizeOptionalText(utmContent),
+        utm_term: normalizeOptionalText(utmTerm),
+        attribution_payload: attributionPayload || null,
       })
       .select()
       .single()
@@ -193,6 +220,10 @@ export async function POST(req: Request) {
         { error: "Failed to save trial request" },
         { status: 500 }
       )
+    }
+
+    if (sessionId) {
+      await linkFunnelEventsToRequest(supabase, requestData.id, requestId, sessionId)
     }
 
     if (!canCreateCheckout || !checkoutAmount) {
@@ -261,6 +292,38 @@ export async function POST(req: Request) {
         expiresAt: checkout.expiresAt || checkoutExpiresAt,
       })
 
+      await insertFunnelEvent(supabase, requestData.id, requestId, {
+        sessionId,
+        eventName: "trial_checkout_created",
+        eventStage: "checkout_created",
+        name,
+        email,
+        phone,
+        locationSlug,
+        locationName: location,
+        checkInDate: selectedDate,
+        checkOutDate: finalCheckOutDate,
+        durationNights,
+        roomCount: selectedRooms.length,
+        adults: totalAdults,
+        children: totalChildren,
+        guestCount: totalGuests,
+        amount: checkoutAmount,
+        currency: selectedRoom?.currency || availabilityData?.currency || "INR",
+        pageUrl,
+        referrer,
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmContent,
+        utmTerm,
+        payload: {
+          experiencesRequestId: checkout.requestId,
+          checkoutUrlCreated: Boolean(checkout.checkoutUrl),
+          expiresAt: checkout.expiresAt || checkoutExpiresAt,
+        },
+      })
+
       return NextResponse.json({
         success: true,
         requestId,
@@ -293,6 +356,10 @@ export async function POST(req: Request) {
       { status: 500 }
     )
   }
+}
+
+function normalizeOptionalText(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null
 }
 
 function getBaseUrl(): string {
@@ -474,6 +541,104 @@ function getCheckoutAmount(liveAmount: number | null): number | null {
   }
 
   return overrideAmount
+}
+
+async function linkFunnelEventsToRequest(
+  supabase: SupabaseClient | null,
+  trialRequestId: string,
+  requestId: string,
+  sessionId: string
+): Promise<void> {
+  if (!supabase) return
+
+  const { error } = await supabase
+    .schema("tencent")
+    .from("trial_funnel_events")
+    .update({
+      trial_request_id: trialRequestId,
+      request_id: requestId,
+    })
+    .eq("session_id", sessionId)
+    .is("request_id", null)
+
+  if (error) {
+    logSupabaseError("Supabase funnel event link error", error)
+  }
+}
+
+interface IInsertFunnelEventInput {
+  sessionId?: string | null
+  eventName: string
+  eventStage?: string | null
+  name?: string | null
+  email?: string | null
+  phone?: string | null
+  locationSlug?: string | null
+  locationName?: string | null
+  checkInDate?: string | null
+  checkOutDate?: string | null
+  durationNights?: number | null
+  roomCount?: number | null
+  adults?: number | null
+  children?: number | null
+  guestCount?: number | null
+  amount?: number | null
+  currency?: string | null
+  pageUrl?: string | null
+  referrer?: string | null
+  utmSource?: string | null
+  utmMedium?: string | null
+  utmCampaign?: string | null
+  utmContent?: string | null
+  utmTerm?: string | null
+  payload?: Record<string, unknown> | null
+}
+
+async function insertFunnelEvent(
+  supabase: SupabaseClient | null,
+  trialRequestId: string,
+  requestId: string,
+  input: IInsertFunnelEventInput
+): Promise<void> {
+  if (!supabase || !input.sessionId) return
+
+  const { error } = await supabase
+    .schema("tencent")
+    .from("trial_funnel_events")
+    .insert({
+      trial_request_id: trialRequestId,
+      request_id: requestId,
+      session_id: input.sessionId,
+      event_name: input.eventName,
+      event_source: "10cent",
+      event_stage: input.eventStage || null,
+      name: normalizeOptionalText(input.name),
+      email: normalizeOptionalText(input.email),
+      phone: normalizeOptionalText(input.phone),
+      location_slug: normalizeOptionalText(input.locationSlug),
+      location_name: normalizeOptionalText(input.locationName),
+      check_in_date: normalizeOptionalText(input.checkInDate),
+      check_out_date: normalizeOptionalText(input.checkOutDate),
+      duration_nights: input.durationNights ?? null,
+      room_count: input.roomCount ?? null,
+      adults: input.adults ?? null,
+      children: input.children ?? null,
+      guest_count: input.guestCount ?? null,
+      amount: input.amount ?? null,
+      currency: normalizeOptionalText(input.currency) || "INR",
+      page_url: normalizeOptionalText(input.pageUrl),
+      referrer: normalizeOptionalText(input.referrer),
+      utm_source: normalizeOptionalText(input.utmSource),
+      utm_medium: normalizeOptionalText(input.utmMedium),
+      utm_campaign: normalizeOptionalText(input.utmCampaign),
+      utm_content: normalizeOptionalText(input.utmContent),
+      utm_term: normalizeOptionalText(input.utmTerm),
+      payload: input.payload || null,
+    })
+
+  if (error) {
+    logSupabaseError("Supabase funnel event insert error", error)
+  }
 }
 
 async function insertPaymentEvent(

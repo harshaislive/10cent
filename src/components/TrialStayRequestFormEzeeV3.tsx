@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, XCircle } from 'lucide-react'
+import { getTrialAttributionPayload, getTrialSessionId, trackTrialFunnelEvent } from '@/utils/trialFunnel'
 
 type AvailabilityState = 'loading' | 'available' | 'booked'
 
@@ -209,10 +210,46 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     : !checkOutDate
       ? `Now select your checkout date. Earliest checkout is ${formatDateLabel(addDays(checkInDate, 1))}.`
       : `${checkInLabel} to ${checkOutLabel} · ${nights} ${nights === 1 ? 'night' : 'nights'} selected.`
+  const getFunnelPayload = React.useCallback((overrides: Record<string, unknown> = {}) => ({
+    locationName,
+    locationSlug,
+    checkInDate,
+    checkOutDate,
+    durationNights: nights,
+    roomCount,
+    adults,
+    children,
+    guestCount: adults + children,
+    amount: estimatedCost,
+    currency: quoteCurrency,
+    payload: {
+      selectedRoomNames: arrangedRooms
+        .map(item => item.selectedRoom?.roomTypeName || item.selectedRoom?.name)
+        .filter(Boolean),
+      ...overrides,
+    },
+  }), [adults, arrangedRooms, checkInDate, checkOutDate, children, estimatedCost, locationName, locationSlug, nights, quoteCurrency, roomCount])
 
   React.useEffect(() => {
     setCalendarMonth(getInitialCalendarMonth())
   }, [])
+
+  React.useEffect(() => {
+    trackTrialFunnelEvent('trial_modal_opened', {
+      eventStage: 'view_item',
+      locationName,
+      locationSlug,
+    })
+  }, [locationName, locationSlug])
+
+  React.useEffect(() => {
+    if (step === 3) {
+      trackTrialFunnelEvent('trial_guest_details_started', {
+        ...getFunnelPayload(),
+        eventStage: 'guest_details',
+      })
+    }
+  }, [getFunnelPayload, step])
 
   const setRoomArrangementCount = (count: number) => {
     setRoomArrangements(current => {
@@ -227,12 +264,33 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
       }
       return next
     })
+    trackTrialFunnelEvent('trial_room_count_changed', {
+      ...getFunnelPayload({ requestedRoomCount: count }),
+      eventStage: 'room_count',
+      roomCount: Math.min(Math.max(count, 1), 4),
+    })
   }
 
   const updateRoomArrangement = (id: number, updates: Partial<IRoomArrangement>) => {
     setRoomArrangements(current =>
       current.map(room => room.id === id ? { ...room, ...updates } : room)
     )
+
+    if (updates.selectedRoomKey) {
+      const currentRoom = arrangedRooms.find(item => item.arrangement.id === id)
+      const room = currentRoom?.availableRooms.find(candidate => getRoomKey(candidate) === updates.selectedRoomKey)
+      trackTrialFunnelEvent('trial_room_selected', {
+        ...getFunnelPayload({
+          roomIndex: currentRoom ? roomArrangements.findIndex(item => item.id === currentRoom.arrangement.id) + 1 : null,
+          roomTypeId: room?.roomTypeId,
+          roomTypeName: room?.roomTypeName || room?.name,
+          ratePlanId: room?.ratePlanId,
+          amount: room?.totalPriceInclusiveTax ?? room?.priceInclusiveTax ?? null,
+        }),
+        eventStage: 'select_item',
+        amount: room?.totalPriceInclusiveTax ?? room?.priceInclusiveTax ?? estimatedCost,
+      })
+    }
   }
 
   React.useEffect(() => {
@@ -243,10 +301,22 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     if (!checkInDate || checkOutDate || compareDateValues(date, checkInDate) <= 0) {
       setCheckInDate(date)
       setCheckOutDate('')
+      trackTrialFunnelEvent('trial_date_started', {
+        ...getFunnelPayload({ selectedDate: date }),
+        eventStage: 'date_start',
+        checkInDate: date,
+        checkOutDate: null,
+      })
       return
     }
 
     setCheckOutDate(date)
+    trackTrialFunnelEvent('trial_dates_selected', {
+      ...getFunnelPayload({ selectedDate: date }),
+      eventStage: 'dates_selected',
+      checkOutDate: date,
+      durationNights: nightsBetween(checkInDate, date),
+    })
   }
 
   const isWithinRange = (date: string) =>
@@ -354,6 +424,15 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
     event.preventDefault()
     setError('')
     setIsSubmitting(true)
+    const attribution = getTrialAttributionPayload()
+
+    trackTrialFunnelEvent('trial_checkout_started', {
+      ...getFunnelPayload(),
+      eventStage: 'begin_checkout',
+      name,
+      email,
+      phone,
+    })
 
     try {
       const response = await fetch('/api/trial-request', {
@@ -377,6 +456,15 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
           roomTypeId: selectedRoom?.roomTypeId,
           ratePlanId: selectedRoom?.ratePlanId,
           rateTypeId: selectedRoom?.rateTypeId,
+          sessionId: getTrialSessionId(),
+          pageUrl: attribution.pageUrl,
+          referrer: attribution.referrer,
+          utmSource: attribution.utmSource,
+          utmMedium: attribution.utmMedium,
+          utmCampaign: attribution.utmCampaign,
+          utmContent: attribution.utmContent,
+          utmTerm: attribution.utmTerm,
+          attributionPayload: attribution,
           roomSelections: arrangedRooms.map(item => ({
             roomIndex: roomArrangements.findIndex(room => room.id === item.arrangement.id) + 1,
             roomTypeId: item.selectedRoom?.roomTypeId,
@@ -406,6 +494,14 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
 
       setRequestId(submittedRequestId)
       if (checkoutUrl) {
+        trackTrialFunnelEvent('trial_payment_redirected', {
+          ...getFunnelPayload({ checkoutUrlCreated: true }),
+          requestId: submittedRequestId,
+          eventStage: 'payment_redirect',
+          name,
+          email,
+          phone,
+        })
         window.location.href = checkoutUrl
         return
       }
