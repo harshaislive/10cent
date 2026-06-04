@@ -52,21 +52,13 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
     React.useEffect(() => {
         if (!isOpen || !location) return
 
-        const nearbyImageIndexes = new Set([
-            selectedImageIndex,
-            (selectedImageIndex + 1) % location.images.length,
-            (selectedImageIndex - 1 + location.images.length) % location.images.length,
-        ])
-
         const thumbnailPreloads = location.images.map((img) => {
             const thumbnailPreload = new window.Image()
             thumbnailPreload.src = img.thumb ?? imagePresets.thumbnail(img.desktop)
             return thumbnailPreload
         })
 
-        const nearbyDisplayPreloads = location.images.flatMap((img, index) => {
-            if (!nearbyImageIndexes.has(index)) return []
-
+        const displayPreloads = location.images.flatMap((img) => {
             const desktopPreload = new window.Image()
             desktopPreload.src = imagePresets.heroDesktopFast(img.desktop)
 
@@ -76,8 +68,8 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
             return [desktopPreload, mobilePreload]
         })
 
-        preloadCacheRef.current = [...thumbnailPreloads, ...nearbyDisplayPreloads]
-    }, [isOpen, location, selectedImageIndex])
+        preloadCacheRef.current = [...thumbnailPreloads, ...displayPreloads]
+    }, [isOpen, location])
 
     if (!location || location.images.length === 0) return null
 
@@ -124,14 +116,14 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
                         {/* LEFT: Main Gallery (60% Mobile / 65% Desktop) - The "Grandeur" View */}
                         <div className="w-full lg:w-[65%] h-[60vh] lg:h-full flex flex-col bg-black relative z-10">
                             {/* Main Display Frame */}
-                            <div className="flex-1 relative w-full h-full overflow-hidden">
-                                <AnimatePresence initial={false} mode="wait">
+                            <div className="flex-1 relative w-full h-full overflow-hidden bg-[#1a1816]">
+                                <AnimatePresence initial={false}>
                                     <motion.div
                                         key={selectedImageIndex}
-                                        initial={{ opacity: 0.92 }}
+                                        initial={{ opacity: 1 }}
                                         animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.18, ease: "easeOut" }}
+                                        exit={{ opacity: 1 }}
+                                        transition={{ duration: 0.01 }}
                                         className="absolute inset-0 pointer-events-none will-change-opacity"
                                     >
                                         <Image
@@ -298,7 +290,15 @@ export default function TrialDetailModal({ isOpen, onClose, location }: TrialDet
 function preloadDisplayImage(src: string): Promise<void> {
     return new Promise((resolve) => {
         const img = new window.Image()
-        img.onload = () => resolve()
+        img.decoding = 'async'
+        img.onload = () => {
+            if ('decode' in img) {
+                img.decode().then(() => resolve()).catch(() => resolve())
+                return
+            }
+
+            resolve()
+        }
         img.onerror = () => resolve()
         img.src = src
     })
