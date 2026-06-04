@@ -76,7 +76,7 @@ const wildernessPoints = [
 const TRIAL_LOCATION = {
   name: "Blyton, Coorg",
   tagline: "Misty forests. Colonial charm meets wilderness immersion.",
-  description: "The architecture of the Western Ghats is not built; it is grown. The Blyton Bungalow respects this law. Constructed from the earth it stands on, overlooking the canopy, it is a place to sleep with the windows open and wake to the call of the Malabar Whistling Thrush. A heritage property wrapped in dense forest, where colonial elegance dissolves into the wild, and silence becomes your companion.",
+  description: "The architecture of the Western Ghats is not built; it is grown. The Blyton Bungalow respects this law. Constructed from the earth it stands on, overlooking the canopy, it is a place to sleep with the windows open and wake to the call of the Malabar Whistling Thrush. A heritage property wrapped in dense forest, where silence becomes your companion.",
   features: [
     "128-acre Poomaale Estate",
     "Coffee forest immersion",
