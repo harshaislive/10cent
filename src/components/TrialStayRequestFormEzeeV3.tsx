@@ -51,6 +51,7 @@ const CALENDAR_AVAILABILITY_NIGHTS = 1
 const MIN_ADVANCE_DAYS = 2
 const ROOM_RATE_ADULTS = 2
 const ROOM_RATE_CHILDREN = 0
+const MEMBERSHIP_ADJUSTMENT_NOTE = 'If you choose to become a 10% member, your trial stay amount will be adjusted against your final lifestyle membership payment.'
 
 const formatDateValue = (date: Date) => {
   const year = date.getFullYear()
@@ -716,6 +717,9 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                 <p className="mt-2 text-xs leading-relaxed text-[#342e29]/55">
                   This total is based on the rooms you arrange. Guest count is collected next so the stay can be prepared properly.
                 </p>
+                <p className="mt-3 border-t border-[#342e29]/10 pt-3 text-xs leading-relaxed text-[#342e29]/65">
+                  {MEMBERSHIP_ADJUSTMENT_NOTE}
+                </p>
               </div>
             </aside>
 
@@ -831,6 +835,9 @@ export default function TrialStayRequestForm({ locationName, locationSlug, onBac
                     ))}
                   </div>
                   <p className="mt-4 text-sm text-[#342e29]/60">{formatCurrency(estimatedCost, quoteCurrency)} total inclusive</p>
+                  <p className="mt-3 border-t border-[#342e29]/10 pt-3 text-xs leading-relaxed text-[#342e29]/65">
+                    {MEMBERSHIP_ADJUSTMENT_NOTE}
+                  </p>
                 </div>
               )}
             </aside>

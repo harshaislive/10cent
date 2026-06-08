@@ -257,6 +257,7 @@ export default function TrialBookingConfirmationClient() {
                 icon={<CreditCard className="h-5 w-5" />}
                 rows={[
                   ["Amount", formatCurrency(request.payment.amount, request.payment.currency)],
+                  ["Membership adjustment", "If you choose to become a 10% member, this trial stay amount will be adjusted against your final lifestyle membership payment."],
                   ["Payment status", formatStatus(request.payment.status)],
                   ["Paid at", formatDateTime(request.payment.paidAt)],
                   ["Experiences checkout", request.payment.experiencesCheckoutId || "-"],

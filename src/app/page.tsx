@@ -1127,7 +1127,7 @@ export default function EditorialPage() {
                 },
                 {
                   title: "Pay",
-                  desc: "Complete payment through the secure experiences checkout."
+                  desc: "Complete payment through the secure experiences checkout. If you continue, this amount adjusts against your final membership payment."
                 },
                 {
                   title: "Confirm",
