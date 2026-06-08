@@ -250,7 +250,7 @@ const WildernessGallery = () => {
 
   return (
     <div
-      className="relative h-[90vh] w-full overflow-hidden bg-[#342e29]"
+      className="relative min-h-[calc(100svh-96px)] w-full overflow-hidden bg-[#342e29]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -267,7 +267,7 @@ const WildernessGallery = () => {
             src={currentPoint.backgroundImage}
             alt={currentPoint.title}
             fill
-            className="object-cover"
+            className="object-cover object-top"
             quality={60}
             sizes="100vw"
             placeholder="blur"
@@ -301,7 +301,11 @@ const WildernessGallery = () => {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-5xl md:text-7xl lg:text-8xl font-light font-arizona leading-[0.9]"
+              className={`${
+              currentIndex === 2
+              ? 'text-5xl md:text-6xl lg:text-7xl'
+              : 'text-5xl md:text-7xl lg:text-8xl'
+              } font-light font-arizona leading-[0.9]`}
             >
               {currentPoint.title}
             </motion.h3>
