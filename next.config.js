@@ -26,6 +26,14 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: '/my-year/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
         source: '/_next/image(.*)',
         headers: [
           {
@@ -49,7 +57,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: process.env.NODE_ENV === 'production' ? 'public, max-age=31536000, immutable' : 'no-store',
           },
         ],
       },

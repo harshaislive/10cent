@@ -9,12 +9,14 @@ export default function TypeformChatWrapper() {
   const isConfirmationPage = pathname === '/confirmation'
   const isFoundingSilencePage = pathname === '/the-founding-silence'
   const isSecondConversationPage = pathname === '/the-second-conversation'
+  const isEnvisionPage = pathname === '/envision' || pathname.startsWith('/my-year/')
 
   if (
     !TYPEFORM_CONFIG.ENABLED ||
     isConfirmationPage ||
     isFoundingSilencePage ||
     isSecondConversationPage
+    || isEnvisionPage
   ) {
     return null
   }

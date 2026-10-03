@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { TYPEFORM_CONFIG } from '@/config/typeform'
+import { TypeformScripts } from '@/components/envision/TypeformScripts'
 import TypeformChatWrapper from '@/components/TypeformChatWrapper'
 import AnalyticsWrapper from '@/components/analytics/AnalyticsWrapper'
 import StructuredData, { organizationData, websiteData } from '@/components/seo/StructuredData'
@@ -101,24 +101,7 @@ export default function RootLayout({
         <StructuredData data={websiteData} />
         {children}
         <TypeformChatWrapper />
-        {TYPEFORM_CONFIG.ENABLED && (
-          <>
-            <script
-              src="https://embed.typeform.com/next/embed.js"
-              async
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                window.tfAsyncInit = function() {
-                  window.tf = window.tf || {};
-                  window.tf.createWidget = window.tf.createWidget || function(){};
-                };
-              `
-              }}
-            />
-          </>
-        )}
+        <TypeformScripts />
         
         {/* User Behavior Tracking Script */}
         <script

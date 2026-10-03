@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+.local/
 .pnp
 .pnp.js
 
@@ -58,3 +59,6 @@ temp/
 # Local notes and transcripts
 *.txt
 *.md
+!docs/envision-your-year-plan.md
+!docs/envision-your-year-questions.md
+!docs/envision-implementation.md
