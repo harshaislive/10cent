@@ -139,13 +139,16 @@ export function PersonalYear({ token }: { token: string }) {
       const place = PLACES.find(item => item.id === visit.placeId)!
       const returning = visits.slice(0, index).some(previous => previous.placeId === visit.placeId)
       return <article className="ev-visit" key={visit.id} id={`visit-${visit.id}`} aria-label={`${place.name}, ${visitDateRange(visit)}`}>
-        <div className="ev-visit-image"><Image src={place.image} alt={`A Beforest landscape at ${place.name}, ${place.region}`} fill quality={90} priority={index === 0} sizes="(max-width: 1160px) 100vw, 1160px" />
+        <div className="ev-visit-image"><Image src={place.image} alt={`A Beforest landscape at ${place.name}, ${place.region}`} fill quality={90} priority={index === 0} sizes="100vw" />
+          <div className="ev-visit-chapter"><span>{String(index + 1).padStart(2, '0')} / {String(visits.length).padStart(2, '0')} <span>·</span> {MONTHS[new Date(`${visit.startDate}T12:00:00Z`).getUTCMonth()]}</span><span className="ev-night-badge">{visit.nights} {visit.nights === 1 ? 'night' : 'nights'} here</span></div>
           <div className="ev-visit-caption">
-            <div className="ev-visit-title"><h2>{place.name}, {place.region}</h2><button className="ev-icon-button" onClick={() => { setEditing({ ...visit }); setError('') }} aria-label={`Edit ${place.name} visit`}><Pencil size={19} strokeWidth={1.5} /></button></div>
-            <p className="ev-visit-dates">{visitDateRange(visit)} <span>·</span> {visit.nights} {visit.nights === 1 ? 'night' : 'nights'}</p>
-            <p className="ev-visit-liner">{visitLiner(year.preferences, visit, index, returning)}</p>
+            <p className="ev-visit-region">{place.region} <span>·</span> {visitDateRange(visit)}</p>
+            <div className="ev-visit-title"><h2>{place.name}</h2><button className="ev-icon-button" onClick={() => { setEditing({ ...visit }); setError('') }} aria-label={`Edit ${place.name} visit`}><Pencil size={19} strokeWidth={1.5} /></button></div>
+            <p className="ev-place-headline">{place.headline}</p>
+            <p className="ev-story-cue" aria-hidden="true">Scroll into the story ↓</p>
           </div>
         </div>
+        <div className="ev-visit-story"><p>{place.story}</p><p className="ev-visit-liner">{visitLiner(year.preferences, visit, index, returning)}</p></div>
       </article>
     })}</section>
     <div className="ev-year-details">

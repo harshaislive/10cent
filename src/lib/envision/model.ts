@@ -6,16 +6,18 @@ export interface IPlace {
   region: string
   description: string
   image: string
+  headline: string
+  story: string
 }
 
 const IMAGE_ROOT = 'https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images'
 export const PLACES: IPlace[] = [
-  { id: 'poomaale', name: 'Poomaale 1.0', region: 'Coorg', description: 'Ancient forest canopy. Coffee, cardamom and mist.', image: '/blyton-optimized/blyton-desktop.webp' },
-  { id: 'poomaale2', name: 'Poomaale 2.0', region: 'Coorg', description: 'Coffee plantations and misty trails in adjacent wilderness.', image: `${IMAGE_ROOT}/colective_images/pomaale_2.jpg` },
-  { id: 'hammiyala', name: 'Hammiyala', region: 'Coorg', description: 'Coffee agroforestry and high altitude grasslands.', image: `${IMAGE_ROOT}/desktop/4.jpg` },
-  { id: 'hyderabad', name: 'Hyderabad', region: 'Deccan plateau', description: 'Ancient rocks and scrub forests.', image: `${IMAGE_ROOT}/colective_images/1762346094681-1ljldd.webp` },
-  { id: 'bhopal', name: 'Bhopal', region: 'Central Highlands', description: "A landscape in India's Central Highlands.", image: `${IMAGE_ROOT}/colective_images/bhopal.png` },
-  { id: 'mumbai', name: 'Mumbai', region: 'Western India', description: 'A quieter landscape close to Maximum City.', image: `${IMAGE_ROOT}/colective_images/mumbai.jpg` },
+  { id: 'poomaale', name: 'Poomaale 1.0', region: 'Coorg', description: 'Coffee, cardamom and trails beneath the forest canopy.', image: `${IMAGE_ROOT}/desktop/2.png`, headline: 'Let the forest set the pace.', story: 'Coffee and cardamom grow beneath the canopy. Trails connect the community to streams and Shola hills. Imagine having time to follow one.' },
+  { id: 'poomaale2', name: 'Poomaale 2.0', region: 'Coorg', description: 'Rainforest, freshwater streams and a neighbouring wilderness.', image: `${IMAGE_ROOT}/colective_images/pomaale_2.jpg`, headline: 'A little further into the forest.', story: 'Next to Poomaale 1.0, coffee and cardamom share a landscape with rainforest and perennial streams. Another corner of Coorg to get to know.' },
+  { id: 'hammiyala', name: 'Hammiyala', region: 'Coorg', description: 'Coffee, native forest and the grasslands of Coorg.', image: `${IMAGE_ROOT}/desktop/4.jpg`, headline: 'Make room for a wider sky.', story: 'Coffee agroforestry meets high-altitude grasslands. Picture a few days with your attention on the landscape, and space to notice what grows here.' },
+  { id: 'hyderabad', name: 'Hyderabad', region: 'Deccan plateau', description: 'Ancient rockscapes and a landscape being restored.', image: `${IMAGE_ROOT}/colective_images/1762346094681-1ljldd.webp`, headline: 'Find a different sense of time.', story: 'An original Deccan rockscape, with hills, valleys and land being restored. Imagine returning often enough to notice a landscape changing.' },
+  { id: 'bhopal', name: 'Ratapani', region: 'Near Bhopal', description: 'A landscape returning to life in Central India.', image: `${IMAGE_ROOT}/colective_images/bhopal.png`, headline: 'Return as the land returns to life.', story: 'Near the Ratapani Tiger Reserve, land marked by quarrying is being restored. Picture getting to know this place as its next chapter unfolds.' },
+  { id: 'mumbai', name: 'Mumbai', region: 'Western India', description: 'Room for a quieter rhythm beyond the city.', image: `${IMAGE_ROOT}/colective_images/mumbai.jpg`, headline: 'Leave a little space around your days.', story: 'A Beforest farming collective beyond the city. Picture time outside with your people, and a place to return to when the calendar fills again.' },
 ]
 
 export const MOTIVES = [

@@ -22,7 +22,7 @@ Mobile checks covered 390 × 844 and 320 × 700; desktop covered 1440 × 900. Mo
 
 Verified through the running app API: generation, contact saving, editing, reopening, duplicate event replay, conflicting edits returning 409 and cross-origin writes returning 403. A direct database read matched the final revision and recorded one copy of the repeated event. The saved calendar also survived a development-server restart. One synthetic test journey is labelled `utm_source=envision_storage_test`; it has no email, WhatsApp or calling permissions. Exclude that source and migrated previews from live campaigns. Proof: `docs/design/envision-cinematic/database-verification.json`.
 
-The production website has not been deployed. Its runtime still needs the same storage setting when deploying this code. This connection does not activate messaging, shared audience automation or booking attribution.
+**Hosted update, 3 October:** Deployed commit `b7b626d` to https://10percent.beforest.co/envision through the existing Coolify app with runtime `ENVISION_STORAGE_MODE=supabase`. Hosted generation, saving, editing and reopening passed; a direct Supabase read matched the final revision and calendar. Proof: `docs/design/envision-cinematic/deployment-verification.json` and `deployed-mobile.png`. The synthetic hosted journey is labelled `utm_source=envision_deployment_test` and has all channel permissions unchecked. Exclude it from campaigns. This deployment does not activate messaging, shared audience automation or booking attribution.
 
 ### Local file fallback when explicitly developing without cloud storage
 
@@ -36,10 +36,10 @@ Default production saving is disabled unless `ENVISION_STORAGE_MODE=supabase` is
 
 `docs/envision-storage.sql` was applied to the configured project on 3 October. The server adapter uses `tencent.envision_journeys`. Each record includes contact permissions, source tags, full event history and calendar versions in its document. Direct anonymous/authenticated table access is revoked; only the server service role accesses it. It does not modify booking or payment records.
 
-Before deployment:
+Deployment checks completed and remaining integration work:
 
-1. Confirm deployment targets the verified database; apply the reviewed schema only if using a different environment.
-2. Set `ENVISION_STORAGE_MODE=supabase` in the deployed runtime. Local cloud persistence and concurrent edits are verified; repeat the deployment smoke check on the hosted website.
+1. Completed: deployment targets the verified database and reviewed schema.
+2. Completed: `ENVISION_STORAGE_MODE=supabase` is set in the deployed runtime; hosted generation, saving, editing and reopening passed.
 3. Decide whether an owner login is needed in addition to the private bearer link. Anyone holding a link can view and edit the imagined calendar; contact email/phone and permission history are not returned by the public API.
 4. Add durable edge rate limits. The local start endpoint uses an in-process throttle only.
 5. Connect identity from the walkthrough rather than asking for details again. Anonymous and known journeys are not yet deduplicated across separate links by contact identity.
