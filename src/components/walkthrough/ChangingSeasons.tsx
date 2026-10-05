@@ -38,9 +38,9 @@ export function ChangingSeasons() {
   const playing = animated && inView && pageVisible && !paused
 
   return <div ref={scene} className="sw-changing-seasons" data-animated={animated} data-playing={playing}>
-    <div className="sw-season-scene" role="img" aria-label="The same wilderness trail changes through sunshine, rain, morning mist and wind.">
+    <div className="sw-season-scene" role="img" aria-label="Birds, butterflies, dragonflies and wildflowers bring life to the same wilderness trail through sunshine, rain, morning mist and wind.">
       {FRAMES.map(frame => <div className={`sw-season-frame sw-season-${frame}`} key={frame} aria-hidden="true">
-        <Image src={`/illustrations/walkthrough/seasons-v3/${frame}.webp`} alt="" width={768} height={512} sizes="(max-width: 760px) calc(100vw - 48px), 560px" onLoad={() => {
+        <Image src={`/illustrations/walkthrough/seasons-v4/${frame}.webp`} alt="" width={768} height={512} sizes="(max-width: 760px) calc(100vw - 48px), 560px" onLoad={() => {
           loaded.current.add(frame)
           if (loaded.current.size === FRAMES.length) setReady(true)
         }} />
