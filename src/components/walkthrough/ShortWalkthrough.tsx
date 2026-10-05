@@ -61,6 +61,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-land-copy"><h2 id="land-title">A place to<br />get to know.</h2>
         <p>At Beforest, time outside begins with living landscapes. Land being restored. Forests, farms and communities growing together.</p>
         <p>Return through the seasons and there is more to notice. What grows here. How the land changes. The people who care for it.</p>
+        <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v1.webp" alt="Illustration of a tree connected to roots, soil and water beneath it" width={1200} height={800} sizes="(max-width: 760px) 280px, 340px" /></div>
       </div>
       <figure className="sw-land-photo"><Image src={LANDSCAPES[2].image} alt="The Deccan rockscape at Beforest's Hyderabad collective" fill sizes="(max-width: 760px) 100vw, 48vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
     </section>
@@ -69,6 +70,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-section-number">02 / A RHYTHM OF RETURN</div>
       <h2 id="return-title">Let one visit<br />become a rhythm.</h2>
       <p className="sw-return-note">A trail you begin to recognise. A season you look forward to.<br className="sw-desktop-break" /> Time set aside to come back.</p>
+      <div className="sw-illustration sw-illustration-return"><Image src="/illustrations/walkthrough/return-through-seasons-v1.webp" alt="Illustration of a familiar trail and trees changing across three seasons" width={1200} height={800} sizes="(max-width: 760px) 310px, 500px" /></div>
       <div className="sw-model">
         <p className="sw-model-intro">10% gives you recurring access to Beforest landscapes. A way to make returning part of your year, without owning land.</p>
         <div className="sw-model-fact"><strong>30</strong><span>person-nights a year</span></div>
@@ -95,6 +97,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
         <small>A possible year, yours to change. No booking needed to begin.</small>
       </div>
       <div className="sw-year-preview" aria-label="Illustration of a possible year">
+        <div className="sw-illustration sw-illustration-year"><Image src="/illustrations/walkthrough/picture-your-year-v1.webp" alt="Illustration of an open notebook linking forests, hills and rockscapes into a personal year" width={1200} height={800} sizes="(max-width: 760px) 280px, 330px" /></div>
         <div className="sw-preview-top"><span>A YEAR WITH ROOM TO RETURN</span><span>YOURS TO SHAPE</span></div>
         {[{ season: 'A quieter beginning', place: LANDSCAPES[0], line: 'A few days beneath the canopy.' }, { season: 'When the seasons change', place: LANDSCAPES[1], line: 'Time for a wider sky.' }, { season: 'A little later in the year', place: LANDSCAPES[2], line: 'Another landscape to get to know.' }].map(item => <div className="sw-preview-visit" key={item.season}>
           <span className="sw-preview-dot" /><div className="sw-preview-image"><Image src={item.place.image} alt="" fill sizes="92px" /></div>
