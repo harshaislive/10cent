@@ -57,3 +57,9 @@ Existing Supabase filtering was verified against https://supabase.com/docs/refer
 The page now carries one promise: **Give time in nature a place in your year.** The headings move from room for wilderness, to knowing a place, to returning, choosing landscapes, picturing a personal year and experiencing Blyton. All primary invitations say Envision your year. Metadata follows the same promise.
 
 The reusable source-backed method is versioned under `docs/skills/golden-thread-copywriting/` and installed in Harsha's Codex skills. Its Beforest guide preserves paid-trial, illustrative-calendar and person-night distinctions. No design, booking, payment or attribution behavior was changed. Type checks, production build and responsive review passed at 320, 390 and 1440 pixels.
+
+## Four clear hero versions
+
+Harsha approved the four direct headline/subline pairs and requested rotation. The hero defaults to "Stay in nature. Come back throughout the year." Each pair changes together every 12 seconds. Grid stacking reserves the longest copy's height, keeping Envision in one position. Numbered selection pauses the rotation; a separate pause/resume button gives control. Keyboard focus on the copy/CTA pauses it. Hover pauses temporarily. Hidden tabs and off-screen heroes stop the timer. Reduced-motion visitors receive a static default and can choose other versions manually. Automatic changes are not announced as a live region.
+
+Local type checking/build and rendered checks passed. All four pairs showed without overlap at 390px, with identical CTA positions. A 320px check passed for overflow and CTA clearance. Desktop and automatic advancement were checked separately. This is a presentation rotation, not a conversion experiment or an audience-classification rule. Attribution and the Envision destination are unchanged.

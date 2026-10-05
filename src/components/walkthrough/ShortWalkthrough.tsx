@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ArrowDown, ArrowRight, Plus } from 'lucide-react'
 import { PLACES } from '@/lib/envision/model'
 import { readingSignal } from '@/lib/walkthrough/handoff'
+import { RotatingHeroCopy } from './RotatingHeroCopy'
 
 const CHAPTERS = ['the-land', 'the-return', 'the-places', 'your-year']
 const LANDSCAPES = PLACES.filter(place => ['poomaale', 'hammiyala', 'hyderabad'].includes(place.id))
@@ -50,12 +51,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
     <section className="sw-hero" aria-labelledby="sw-title">
       <div className="sw-hero-photo"><Image src="/PBR_0209.webp" alt="A quiet moment with a book beneath the canopy at Beforest" fill priority sizes="100vw" /></div>
       <div className="sw-hero-shade" />
-      <div className="sw-hero-copy">
-        <p className="sw-eyebrow">THE 10% LIFE · THE SHORT STORY</p>
-        <h1 id="sw-title">A year with room<br />for the wilderness.</h1>
-        <p className="sw-hero-note">Time for yourself. Time with your people. Somewhere to return to.</p>
-        <a className="sw-button" href={href} onClick={() => begin('hero')}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
-      </div>
+      <RotatingHeroCopy href={href} onBegin={() => begin('hero')} />
       <a className="sw-read" href="#the-land">Get to know the idea <ArrowDown size={17} aria-hidden="true" /></a>
       <span className="sw-hero-caption">Time beneath the canopy, Beforest</span>
     </section>
