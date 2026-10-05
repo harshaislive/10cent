@@ -140,3 +140,31 @@ html:has(.ev-year),html:has(.ev-shell){scrollbar-width:none}html:has(.ev-year)::
 }
 @media(max-width:360px){.ev-questions{padding-left:20px;padding-right:20px}.ev-visit-chapter{inset:20px 18px auto;font-size:13px}.ev-visit-caption{padding:22px 18px}.ev-visit-title h2{font-size:36px}.ev-place-headline{font-size:21px}.ev-year-total{font-size:13px}.ev-question-heading h2{font-size:29px}}
 @media(prefers-reduced-motion:reduce){.ev-story-copy h1{animation:none}}
+/* A personal field journal: a clear beginning, distinct scenes, and room for the story. */
+.ev-year-editorial .ev-year-intro{background:#f7f3ec;color:#342e29;padding:48px 24px 40px}
+.ev-year-intro h1{font-size:clamp(39px,6vw,78px);line-height:1.05;letter-spacing:-.025em;margin:18px 0}
+.ev-year-intro>p:not(.ev-eyebrow){font-size:18px;line-height:1.5;max-width:40ch}
+.ev-year-intro>span{font-size:13px;color:#6d625a}
+.ev-year-editorial .ev-visit-story{position:static;width:auto;display:grid;background:#f7f3ec;color:#342e29;padding:27px 24px 34px;gap:24px}
+.ev-story-label{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#87372e;margin-bottom:9px}
+.ev-year-editorial .ev-visit-story p{font-size:18px;line-height:1.55;margin:0;max-width:50ch}
+.ev-year-editorial .ev-visit-liner{border:0;padding:0;color:#342e29}
+.ev-year-editorial .ev-visit-caption{right:20px;max-width:none}
+.ev-year-editorial .ev-visit-image{height:520px;min-height:0}
+.ev-year-editorial .ev-return-chapter .ev-visit-image{height:300px;background:#463a33}
+.ev-year-editorial .ev-return-chapter .ev-visit-image:after{display:none}
+.ev-year-editorial .ev-return-chapter .ev-visit-title h2{font-size:40px}
+.ev-trial-bridge{padding:50px 24px;background:#e9dfd1;color:#342e29}
+.ev-trial-bridge h2{font-size:40px;line-height:1.1;margin:18px 0}
+.ev-trial-bridge>p:not(.ev-eyebrow){max-width:46ch;font-size:18px;line-height:1.5}
+.ev-trial-bridge small{display:block;max-width:52ch;line-height:1.5;margin-top:18px}
+@media(min-width:801px){
+.ev-year-editorial .ev-year-intro{padding:64px max(48px,calc((100vw - 1260px)/2)) 54px}
+.ev-year-editorial .ev-visit-image{height:70vh;min-height:520px;max-height:850px}
+.ev-year-editorial .ev-visit-caption{left:5vw;right:5vw;padding-bottom:40px}
+.ev-year-editorial .ev-visit-story{padding:35px 5vw 42px;grid-template-columns:1.2fr 1fr;gap:10vw}
+.ev-year-editorial .ev-visit-story p{font-size:22px}
+.ev-year-editorial .ev-return-chapter .ev-visit-image{min-height:0;height:340px}
+.ev-trial-bridge{padding:64px 5vw}.ev-trial-bridge h2{font-size:58px}
+}
+@media(max-width:400px){.ev-year-editorial .ev-visit-image{height:440px}.ev-year-intro h1{font-size:39px}}

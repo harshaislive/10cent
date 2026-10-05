@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Check, ChevronLeft, ChevronRight, Copy, Pencil, X } from 'lucide-react'
-import { MONTHS, PLACES, visitDateRange, visitLiner, type IContact, type IPublicJourney, type IVisit } from '@/lib/envision/model'
+import { MONTHS, PLACES, visitDateRange, type IContact, type IPublicJourney, type IVisit } from '@/lib/envision/model'
+import { visitExperience } from '@/lib/envision/experience-content'
 import { loadYear, recordAction } from '@/lib/envision/client'
 
 const EMPTY_CONTACT: IContact = { name: '', email: '', phone: '', permissions: { email: false, whatsapp: false, calling: false } }
@@ -125,7 +126,7 @@ export function PersonalYear({ token }: { token: string }) {
   const years = Array.from(new Set(visits.map(visit => visit.startDate.slice(0, 4))))
   const group = year.preferences.party === 'solo' ? 'Just you' : year.preferences.party === 'partner' ? 'The two of you' : year.preferences.party === 'family' ? `Family of ${year.preferences.people}` : year.preferences.party === 'friends' ? `${year.preferences.people} friends` : `${year.preferences.people} people`
 
-  return <main className="ev-year">
+  return <main className="ev-year ev-year-editorial">
     <header className="ev-year-nav">
       <div className="ev-year-nav-inner">
         <Link href="/" className="ev-year-brand" aria-label="Beforest 10percent home">Beforest <span>10percent</span></Link>
@@ -134,24 +135,25 @@ export function PersonalYear({ token }: { token: string }) {
         <span className="ev-group">{group} <span className="ev-group-years">{years.join(' / ')}</span></span>
       </div>
     </header>
-    <h1 className="ev-sr-only">Your year, outside</h1>
+    <section className="ev-year-intro"><p className="ev-eyebrow">Your possible year</p><h1>More of the days<br />you want to have.</h1><p>{group}. {total} imagined nights. {visits.length} chances to spend time outside.</p><span>Scroll through your visits. Change any place or date.</span></section>
     <section ref={gallery} className="ev-visit-gallery" aria-label="Scroll through your possible year">{visits.map((visit, index) => {
       const place = PLACES.find(item => item.id === visit.placeId)!
-      const returning = visits.slice(0, index).some(previous => previous.placeId === visit.placeId)
-      return <article className="ev-visit" key={visit.id} id={`visit-${visit.id}`} aria-label={`${place.name}, ${visitDateRange(visit)}`}>
-        <div className="ev-visit-image"><Image src={place.image} alt={`A Beforest landscape at ${place.name}, ${place.region}`} fill quality={90} priority={index === 0} sizes="100vw" />
+      const occurrence = visits.slice(0, index).filter(previous => previous.placeId === visit.placeId).length
+      const experience = visitExperience(place, year.preferences, index, occurrence)
+      return <article className={`ev-visit ${experience.image ? "" : "ev-return-chapter"}`} key={visit.id} id={`visit-${visit.id}`} aria-label={`${place.name}, ${visitDateRange(visit)}`}>
+        <div className="ev-visit-image"><>{experience.image && <Image src={experience.image} alt={experience.alt} fill quality={85} priority={index === 0} sizes="100vw" />}</>
           <div className="ev-visit-chapter"><span>{String(index + 1).padStart(2, '0')} / {String(visits.length).padStart(2, '0')} <span>·</span> {MONTHS[new Date(`${visit.startDate}T12:00:00Z`).getUTCMonth()]}</span><span className="ev-night-badge">{visit.nights} {visit.nights === 1 ? 'night' : 'nights'} here</span></div>
           <div className="ev-visit-caption">
             <p className="ev-visit-region">{place.region} <span>·</span> {visitDateRange(visit)}</p>
             <div className="ev-visit-title"><h2>{place.name}</h2><button className="ev-icon-button" onClick={() => { setEditing({ ...visit }); setError('') }} aria-label={`Edit ${place.name} visit`}><Pencil size={19} strokeWidth={1.5} /></button></div>
-            <p className="ev-place-headline">{place.headline}</p>
+            <p className="ev-place-headline">{experience.heading}</p>
             <p className="ev-story-cue" aria-hidden="true">Scroll into the story ↓</p>
           </div>
         </div>
-        <div className="ev-visit-story"><p>{place.story}</p><p className="ev-visit-liner">{visitLiner(year.preferences, visit, index, returning)}</p></div>
+        <div className="ev-visit-story"><div><span className="ev-story-label">Get to know the place</span><p>{experience.detail}</p></div><div><span className="ev-story-label">You chose {experience.reason.toLowerCase()}</span><p className="ev-visit-liner">{experience.moment}</p></div></div>
       </article>
     })}</section>
-    <div className="ev-year-details">
+    <section className="ev-trial-bridge"><p className="ev-eyebrow">Begin with a real visit</p><h2>Try a few days at Blyton.</h2><p>Your calendar is a possibility. A paid trial stay at Blyton Bungalow in Coorg is a way to experience Beforest for yourself.</p><button className="ev-button" disabled={busy} onClick={trial}>Explore trial dates <ArrowRight size={18} /></button><small>The landscapes above are inspiration. Trial dates and availability are checked separately.</small></section><div className="ev-year-details">
       <p className="ev-small">A possible year, not a reservation. Actual stays depend on availability and booking terms.</p>
       {total < year.preferences.desiredNights && <p className="ev-small">{total} of your {year.preferences.desiredNights} imagined nights are pictured. Edit a visit to adjust your year.</p>}
       <button className="ev-copy" onClick={copy}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'Link copied' : 'Copy private link'}</button>
