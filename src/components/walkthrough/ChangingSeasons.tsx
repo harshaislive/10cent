@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { Pause, Play } from 'lucide-react'
 import './changing-seasons.css'
 
 const FRAMES = ['sun', 'rain', 'fog', 'wind']
@@ -48,7 +47,7 @@ export function ChangingSeasons() {
       </div>)}
     </div>
     {animated ? <button type="button" className="sw-season-toggle" aria-label={paused ? 'Play changing landscape' : 'Pause changing landscape'} aria-pressed={paused} onClick={() => setPaused(value => !value)}>
-      {paused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
+      {paused ? 'Resume animation' : 'Pause animation'}
     </button> : null}
   </div>
 }
