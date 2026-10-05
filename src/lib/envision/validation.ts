@@ -1,4 +1,5 @@
 import { DEFAULT_PREFERENCES, MOTIVES, PLACES, validateVisits, type IContact, type IPreferences, type IVisit, type EventName } from './model'
+import { READING_ATTRIBUTION_KEYS } from '@/lib/walkthrough/handoff'
 
 export class EnvisionError extends Error {
   constructor(message: string, public status = 400) { super(message) }
@@ -74,7 +75,7 @@ export function parseEvent(value: unknown): { name: EventName; id: string; step?
 export function parseAttribution(value: unknown): Record<string, string> {
   const input = value ? object(value) : {}
   const result: Record<string, string> = {}
-  for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) if (typeof input[key] === 'string') result[key] = text(input[key], 150)
+  for (const key of READING_ATTRIBUTION_KEYS) if (typeof input[key] === 'string') result[key] = text(input[key], 150)
   return result
 }
 export function parsePayload(value: unknown): Record<string, unknown> { return object(value) }

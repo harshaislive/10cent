@@ -1,4 +1,5 @@
 import { type EventName, type IPreferences, type IVisit, type IContact, type IPublicJourney } from './model'
+import { READING_ATTRIBUTION_KEYS } from '@/lib/walkthrough/handoff'
 
 const SESSION_KEY = 'beforest-envision-v1'
 interface IResponse { token?: string; journey?: IPublicJourney; error?: string }
@@ -23,7 +24,7 @@ export function openJourney(): Promise<{ token: string; journey: IPublicJourney 
       } else if (![404, 410].includes(response.status)) throw new Error('Your saved year could not be loaded. Please try again.')
     }
     const params = new URLSearchParams(window.location.search)
-    const attribution = Object.fromEntries(['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].map(key => [key, params.get(key) || '']))
+    const attribution = Object.fromEntries(READING_ATTRIBUTION_KEYS.map(key => [key, params.get(key) || '']))
     const result = await request('/api/envision', { method: 'POST', body: JSON.stringify({ attribution }) })
     if (!result.token || !result.journey) throw new Error('Please try starting your year again.')
     try { localStorage.setItem(SESSION_KEY, result.token) } catch {}
