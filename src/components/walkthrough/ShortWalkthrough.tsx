@@ -9,6 +9,11 @@ import { RotatingHeroCopy } from './RotatingHeroCopy'
 
 const CHAPTERS = ['the-land', 'the-return', 'the-places', 'your-year']
 const LANDSCAPES = PLACES.filter(place => ['poomaale', 'hammiyala', 'hyderabad'].includes(place.id))
+const YEAR_MOMENTS = [
+  { place: 'Poomaale', region: 'Coorg', moment: 'A few days, closer to the land', line: 'Coffee cherries in your hands. Time to notice how it grows.', image: '/images/walkthrough/poomaale-coffee-harvest.webp', alt: 'People holding freshly picked coffee cherries at the Poomaale Collective' },
+  { place: 'Hammiyala', region: 'Coorg', moment: 'Return when the landscape changes', line: 'Misty hills. A slower start to the morning.', image: '/images/walkthrough/hammiyala-mist.webp', alt: 'Misty wooded hills and a winding path at the Hammiyala Collective' },
+  { place: 'Hyderabad', region: 'Deccan plateau', moment: 'Another place in your year', line: 'An evening by the lake, watching the light change.', image: '/images/walkthrough/hyderabad-lake-sunset.webp', alt: 'Birds above the Hyderabad Collective lake at sunset' },
+]
 const FAQS = [
   { question: 'Is this ownership?', answer: '10% is recurring access to Beforest landscapes. You do not buy land or become a collective owner. The collectives, hospitality and experiences are part of the larger Beforest world.' },
   { question: 'What does a person-night mean?', answer: 'One person staying one night uses one person-night. Two adults staying three nights use six person-nights. The 10% membership described in the walkthrough offers 30 person-nights a year for 10 years. Actual stays follow the applicable membership terms and availability.' },
@@ -99,14 +104,18 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
         <a className="sw-button" href={href} onClick={() => begin('year')}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
         <small>A possible year, yours to change. No booking needed to begin.</small>
       </div>
-      <div className="sw-year-preview" aria-label="Illustration of a possible year">
-        <div className="sw-illustration sw-illustration-year"><Image src="/illustrations/walkthrough/picture-your-year-v1.webp" alt="Illustration of an open notebook linking forests, hills and rockscapes into a personal year" width={1200} height={800} sizes="(max-width: 760px) 280px, 330px" /></div>
-        <div className="sw-preview-top"><span>A YEAR WITH ROOM TO RETURN</span><span>YOURS TO SHAPE</span></div>
-        {[{ season: 'A quieter beginning', place: LANDSCAPES[0], line: 'A few days beneath the canopy.' }, { season: 'When the seasons change', place: LANDSCAPES[1], line: 'Time for a wider sky.' }, { season: 'A little later in the year', place: LANDSCAPES[2], line: 'Another landscape to get to know.' }].map(item => <div className="sw-preview-visit" key={item.season}>
-          <span className="sw-preview-dot" /><div className="sw-preview-image"><Image src={item.place.image} alt="" fill sizes="92px" /></div>
-          <div><span>{item.season}</span><h3>{item.place.name}</h3><p>{item.line}</p></div>
-        </div>)}
-        <p className="sw-preview-note">An illustration to begin with. Your choices shape the year you create.</p>
+      <div className="sw-year-stories">
+        <div className="sw-year-heading">
+          <div><span>A POSSIBLE YEAR</span><p>Different places. More to look forward to.</p></div>
+          <div className="sw-illustration sw-year-seal"><Image src="/illustrations/walkthrough/picture-your-year-v1.webp" alt="" width={1200} height={800} sizes="100px" /></div>
+        </div>
+        <div className="sw-moment-track" tabIndex={0} role="region" aria-label="Picture your year at Beforest. Scroll horizontally to see three moments.">
+          {YEAR_MOMENTS.map((item, index) => <figure className="sw-year-moment" key={item.place}>
+            <div className="sw-moment-photo"><Image src={item.image} alt={item.alt} fill sizes={index === 0 ? '(max-width: 760px) 82vw, 52vw' : '(max-width: 760px) 82vw, 26vw'} /><span className="sw-moment-order" aria-hidden="true">0{index + 1}</span></div>
+            <figcaption><span>{item.moment}</span><h3>{item.place}<small>{item.region}</small></h3><p>{item.line}</p></figcaption>
+          </figure>)}
+        </div>
+        <div className="sw-year-bottom"><p>These are a few possibilities. Your choices shape your calendar.</p><span className="sw-year-scroll" aria-hidden="true">Swipe to explore <ArrowRight size={16} /></span></div>
       </div>
     </section>
 

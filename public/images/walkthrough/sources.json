@@ -1,0 +1,41 @@
+[
+  {
+    "file": "/images/walkthrough/poomaale-coffee-harvest.webp",
+    "source": "https://vectorsearch.beforest.co/",
+    "dropboxFolder": "/Beforest/Prabir's Resource/Beforest for Future Atlas Magazine",
+    "sourceFilename": "Image 4.1: Coffee plantation at the Poomaale Collective.JPG",
+    "search": "Poomaale",
+    "verifiedOn": "2026-10-05",
+    "originalDimensions": [
+      6048,
+      4024
+    ],
+    "optimizedBytes": 190634
+  },
+  {
+    "file": "/images/walkthrough/hammiyala-mist.webp",
+    "source": "https://vectorsearch.beforest.co/",
+    "dropboxFolder": "/Beforest/Prabir's Resource/Beforest for Future Atlas Magazine",
+    "sourceFilename": "The Hammiyala Collective.jpg",
+    "search": "Hammiyala",
+    "verifiedOn": "2026-10-05",
+    "originalDimensions": [
+      6048,
+      4024
+    ],
+    "optimizedBytes": 128244
+  },
+  {
+    "file": "/images/walkthrough/hyderabad-lake-sunset.webp",
+    "source": "https://vectorsearch.beforest.co/",
+    "dropboxFolder": "/Beforest/Prabir's Resource/Beforest for Future Atlas Magazine",
+    "sourceFilename": "Image 3: Hyderabad Collective Lake.jpg",
+    "search": "Hyderabad",
+    "verifiedOn": "2026-10-05",
+    "originalDimensions": [
+      6020,
+      4005
+    ],
+    "optimizedBytes": 128894
+  }
+]
