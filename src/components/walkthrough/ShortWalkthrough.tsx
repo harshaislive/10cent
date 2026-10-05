@@ -6,6 +6,7 @@ import { ArrowDown, ArrowRight, Plus } from 'lucide-react'
 import { PLACES } from '@/lib/envision/model'
 import { readingSignal } from '@/lib/walkthrough/handoff'
 import { RotatingHeroCopy } from './RotatingHeroCopy'
+import { ChangingSeasons } from './ChangingSeasons'
 
 const CHAPTERS = ['the-land', 'the-return', 'the-places', 'your-year']
 const LANDSCAPES = PLACES.filter(place => ['poomaale', 'hammiyala', 'hyderabad'].includes(place.id))
@@ -78,8 +79,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-section-number">02 / A RHYTHM OF RETURN</div>
       <h2 id="return-title">Let one visit<br />become a rhythm.</h2>
       <p className="sw-return-note">A trail you begin to recognise. A season you look forward to.<br className="sw-desktop-break" /> Time set aside to come back.</p>
-      <div className="sw-illustration sw-illustration-return"><Image src="/illustrations/walkthrough/return-through-seasons-v2.webp" alt="Illustration of three return visits to the same trail, tree and rocks: dry weather, monsoon rain and new growth" width={1200} height={400} sizes="(max-width: 760px) 310px, 500px" /></div>
-      <div className="sw-return-seasons" aria-hidden="true"><span>Dry days</span><span>Monsoon</span><span>New growth</span></div>
+      <ChangingSeasons />
       <div className="sw-model">
         <p className="sw-model-intro">10% gives you recurring access to Beforest landscapes. A way to make returning part of your year, without owning land.</p>
         <div className="sw-model-fact"><strong>30</strong><span>person-nights a year</span></div>
