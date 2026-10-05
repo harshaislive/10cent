@@ -11,4 +11,28 @@
 @media(max-width:760px){.sw-year{padding:52px 0;gap:32px}.sw-year-copy{padding:0 24px}.sw-year-heading{margin:0 24px 20px;padding-bottom:12px}.sw-year-heading p{font-size:16px;max-width:220px}.sw-year-seal{width:96px;height:64px;flex-basis:96px}.sw-moment-track{display:flex;gap:16px;overflow-x:auto;padding:0 24px 15px;scroll-snap-type:x mandatory;scroll-padding-left:24px;scrollbar-width:thin;scrollbar-color:#b7a393 transparent;overscroll-behavior-x:contain}.sw-year-moment{flex:0 0 82%;scroll-snap-align:start;max-width:420px}.sw-year-moment .sw-moment-photo,.sw-year-moment:first-child .sw-moment-photo{aspect-ratio:4/4.3}.sw-year-moment:first-child img{object-position:48% center}.sw-year-moment figcaption{padding-top:16px}.sw-year-moment h3{font-size:30px}.sw-year-moment figcaption>span{font-size:11px}.sw-year-moment figcaption p{font-size:15px}.sw-year-bottom{margin:16px 24px 0;display:flex;flex-direction:column;gap:12px}.sw-year-bottom p{max-width:290px}.sw-year-scroll{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--sw-red)}}
 @media(max-width:360px){.sw-year{padding-left:0;padding-right:0}.sw-year-copy{padding-left:20px;padding-right:20px}.sw-year-heading{margin-left:20px;margin-right:20px}.sw-year-heading p{font-size:15px}.sw-year-seal{width:80px;height:54px;flex-basis:80px}.sw-moment-track{padding-left:20px;padding-right:20px;scroll-padding-left:20px}.sw-year-bottom{margin-left:20px;margin-right:20px}.sw-year-moment h3{font-size:28px}}
 
-
+/* The photograph introduces the place; the illustrated note explains its care. */
+.sw-land-editorial{display:flex;flex-direction:column;align-items:stretch;gap:34px;padding-top:96px;padding-bottom:80px}
+.sw-land-intro{display:grid;grid-template-columns:1.1fr 1fr;align-items:end;gap:12%}
+.sw-land-intro h2{margin-top:24px}
+.sw-land-intro>p{max-width:410px;font-size:20px;line-height:1.65;padding-bottom:5px}
+.sw-land-editorial .sw-land-photo{width:100%;min-height:0;aspect-ratio:2.25/1;margin:0!important}
+.sw-land-editorial .sw-land-photo img{object-position:50% 57%}
+.sw-land-editorial .sw-land-photo figcaption{font-size:13px;padding:30px 26px 20px}
+.sw-land-care{display:flex;align-items:center;gap:24px;max-width:620px;margin:0 auto}
+.sw-land-care-art{flex:0 0 150px;width:150px;height:100px}
+.sw-land-care p{font-size:22px;line-height:1.35}
+.sw-land-care span{display:block;font-size:13px;line-height:1.6;color:#645950;margin-top:8px}
+@media(max-width:760px){
+ .sw-land-editorial{padding:52px 24px 42px;gap:26px}
+ .sw-land-intro{display:block}
+ .sw-land-intro h2{margin-top:20px}
+ .sw-land-intro>p{font-size:17px;line-height:1.6;margin-top:20px;padding:0;max-width:100%}
+ .sw-land-editorial .sw-land-photo{aspect-ratio:4/3;width:calc(100% + 48px);margin-left:-24px!important}
+ .sw-land-editorial .sw-land-photo img{object-position:50% 63%}
+ .sw-land-editorial .sw-land-photo figcaption{font-size:11px;padding:25px 24px 17px}
+ .sw-land-care{gap:12px;max-width:none;margin:0}
+ .sw-land-care-art{flex-basis:104px;width:104px;height:70px}
+ .sw-land-care p{font-size:18px;line-height:1.4}
+ .sw-land-care span{font-size:11px;line-height:1.5;margin-top:7px}
+}

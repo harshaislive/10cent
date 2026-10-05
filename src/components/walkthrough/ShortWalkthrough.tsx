@@ -62,17 +62,16 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <span className="sw-hero-caption">Time beneath the canopy, Beforest</span>
     </section>
 
-    <section id="the-land" className="sw-land sw-chapter" aria-labelledby="land-title">
-      <div className="sw-land-copy">
-        <div className="sw-land-kicker">
-          <div className="sw-section-number">01 / IT BEGINS WITH THE LAND</div>
-          <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v2.webp" alt="Illustration of hands tending a young sapling beside a stream, showing care for living land" width={1200} height={800} sizes="(max-width: 760px) 100px, 130px" /></div>
-        </div>
-        <h2 id="land-title">A place to<br />get to know.</h2>
-        <p>At Beforest, time outside begins with living landscapes. Land being restored. Forests, farms and communities growing together.</p>
-        <p>Return through the seasons and there is more to notice. What grows here. How the land changes. The people who care for it.</p>
+    <section id="the-land" className="sw-land sw-land-editorial sw-chapter" aria-labelledby="land-title">
+      <div className="sw-land-intro">
+        <div><p className="sw-section-number">01 / IT BEGINS WITH THE LAND</p><h2 id="land-title">A place to<br />get to know.</h2></div>
+        <p>Walk among forests, farms and open water. Come back through the seasons, and get to know the land and the people who care for it.</p>
       </div>
-      <figure className="sw-land-photo"><Image src={LANDSCAPES[2].image} alt="A family by the water at sunset at Beforest Hyderabad" fill sizes="(max-width: 760px) 100vw, 48vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
+      <figure className="sw-land-photo"><Image src="/images/walkthrough/hyderabad-living-land.webp" alt="Forested rocky hills, farms and a lake at the Beforest Hyderabad Collective" fill sizes="(max-width: 760px) 100vw, 90vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
+      <div className="sw-land-care">
+        <div className="sw-illustration sw-land-care-art"><Image src="/illustrations/walkthrough/living-land-v2.webp" alt="Hands tending a young sapling beside a stream" width={1200} height={800} sizes="(max-width: 760px) 104px, 150px" /></div>
+        <div><p>Forests, farms and communities<br className="sw-desktop-break" /> growing together.</p><span>Living land, cared for by the people who call it home.</span></div>
+      </div>
     </section>
 
     <section id="the-return" className="sw-return sw-chapter" aria-labelledby="return-title">
