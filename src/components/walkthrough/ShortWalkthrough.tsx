@@ -57,13 +57,16 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
     </section>
 
     <section id="the-land" className="sw-land sw-chapter" aria-labelledby="land-title">
-      <div className="sw-section-number">01 / IT BEGINS WITH THE LAND</div>
-      <div className="sw-land-copy"><h2 id="land-title">A place to<br />get to know.</h2>
+      <div className="sw-land-copy">
+        <div className="sw-land-kicker">
+          <div className="sw-section-number">01 / IT BEGINS WITH THE LAND</div>
+          <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v1.webp" alt="Illustration of a tree connected to roots, soil and water beneath it" width={1200} height={800} sizes="(max-width: 760px) 84px, 120px" /></div>
+        </div>
+        <h2 id="land-title">A place to<br />get to know.</h2>
         <p>At Beforest, time outside begins with living landscapes. Land being restored. Forests, farms and communities growing together.</p>
         <p>Return through the seasons and there is more to notice. What grows here. How the land changes. The people who care for it.</p>
-        <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v1.webp" alt="Illustration of a tree connected to roots, soil and water beneath it" width={1200} height={800} sizes="(max-width: 760px) 280px, 340px" /></div>
       </div>
-      <figure className="sw-land-photo"><Image src={LANDSCAPES[2].image} alt="The Deccan rockscape at Beforest's Hyderabad collective" fill sizes="(max-width: 760px) 100vw, 48vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
+      <figure className="sw-land-photo"><Image src={LANDSCAPES[2].image} alt="A family by the water at sunset at Beforest Hyderabad" fill sizes="(max-width: 760px) 100vw, 48vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
     </section>
 
     <section id="the-return" className="sw-return sw-chapter" aria-labelledby="return-title">
