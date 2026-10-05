@@ -17,3 +17,9 @@ Original PNGs, exact prompts and the conversion register are preserved at `D:/AI
 Type checks and the production build passed. Browser checks at 320px and 390px found no horizontal overflow; all three illustrations loaded. Desktop at 1440px was reviewed. FAQ expansion passed, and no relevant console errors/warnings were captured. Envision links and hero rotation are unchanged.
 
 Proof images: `C:/Users/harsh/.codex/visualizations/2026/10/05/golden-thread/illustration-mobile-land.png`, `illustration-mobile-return.png`, `illustration-mobile-year.png` and `illustration-desktop-land.png`. Publication evidence is maintained in the parent rollout note.
+
+## Section-specific stories, version 2
+
+5 October 2026: Harsha requested illustrations that speak the section story. New assets preserve the editorial style with a more explicit narrative: hands tending a sapling beside water for living land; three visits to the same trail, tree and rocks for return; a calendar with selected visit blocks and a pencil for personal choices. Dry days, Monsoon and New growth captions clarify the return sequence. These are symbolic illustrations, not property photographs or confirmed dates.
+
+Originals and exact prompts: parent design/illustrations/2026-10-05-story/. Production files: public/illustrations/walkthrough/*-v2.webp. All three originals have verified alpha transparency. Land and year are 3:2; return is 3:1. Mobile marks are 100px (land), 96px/80px (calendar), and a 310px-wide seasonal strip. Supporting accents remain secondary to real photographs. Type checks/build and mobile/desktop validation accompany the parent completion proof.

@@ -65,7 +65,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-land-copy">
         <div className="sw-land-kicker">
           <div className="sw-section-number">01 / IT BEGINS WITH THE LAND</div>
-          <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v1.webp" alt="Illustration of a tree connected to roots, soil and water beneath it" width={1200} height={800} sizes="(max-width: 760px) 84px, 120px" /></div>
+          <div className="sw-illustration sw-illustration-land"><Image src="/illustrations/walkthrough/living-land-v2.webp" alt="Illustration of hands tending a young sapling beside a stream, showing care for living land" width={1200} height={800} sizes="(max-width: 760px) 100px, 130px" /></div>
         </div>
         <h2 id="land-title">A place to<br />get to know.</h2>
         <p>At Beforest, time outside begins with living landscapes. Land being restored. Forests, farms and communities growing together.</p>
@@ -78,7 +78,8 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-section-number">02 / A RHYTHM OF RETURN</div>
       <h2 id="return-title">Let one visit<br />become a rhythm.</h2>
       <p className="sw-return-note">A trail you begin to recognise. A season you look forward to.<br className="sw-desktop-break" /> Time set aside to come back.</p>
-      <div className="sw-illustration sw-illustration-return"><Image src="/illustrations/walkthrough/return-through-seasons-v1.webp" alt="Illustration of a familiar trail and trees changing across three seasons" width={1200} height={800} sizes="(max-width: 760px) 310px, 500px" /></div>
+      <div className="sw-illustration sw-illustration-return"><Image src="/illustrations/walkthrough/return-through-seasons-v2.webp" alt="Illustration of three return visits to the same trail, tree and rocks: dry weather, monsoon rain and new growth" width={1200} height={400} sizes="(max-width: 760px) 310px, 500px" /></div>
+      <div className="sw-return-seasons" aria-hidden="true"><span>Dry days</span><span>Monsoon</span><span>New growth</span></div>
       <div className="sw-model">
         <p className="sw-model-intro">10% gives you recurring access to Beforest landscapes. A way to make returning part of your year, without owning land.</p>
         <div className="sw-model-fact"><strong>30</strong><span>person-nights a year</span></div>
@@ -107,7 +108,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-year-stories">
         <div className="sw-year-heading">
           <div><span>A POSSIBLE YEAR</span><p>Different places. More to look forward to.</p></div>
-          <div className="sw-illustration sw-year-seal"><Image src="/illustrations/walkthrough/picture-your-year-v1.webp" alt="" width={1200} height={800} sizes="100px" /></div>
+          <div className="sw-illustration sw-year-seal"><Image src="/illustrations/walkthrough/picture-your-year-v2.webp" alt="Illustration of a personal calendar with chosen visits to a forest, hills and a lake, and a pencil for making changes" width={1200} height={800} sizes="(max-width: 360px) 80px, (max-width: 760px) 96px, 120px" /></div>
         </div>
         <div className="sw-moment-track" tabIndex={0} role="region" aria-label="Picture your year at Beforest. Scroll horizontally to see three moments.">
           {YEAR_MOMENTS.map((item, index) => <figure className="sw-year-moment" key={item.place}>
