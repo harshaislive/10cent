@@ -1,0 +1,4 @@
+interface:
+  display_name: "Golden Thread Copywriting"
+  short_description: "One clear promise, from first line to next step"
+  default_prompt: "Use $golden-thread-copywriting to write or improve this copy so one meaningful promise connects the reader, evidence, and next step."

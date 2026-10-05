@@ -4,18 +4,18 @@ import { shortWalkthroughHref } from '@/lib/walkthrough/handoff'
 import '@/components/walkthrough/short-walkthrough.css'
 
 export const metadata: Metadata = {
-  title: 'A little room to return | Beforest 10% Life',
-  description: 'The 10% Life, in a few quiet moments. Get to know Beforest landscapes, then picture a year with room to return.',
+  title: 'A year with room for the wilderness | Beforest 10% Life',
+  description: 'Give time in nature a place in your year. Get to know Beforest landscapes, envision your own calendar, then explore a trial stay at Blyton.',
   alternates: { canonical: 'https://10percent.beforest.co/10percent-life' },
   openGraph: {
-    title: 'A little room to return | Beforest 10% Life',
-    description: 'Living landscapes. Time to return. A year that feels more like you.',
+    title: 'A year with room for the wilderness | Beforest 10% Life',
+    description: 'Somewhere to return to. Time set aside. Picture it in your own year.',
     url: 'https://10percent.beforest.co/10percent-life',
     images: [{ url: 'https://10percent.beforest.co/PBR_0209.webp', width: 1920, height: 1280, alt: 'Time to read beneath the Beforest canopy' }],
   },
   twitter: {
-    card: 'summary_large_image', title: 'A little room to return | Beforest 10% Life',
-    description: 'Get to know the idea, then envision your own year.', images: ['https://10percent.beforest.co/PBR_0209.webp'],
+    card: 'summary_large_image', title: 'A year with room for the wilderness | Beforest 10% Life',
+    description: 'Give time in nature a place in your year. Start with your own calendar.', images: ['https://10percent.beforest.co/PBR_0209.webp'],
   },
 }
 

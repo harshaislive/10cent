@@ -51,3 +51,9 @@ The synthetic source `short_walkthrough_test` must be excluded from campaigns. N
 Browser proof: `C:/Users/harsh/.codex/visualizations/2026/10/05/short-walkthrough/`. Production build/deployment results are recorded in the parent rollout note after completion.
 
 Existing Supabase filtering was verified against https://supabase.com/docs/reference/javascript/using-filters. No schema, credentials, runtime environment or table-permission changes were needed.
+
+## Golden thread copy refinement, 5 October
+
+The page now carries one promise: **Give time in nature a place in your year.** The headings move from room for wilderness, to knowing a place, to returning, choosing landscapes, picturing a personal year and experiencing Blyton. All primary invitations say Envision your year. Metadata follows the same promise.
+
+The reusable source-backed method is versioned under `docs/skills/golden-thread-copywriting/` and installed in Harsha's Codex skills. Its Beforest guide preserves paid-trial, illustrative-calendar and person-night distinctions. No design, booking, payment or attribution behavior was changed. Type checks, production build and responsive review passed at 320, 390 and 1440 pixels.

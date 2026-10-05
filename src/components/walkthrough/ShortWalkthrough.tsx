@@ -52,8 +52,8 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
       <div className="sw-hero-shade" />
       <div className="sw-hero-copy">
         <p className="sw-eyebrow">THE 10% LIFE · THE SHORT STORY</p>
-        <h1 id="sw-title">A little room.<br />A reason to return.</h1>
-        <p className="sw-hero-note">What if time in nature had a place in your year?</p>
+        <h1 id="sw-title">A year with room<br />for the wilderness.</h1>
+        <p className="sw-hero-note">Time for yourself. Time with your people. Somewhere to return to.</p>
         <a className="sw-button" href={href} onClick={() => begin('hero')}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
       </div>
       <a className="sw-read" href="#the-land">Get to know the idea <ArrowDown size={17} aria-hidden="true" /></a>
@@ -62,19 +62,19 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
 
     <section id="the-land" className="sw-land sw-chapter" aria-labelledby="land-title">
       <div className="sw-section-number">01 / IT BEGINS WITH THE LAND</div>
-      <div className="sw-land-copy"><h2 id="land-title">A living place.<br />Still becoming.</h2>
-        <p>Beforest brings degraded land back to life. Soil, water, forests and communities are part of the same story.</p>
-        <p>These are working, regenerating landscapes. Places to get to know slowly, as the land changes through the years.</p>
+      <div className="sw-land-copy"><h2 id="land-title">A place to<br />get to know.</h2>
+        <p>At Beforest, time outside begins with living landscapes. Land being restored. Forests, farms and communities growing together.</p>
+        <p>Return through the seasons and there is more to notice. What grows here. How the land changes. The people who care for it.</p>
       </div>
       <figure className="sw-land-photo"><Image src={LANDSCAPES[2].image} alt="The Deccan rockscape at Beforest's Hyderabad collective" fill sizes="(max-width: 760px) 100vw, 48vw" /><figcaption>Beforest Hyderabad · Deccan plateau</figcaption></figure>
     </section>
 
     <section id="the-return" className="sw-return sw-chapter" aria-labelledby="return-title">
       <div className="sw-section-number">02 / A RHYTHM OF RETURN</div>
-      <h2 id="return-title">Come back.<br />Notice a little more.</h2>
-      <p className="sw-return-note">The rain arrives. The canopy changes. A path becomes familiar.<br className="sw-desktop-break" /> Returning gives you time to know a place.</p>
+      <h2 id="return-title">Let one visit<br />become a rhythm.</h2>
+      <p className="sw-return-note">A trail you begin to recognise. A season you look forward to.<br className="sw-desktop-break" /> Time set aside to come back.</p>
       <div className="sw-model">
-        <p className="sw-model-intro">10% makes room for that relationship, through recurring access without the responsibility of owning land.</p>
+        <p className="sw-model-intro">10% gives you recurring access to Beforest landscapes. A way to make returning part of your year, without owning land.</p>
         <div className="sw-model-fact"><strong>30</strong><span>person-nights a year</span></div>
         <div className="sw-model-fact"><strong>10</strong><span>years of returning</span></div>
       </div>
@@ -82,7 +82,7 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
     </section>
 
     <section id="the-places" className="sw-places sw-chapter" aria-labelledby="places-title">
-      <div className="sw-places-heading"><div><p className="sw-section-number">03 / REAL PLACES, DIFFERENT RHYTHMS</p><h2 id="places-title">Which landscape calls to you?</h2></div><p className="sw-swipe">Scroll through the places <ArrowRight size={16} aria-hidden="true" /></p></div>
+      <div className="sw-places-heading"><div><p className="sw-section-number">03 / FIND YOUR PLACE</p><h2 id="places-title">Which place would you return to?</h2></div><p className="sw-swipe">Scroll through the places <ArrowRight size={16} aria-hidden="true" /></p></div>
       <div className="sw-place-track" tabIndex={0} aria-label="Beforest landscapes. Scroll horizontally to see more places.">
         {LANDSCAPES.map(place => <figure className="sw-place" key={place.id}>
           <div className="sw-place-image"><Image src={place.image} alt={`${place.name}: ${place.description}`} fill sizes="(max-width: 760px) 82vw, 33vw" /></div>
@@ -92,11 +92,11 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
     </section>
 
     <section id="your-year" className="sw-year sw-chapter" aria-labelledby="year-title">
-      <div className="sw-year-copy"><p className="sw-section-number">04 / NOW MAKE IT PERSONAL</p><h2 id="year-title">Where would this<br />fit in your year?</h2>
-        <p>A few days on your own. Time with your family. A place you return to as the seasons change.</p>
-        <p>Tell us what matters to you. Choose your people, your places and your rhythm. See those choices become a possible year.</p>
+      <div className="sw-year-copy"><p className="sw-section-number">04 / GIVE IT A PLACE IN YOUR YEAR</p><h2 id="year-title">See it in<br />your own year.</h2>
+        <p>A few days beneath the canopy. A longer stay with your family. Another visit when the seasons change.</p>
+        <p>Choose what you want time for, who comes along and the places that draw you. Envision brings those choices into your own editable calendar.</p>
         <a className="sw-button" href={href} onClick={() => begin('year')}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
-        <small>Your own editable calendar. No booking needed to begin.</small>
+        <small>A possible year, yours to change. No booking needed to begin.</small>
       </div>
       <div className="sw-year-preview" aria-label="Illustration of a possible year">
         <div className="sw-preview-top"><span>A YEAR WITH ROOM TO RETURN</span><span>YOURS TO SHAPE</span></div>
@@ -104,21 +104,21 @@ export function ShortWalkthrough({ initialHref }: { initialHref: string }) {
           <span className="sw-preview-dot" /><div className="sw-preview-image"><Image src={item.place.image} alt="" fill sizes="92px" /></div>
           <div><span>{item.season}</span><h3>{item.place.name}</h3><p>{item.line}</p></div>
         </div>)}
-        <p className="sw-preview-note">Just a first picture. Your dates and places come from your choices.</p>
+        <p className="sw-preview-note">An illustration to begin with. Your choices shape the year you create.</p>
       </div>
     </section>
 
-    <section className="sw-questions" aria-labelledby="questions-title"><h2 id="questions-title">A little clarity, before you begin.</h2>
+    <section className="sw-questions" aria-labelledby="questions-title"><h2 id="questions-title">What would you like to know?</h2>
       {FAQS.map((faq, index) => <details key={faq.question} onToggle={event => { if (event.currentTarget.open) readingSignal('reading_faq_opened', String(index + 1)) }}>
         <summary>{faq.question}<Plus size={18} aria-hidden="true" /></summary><p>{faq.answer}</p>
       </details>)}
     </section>
 
     <section className="sw-trial-note" aria-labelledby="trial-note-title"><div className="sw-trial-photo"><Image src="/blyton-optimized/verandah-mobile.webp" alt="The verandah at Blyton Bungalow in Coorg" fill sizes="(max-width: 760px) 100vw, 30vw" /></div>
-      <div><p className="sw-section-number">THEN, LET THE LAND ANSWER</p><h2 id="trial-note-title">Picture it here.<br />Experience it at Blyton.</h2><p>After you envision your year, take the next step with a trial stay at Blyton Bungalow, Coorg. Walk the land. Have the coffee. See how it feels.</p><a className="sw-text-link" href={href} onClick={() => begin('trial_bridge')}>Start with your year <ArrowRight size={17} aria-hidden="true" /></a></div>
+      <div><p className="sw-section-number">FROM PICTURING TO EXPERIENCING</p><h2 id="trial-note-title">Begin with a stay<br />at Blyton.</h2><p>Once you have pictured your year, explore a trial stay at Blyton Bungalow, Coorg. Walk the land. Have the coffee. Find out what a few days here could mean for you.</p><a className="sw-text-link" href={href} onClick={() => begin('trial_bridge')}>Envision your year <ArrowRight size={17} aria-hidden="true" /></a></div>
     </section>
 
     <footer className="sw-footer"><span>Beforest · 10% Life</span><a href="https://live.10percent.beforest.co/">Prefer the guided walkthrough?</a></footer>
-    <aside className="sw-dock" aria-label="Your next step"><div><span>0{chapter + 1} / 04</span><p>Make a little room for you.</p></div><a href={href} className="sw-button" onClick={() => begin('sticky')}>Envision your year <ArrowRight size={17} aria-hidden="true" /></a></aside>
+    <aside className="sw-dock" aria-label="Your next step"><div><span>0{chapter + 1} / 04</span><p>Make room in your year.</p></div><a href={href} className="sw-button" onClick={() => begin('sticky')}>Envision your year <ArrowRight size={17} aria-hidden="true" /></a></aside>
   </main>
 }
