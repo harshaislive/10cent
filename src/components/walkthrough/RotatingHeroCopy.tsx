@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, Pause, Play } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 const VERSIONS = [
   { title: 'Stay in nature. Come back throughout the year.', note: 'A membership for regular stays in Beforest’s forests and farms, without buying a holiday home.' },
@@ -52,10 +52,6 @@ export function RotatingHeroCopy({ href, onBegin }: { href: string; onBegin: () 
         {VERSIONS.map((item, index) => <span key={item.title} className={version === index ? 'sw-copy-frame is-current' : 'sw-copy-frame'} aria-hidden={version !== index}>{item.note}</span>)}
       </p>
       <a className="sw-button" href={href} onClick={onBegin}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
-    </div>
-    <div className="sw-copy-controls" role="group" aria-label="Choose a headline">
-      {VERSIONS.map((item, index) => <button key={item.title} type="button" aria-label={`Show headline ${index + 1}: ${item.title}`} aria-pressed={version === index} onClick={() => { setVersion(index); setPaused(true) }}>{String(index + 1).padStart(2, '0')}</button>)}
-      {!reducedMotion && <button className="sw-copy-pause" type="button" aria-label={paused ? 'Resume headline rotation' : 'Pause headline rotation'} onClick={() => setPaused(current => !current)}>{paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}</button>}
     </div>
   </div>
 }
