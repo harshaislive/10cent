@@ -51,7 +51,7 @@ export function RotatingHeroCopy({ href, onBegin }: { href: string; onBegin: () 
       <p className="sw-hero-note sw-copy-stack" aria-live="off">
         {VERSIONS.map((item, index) => <span key={item.title} className={version === index ? 'sw-copy-frame is-current' : 'sw-copy-frame'} aria-hidden={version !== index}>{item.note}</span>)}
       </p>
-      <a className="sw-button" href={href} onClick={onBegin}>Envision your year <ArrowRight size={19} aria-hidden="true" /></a>
+      <a className="sw-button" href={href} onClick={onBegin}>Imagine your year <ArrowRight size={19} aria-hidden="true" /></a>
     </div>
   </div>
 }

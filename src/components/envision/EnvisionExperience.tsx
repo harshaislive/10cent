@@ -86,7 +86,7 @@ export function EnvisionExperience() {
       <span className="ev-story-caption">{step === 1 ? 'Time together · Beforest landscapes' : step === 2 ? 'Hyderabad · The Deccan plateau' : step === 4 ? 'Hammiyala · Coorg' : `${storyPlace.name} · ${storyPlace.region}`}</span>
     </aside>
     <section className="ev-questions" aria-label="Picture your year">
-      <div className="ev-question-top"><span className="ev-eyebrow">Envision your year</span><span className="ev-step-count">{String(step + 1).padStart(2, '0')} / 06</span></div>
+      <div className="ev-question-top"><span className="ev-eyebrow">Imagine your year</span><span className="ev-step-count">{String(step + 1).padStart(2, '0')} / 06</span></div>
       <div className="ev-progress" aria-label={`Question ${step + 1} of 6`}>{QUESTIONS.map((_, index) => <span key={index} className={index <= step ? 'is-filled' : ''} />)}</div>
       {resume ? <div className="ev-resume"><h2>Your year is waiting.</h2><p>Pick up where you left off, or picture a different rhythm.</p><Link className="ev-button" href={`/my-year/${token}`}>Open my year <ArrowRight size={17} /></Link><button className="ev-text-button" onClick={fresh} disabled={busy}>Start a different year</button></div> : <>
         <header className="ev-question-heading"><h2 ref={heading} tabIndex={-1}>{QUESTIONS[step].title}</h2><p>{QUESTIONS[step].note}</p></header>

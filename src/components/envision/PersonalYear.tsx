@@ -49,7 +49,7 @@ export function PersonalYear({ token }: { token: string }) {
     if (!viewId.current) viewId.current = crypto.randomUUID()
     loadYear(token).then(async loaded => {
       if (!alive) return
-      if (!loaded.visits.length) throw new Error('This year is not ready yet. Return to Envision to finish your choices.')
+      if (!loaded.visits.length) throw new Error('This year is not ready yet. Return to your choices to finish your choices.')
       setYear(loaded)
       const viewed = await recordAction(token, loaded.saved ? 'year_reopened' : 'year_viewed', { id: viewId.current })
       if (alive) setYear(viewed)
@@ -119,7 +119,7 @@ export function PersonalYear({ token }: { token: string }) {
       window.location.assign(`/?trial=booking&calendar_id=${encodeURIComponent(year.id)}`)
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Please try again.'); setBusy(false) }
   }
-  if (!year) return <main className="ev-loading"><p className="ev-eyebrow">Beforest · Envision</p><h1>{error ? 'Let’s find your year.' : 'Opening your possible year…'}</h1>{error && <><p role="alert">{error}</p><Link href="/envision" className="ev-button">Return to Envision <ArrowRight size={16} /></Link></>}</main>
+  if (!year) return <main className="ev-loading"><p className="ev-eyebrow">Beforest · Imagine your year</p><h1>{error ? 'Let’s find your year.' : 'Opening your possible year…'}</h1>{error && <><p role="alert">{error}</p><Link href="/envision" className="ev-button">Return to your choices <ArrowRight size={16} /></Link></>}</main>
 
   const visits = [...year.visits].sort((a, b) => a.startDate.localeCompare(b.startDate))
   const total = visits.reduce((sum, visit) => sum + visit.nights, 0)
