@@ -7,15 +7,17 @@ const nextConfig = {
     unoptimized: false, // Enable image optimization
     remotePatterns: [
       {
+        // Only remote image host used via next/image (Supabase storage, incl. render/transform URLs)
         protocol: 'https',
-        hostname: '**',
+        hostname: 'isdbyvwocudnlwzghphw.supabase.co',
+        pathname: '/storage/v1/**',
       },
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 365, // Cache images for 1 year
-    dangerouslyAllowSVG: true,
+    dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   experimental: {
