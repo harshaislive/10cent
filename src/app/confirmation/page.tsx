@@ -2,12 +2,13 @@ import Image from 'next/image'
 import TrialConfirmationView from './TrialConfirmationView'
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     [key: string]: string | string[] | undefined
-  }
+  }>
 }
 
-export default function ConfirmationPage({ searchParams }: PageProps) {
+export default async function ConfirmationPage(props: PageProps) {
+  const searchParams = await props.searchParams
   const action = typeof searchParams.action === 'string' ? searchParams.action : null
   const email = typeof searchParams.email === 'string' ? searchParams.email : null
 

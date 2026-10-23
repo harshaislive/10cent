@@ -7,4 +7,4 @@ export const metadata: Metadata = {
   title: 'Your possible year | Beforest 10percent',
   robots: { index: false, follow: false }, referrer: 'no-referrer',
 }
-export default function MyYearPage({ params }: { params: { token: string } }) { return <PersonalYear token={params.token} /> }
+export default async function MyYearPage({ params }: { params: Promise<{ token: string }> }) { const { token } = await params; return <PersonalYear token={token} /> }

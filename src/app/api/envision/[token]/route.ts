@@ -7,10 +7,10 @@ import { checkWrite, errorResponse } from '@/lib/envision/http'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 const headers = { 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' }
-interface IContext { params: { token: string } }
+interface IContext { params: Promise<{ token: string }> }
 
 export async function GET(_req: Request, { params }: IContext): Promise<NextResponse> {
-  try { return NextResponse.json({ journey: publicJourney(await readJourney(params.token)) }, { headers }) }
+  try { return NextResponse.json({ journey: publicJourney(await readJourney((await params).token)) }, { headers }) }
   catch (error) { return errorResponse(error) }
 }
 export async function PATCH(req: Request, { params }: IContext): Promise<NextResponse> {
@@ -26,7 +26,7 @@ export async function PATCH(req: Request, { params }: IContext): Promise<NextRes
     if (contact && event.name !== 'year_saved') throw new EnvisionError('Contact details can only be added when saving your year.')
     if (preferences && !['preferences_saved', 'year_generated', 'year_edited'].includes(event.name)) throw new EnvisionError('Please save preferences using the correct action.')
     if (visits && event.name !== 'year_edited') throw new EnvisionError('Please save visits using the edit action.')
-    const journey = await changeJourney(params.token, event.id, current => {
+    const journey = await changeJourney((await params).token, event.id, current => {
       if (event.name === 'year_edited' && current.revision !== body.expectedRevision) throw new EnvisionError('Your year changed in another window. Reload it before editing.', 409)
       if (event.name === 'year_generated' && current.contact && preferences) throw new EnvisionError('Edit the saved year rather than replacing it.')
       if (event.name === 'preferences_saved' && current.visits.length) throw new EnvisionError('Please edit preferences with your saved year.')

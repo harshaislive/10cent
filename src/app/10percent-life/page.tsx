@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ShortWalkthroughPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+export default async function ShortWalkthroughPage(props: { searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
+  const searchParams = await props.searchParams
   const query = new URLSearchParams()
   for (const [key, value] of Object.entries(searchParams || {})) {
     const first = Array.isArray(value) ? value[0] : value

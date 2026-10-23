@@ -2,7 +2,6 @@
 // Force restart
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true, // Enable SWC minification for better performance
   output: 'standalone',
   images: {
     unoptimized: false, // Enable image optimization
