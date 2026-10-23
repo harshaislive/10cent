@@ -146,7 +146,7 @@ export async function POST(req: Request) {
     const liveCheckoutAmount = selectedRooms.length
       ? selectedRooms.reduce((total, selection) => total + getRoomAmount(selection.room), 0)
       : estimatedCost || availabilityData?.lowestTotalInclusiveTax || availabilityData?.lowestRateInclusiveTax || null
-    const checkoutAmount = getCheckoutAmount(liveCheckoutAmount)
+    const checkoutAmount = await getCheckoutAmount(liveCheckoutAmount)
     const checkoutExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString()
     const returnUrl = `${getBaseUrl()}/trial-booking/confirmation`
     const selectedRoomName = selectedRooms.length > 1
@@ -523,8 +523,8 @@ function getSelectedRoomKey(room: IEzeeAvailableRoom): string {
   return `${room.roomTypeId || room.name}-${room.ratePlanId || ""}-${room.rateTypeId || ""}`
 }
 
-function getCheckoutAmount(liveAmount: number | null): number | null {
-  const testCookie = cookies().get("trial_checkout_test")?.value
+async function getCheckoutAmount(liveAmount: number | null): Promise<number | null> {
+  const testCookie = (await cookies()).get("trial_checkout_test")?.value
   if (testCookie === "1") {
     return 1
   }
