@@ -10,7 +10,7 @@ export interface IPlace {
   story: string
 }
 
-const IMAGE_ROOT = 'https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images'
+const IMAGE_ROOT = 'https://files.ops.beforest.co/10cent_hero_images'
 export const PLACES: IPlace[] = [
   { id: 'poomaale', name: 'Poomaale 1.0', region: 'Coorg', description: 'Coffee, cardamom and trails beneath the forest canopy.', image: `${IMAGE_ROOT}/desktop/2.png`, headline: 'Let the forest set the pace.', story: 'Coffee and cardamom grow beneath the canopy. Trails connect the community to streams and Shola hills. Imagine having time to follow one.' },
   { id: 'poomaale2', name: 'Poomaale 2.0', region: 'Coorg', description: 'Rainforest, freshwater streams and a neighbouring wilderness.', image: `${IMAGE_ROOT}/colective_images/pomaale_2.jpg`, headline: 'A little further into the forest.', story: 'Next to Poomaale 1.0, coffee and cardamom share a landscape with rainforest and perennial streams. Another corner of Coorg to get to know.' },

@@ -7,6 +7,12 @@ const nextConfig = {
     unoptimized: false, // Enable image optimization
     remotePatterns: [
       {
+        // Self-hosted media (Supabase self-host, Coolify)
+        protocol: 'https',
+        hostname: 'files.ops.beforest.co',
+        pathname: '/**',
+      },
+      {
         // Only remote image host used via next/image (Supabase storage, incl. render/transform URLs)
         protocol: 'https',
         hostname: 'isdbyvwocudnlwzghphw.supabase.co',

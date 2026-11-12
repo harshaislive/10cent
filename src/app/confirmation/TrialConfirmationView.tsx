@@ -26,32 +26,32 @@ const AVAILABLE_LOCATION = {
   ],
   images: [
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/blyton.webp"
+      desktop: "https://files.ops.beforest.co/blyton/blyton.webp",
+      mobile: "https://files.ops.beforest.co/blyton/blyton.webp"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/IMG_1197-HDR%20(1).jpg"
+      desktop: "https://files.ops.beforest.co/blyton/IMG_1197-HDR%20(1).jpg",
+      mobile: "https://files.ops.beforest.co/blyton/IMG_1197-HDR%20(1).jpg"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3748.jpg"
+      desktop: "https://files.ops.beforest.co/blyton/PBR_3748.jpg",
+      mobile: "https://files.ops.beforest.co/blyton/PBR_3748.jpg"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_3868.jpg"
+      desktop: "https://files.ops.beforest.co/blyton/PBR_3868.jpg",
+      mobile: "https://files.ops.beforest.co/blyton/PBR_3868.jpg"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_7194.jpg"
+      desktop: "https://files.ops.beforest.co/blyton/PBR_7194.jpg",
+      mobile: "https://files.ops.beforest.co/blyton/PBR_7194.jpg"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_8377.jpg"
+      desktop: "https://files.ops.beforest.co/blyton/PBR_8377.jpg",
+      mobile: "https://files.ops.beforest.co/blyton/PBR_8377.jpg"
     },
     {
-      desktop: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg",
-      mobile: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/blyton/PBR_9936.jpg"
+      desktop: "https://files.ops.beforest.co/blyton/PBR_9936.jpg",
+      mobile: "https://files.ops.beforest.co/blyton/PBR_9936.jpg"
     }
   ]
 }

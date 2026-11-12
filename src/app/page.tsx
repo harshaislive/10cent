@@ -20,17 +20,17 @@ const IMAGES = {
     { desktop: "/hero-4.webp", mobile: "/hero-4.webp" }
   ],
   forest: "/hero-3.webp",
-  office: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
+  office: "https://files.ops.beforest.co/10cent_hero_images/colective_images/pomaale_2.jpg",
   founder: "/PBR_7935.webp",
   founderAlt: "/PBR_4601.webp",
   logo: "/10-Club-01.png",
   locations: {
-    poomaale: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/2.png",
-    poomaale2: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/pomaale_2.jpg",
-    hammiyala: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/desktop/4.jpg",
-    hyderabad: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/1762346094681-1ljldd.webp",
-    bhopal: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/bhopal.png",
-    mumbai: "https://isdbyvwocudnlwzghphw.supabase.co/storage/v1/object/public/10cent_hero_images/colective_images/mumbai.jpg"
+    poomaale: "https://files.ops.beforest.co/10cent_hero_images/desktop/2.png",
+    poomaale2: "https://files.ops.beforest.co/10cent_hero_images/colective_images/pomaale_2.jpg",
+    hammiyala: "https://files.ops.beforest.co/10cent_hero_images/desktop/4.jpg",
+    hyderabad: "https://files.ops.beforest.co/10cent_hero_images/colective_images/1762346094681-1ljldd.webp",
+    bhopal: "https://files.ops.beforest.co/10cent_hero_images/colective_images/bhopal.png",
+    mumbai: "https://files.ops.beforest.co/10cent_hero_images/colective_images/mumbai.jpg"
   }
 }
 
