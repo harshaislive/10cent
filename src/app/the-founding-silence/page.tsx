@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 const webinarVideoUrl =
-  'https://nsrndpwoohjylxgknghr.supabase.co/storage/v1/object/public/webinars/10percentlifestyle7thmarch2026.mp4'
+  'https://files.ops.beforest.co/tencent-legacy-webinars/10percentlifestyle7thmarch2026.mp4'
 
 const openingBullets = [
   'We did not frame this as a holiday club.',
